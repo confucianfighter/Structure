@@ -7,7 +7,6 @@ import 'sample_feature/main_menu.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 import 'sample_feature/edit_questions_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'sample_feature/subject_list_view.dart';
 
 

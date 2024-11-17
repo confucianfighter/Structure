@@ -3,9 +3,6 @@ import 'dart:io'; // Add this import
 
 import '../settings/settings_view.dart';
 import 'menu_item.dart';
-import 'sample_item_details_view.dart';
-import 'edit_questions_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'subject_list_view.dart';
 
 /// Displays a list of SampleItems.
