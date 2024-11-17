@@ -1,0 +1,30 @@
+﻿# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+# IntelliJ related
+.idea/
+*.iml
+*.ipr
+*.iws
+# VS Code related
+.vscode/
+# Mac related
+*.DS_Store
+# Windows related
+*.exe
+*.dll
+*.bat
+*.pdb
+# Linux related
+*.so
+# Generated files
+*.log
+*.lock
+*.pyc
+*.pyo
+*.swp
