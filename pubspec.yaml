@@ -27,6 +27,7 @@ dependencies:
   hive_generator: ^2.0.1
   #font_awesome_flutter: ^10.8.0
   icons_plus: ^5.0.0
+  flutter_markdown: ^0.7.4+1
 
 dev_dependencies:
   flutter_test:

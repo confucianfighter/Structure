@@ -1,108 +1,167 @@
 import 'package:flutter/material.dart';
-import 'dart:io'; // Add this import
-
+import 'question_list_widget.dart';
 import '../settings/settings_view.dart';
-import 'menu_item.dart';
-import 'edit_questions_screen.dart';
-import 'subjects.dart';
+import 'subjects.dart'; // Import the CRUD operations
 
-/// Displays a list of SampleItems.
 class SubjectListView extends StatefulWidget {
-  // Change from StatelessWidget to StatefulWidget
-  const SubjectListView({super.key, this.items = const []});
-
-  static const routeName = '/subjects';
-
-  final List<MenuItem> items;
-
+  const SubjectListView({Key? key}) : super(key: key);
+  static const String routeName = '/subjects';
   @override
-  SubjectListViewState createState() =>
-      SubjectListViewState(); // Change this line
+  _SubjectListViewState createState() => _SubjectListViewState();
 }
 
-class SubjectListViewState extends State<SubjectListView> {
-  // Change this class to public
-  // Add this class
-  bool _isAlwaysOnTop = false;
-  // create a subjects property
+class _SubjectListViewState extends State<SubjectListView> {
   List<String> subjects = [];
-  // load subjects from file
+
   @override
   void initState() {
     super.initState();
+    _loadSubjects();
+  }
+
+  void _loadSubjects() {
     setState(() {
       subjects = getAllSubjects();
     });
   }
 
-  Future<void> _toggleAlwaysOnTop() async {
-    setState(() {
-      _isAlwaysOnTop = !_isAlwaysOnTop;
-    });
-    final result = await Process.run(
-      'lib/src/AlwaysOnTop/bin/Debug/net9.0/AlwaysOnTop.exe', // Use relative path
-      [_isAlwaysOnTop.toString()],
+  void _addSubject(String subject) async {
+    await addSubject(subject);
+    _loadSubjects();
+  }
+
+  void _removeSubject(String subject) async {
+    bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content:
+              Text('Are you sure you want to delete the subject "$subject"?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
     );
-    if (result.exitCode != 0) {
-      // Handle error if needed
-      print('Error: ${result.stderr}');
+
+    if (confirmDelete == true) {
+      await removeSubject(subject);
+      _loadSubjects();
     }
+  }
+
+  void _showAddSubjectDialog() {
+    String newSubject = '';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New Subject'),
+          content: TextField(
+            onChanged: (value) {
+              newSubject = value;
+            },
+            decoration: InputDecoration(hintText: "Enter subject name"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                if (newSubject.isNotEmpty) {
+                  _addSubject(newSubject);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Subjects'),
-          actions: [
-            IconButton(
-              icon: Icon(_isAlwaysOnTop
-                  ? Icons.push_pin
-                  : Icons.push_pin_outlined), // Change icon based on state
-              onPressed: _toggleAlwaysOnTop, // Toggle always on top
-            ),
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                // Navigate to the settings page. If the user leaves and returns
-                // to the app after it has been killed while running in the
-                // background, the navigation stack is restored.
-                Navigator.restorablePushNamed(context, SettingsView.routeName);
-              },
-            ),
-          ],
-        ),
-
-        // To work with lists that may contain a large number of items, it’s best
-        // to use the ListView.builder constructor.
-        //
-        // In contrast to the default ListView constructor, which requires
-        // building all Widgets up front, the ListView.builder constructor lazily
-        // builds Widgets as they’re scrolled into view.
-        body: ListView.builder(
-            // Providing a restorationId allows the ListView to restore the
-            // scroll position when a user leaves and returns to the app after it
-            // has been killed while running in the background.
-            restorationId: 'SubjectListView',
-            itemCount: widget.items.length,
-            itemBuilder: (BuildContext context, int index) {
-              final subject = subjects[index];
-              return Column(children: [
-                ListTile(
-                  title: Text(subject),
-                  leading: Icon(
-                    Icons.quiz,
-                    color: Colors.orange,
+      appBar: AppBar(
+        title: Text('Subjects'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.restorablePushNamed(context, SettingsView.routeName);
+            },
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        itemCount: subjects.length + 1, // +1 for the "All" option
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // The "All" option
+            return ListTile(
+              title: Text('All'),
+              leading: Icon(
+                Icons.list,
+                color: Colors.blue,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuestionListWidget(subject: 'All'),
                   ),
-                  onTap: () {
-                    Navigator.restorablePushNamed(
-                      context,
-                      EditQuestionsScreen.routeName,
-                      arguments: subject,
-                    );
-                  },
-                ),
-              ]);
-            }));
+                );
+              },
+            );
+          } else {
+            final subject = subjects[index - 1];
+            return ListTile(
+              title: Text(subject),
+              leading: Icon(
+                Icons.quiz,
+                color: Colors.orange,
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.delete, color: Colors.purple),
+                onPressed: () {
+                  _removeSubject(subject);
+                },
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuestionListWidget(subject: subject),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddSubjectDialog,
+        tooltip: 'Add Subject',
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }

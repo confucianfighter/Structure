@@ -6,22 +6,20 @@ import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/main_menu.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
-import 'sample_feature/edit_questions_screen.dart';
+import 'sample_feature/question_list_widget.dart';
 import 'sample_feature/subject_list_view.dart';
-
-
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   // constructor. const means it creates a compile-time constant, which implies that settingsController is also constat.
   const MyApp(
-    // curly braces mean we are using named parameters
+      // curly braces mean we are using named parameters
       {
-        // the key is the uuid of the widget, it is used to identify the widget in the widget tree
-        super.key,
-        // required means that the parameter is mandatory
-        required this.settingsController,
-      });
+    // the key is the uuid of the widget, it is used to identify the widget in the widget tree
+    super.key,
+    // required means that the parameter is mandatory
+    required this.settingsController,
+  });
 
   // final means that the variable is immutable after initialization, at runtime.
   // const means that it needs to be fully predetermined at compile time.
@@ -82,14 +80,16 @@ class MyApp extends StatelessWidget {
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
                     return const SampleItemDetailsView();
-                  case EditQuestionsScreen.routeName:
-                    return EditQuestionsScreen(subject: ModalRoute.of(context)!.settings.arguments as String);
+                  // case QuestionListWidget.routeName:
+                  //   return QuestionListWidget(
+                  //       subject: ModalRoute.of(context)!.settings.arguments
+                  //           as String);
                   case SubjectListView.routeName:
                     return const SubjectListView();
                   case SampleItemListView.routeName:
                   // fall through to the default case
                   default:
-                  // as there is no explicit call to the constructor or routeName, I'm assuming this is the entry point.
+                    // as there is no explicit call to the constructor or routeName, I'm assuming this is the entry point.
                     return const SampleItemListView();
                 }
               },
