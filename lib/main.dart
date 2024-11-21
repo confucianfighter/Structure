@@ -20,6 +20,8 @@ void main() async {
   Hive.registerAdapter(QuizQuestionAdapter());
   await Hive.openBox<QuizQuestion>('quiz_questions');
   await Hive.openBox<String>('subjects');
+  Hive.registerAdapter(WritingPromptAdapter);
+  await Hive.openBox<WritingPrompt>('writing_prompts');
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.

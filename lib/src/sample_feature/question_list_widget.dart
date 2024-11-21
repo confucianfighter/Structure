@@ -40,10 +40,6 @@ class QuestionListWidget extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => QuizQuestionEditorCard(
                         question_id: question.id,
-                        onUpdate: (updatedQuestion) async {
-                          await Hive.box<QuizQuestion>('quiz_questions')
-                              .put(updatedQuestion.id, updatedQuestion);
-                        },
                       ),
                     ),
                   );

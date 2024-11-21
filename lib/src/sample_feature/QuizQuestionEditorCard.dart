@@ -1,48 +1,33 @@
 import 'package:flutter/material.dart';
 import 'quiz_question.dart';
 import 'subjects.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class QuizQuestionEditorCard extends StatelessWidget {
   const QuizQuestionEditorCard({
     super.key,
     required this.question_id,
-    required this.onUpdate,
   });
 
   final String question_id;
-  final Function(QuizQuestion) onUpdate;
-
-  Future<QuizQuestion> _initializeQuestion() async {
-    try {
-      final fetchedQuestion = await getQuizQuestion(question_id);
-      if (fetchedQuestion != null) {
-        return fetchedQuestion;
-      } else {
-        throw Exception("Question not found");
-      }
-    } catch (error) {
-      throw Exception("Error initializing question: $error");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuizQuestion>(
-      future: _initializeQuestion(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text("Error: ${snapshot.error}"),
-          );
-        } else if (!snapshot.hasData) {
-          return const Center(
-            child: Text("Question not found"),
+    // Get a listenable for the specific box
+    final questionBox = Hive.box<QuizQuestion>('quiz_questions');
+
+    return ValueListenableBuilder<Box<QuizQuestion>>(
+      valueListenable: questionBox.listenable(),
+      builder: (context, box, _) {
+        // Retrieve the specific question by its ID
+        final question = box.get(question_id);
+
+        if (question == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Edit Question')),
+            body: const Center(child: Text("Question not found")),
           );
         }
-
-        QuizQuestion question = snapshot.data!;
 
         return Scaffold(
           appBar: AppBar(
@@ -60,7 +45,7 @@ class QuizQuestionEditorCard extends StatelessWidget {
                     decoration: const InputDecoration(labelText: 'Question'),
                     onChanged: (value) {
                       question.question = value;
-                      onUpdate(question); // Notify parent of update
+                      box.put(question.id, question); // Update directly
                     },
                   ),
                   TextFormField(
@@ -68,7 +53,7 @@ class QuizQuestionEditorCard extends StatelessWidget {
                     decoration: const InputDecoration(labelText: 'Answer'),
                     onChanged: (value) {
                       question.answer = value;
-                      onUpdate(question); // Notify parent of update
+                      box.put(question.id, question); // Update directly
                     },
                   ),
                   DropdownButton<String>(
@@ -89,7 +74,7 @@ class QuizQuestionEditorCard extends StatelessWidget {
                         } else {
                           question.subjects[0] = newValue;
                         }
-                        onUpdate(question); // Notify parent of update
+                        box.put(question.id, question); // Update directly
                       }
                     },
                   ),
@@ -100,7 +85,7 @@ class QuizQuestionEditorCard extends StatelessWidget {
                     onChanged: (value) {
                       question.tags =
                           value.split(',').map((tag) => tag.trim()).toList();
-                      onUpdate(question); // Notify parent of update
+                      box.put(question.id, question); // Update directly
                     },
                   ),
                   Row(
@@ -108,7 +93,7 @@ class QuizQuestionEditorCard extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          removeQuizQuestion(question.id);
+                          box.delete(question.id);
                           Navigator.pop(context); // Go back after deletion
                         },
                         icon: const Icon(Icons.delete),

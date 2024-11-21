@@ -41,8 +41,61 @@ def build_file_contents_string(selected_files):
         except Exception as e:
             builder.append(f"Error reading file {file_path}: {e}\n\n")
     return ''.join(builder)
+def get_settings():
+    # check for settings file in .
+    # if not found, create one
+    if not os.path.exists("./settings.json"):
+        return {}
+    else:
+        with open("./settings.json", "r") as f:
+            return json.load(f)
+
+def save_settings(settings):
+    with open("./settings.json", "w") as f:
+        json.dump(settings, f)
+
+def get_current_project_path():
+    settings = get_settings()
+    return settings.get("current_project_path", None)
+def add_project_path_if_not_exists(path):
+    settings = get_settings()
+    if not settings.get("project_paths", None):
+        settings["project_paths"] = []
+    if path not in settings["project_paths"]:
+        settings["project_paths"].append(path)
+    save_settings(settings)
+def set_current_project_path(path):
+    settings = get_settings()
+    settings["current_project_path"] = path
+    add_project_path_if_not_exists(path)
+    save_settings(settings)
+def select_project_path():
+    path = ""
+    choices = []
+    current_project_path = get_current_project_path()
+    if current_project_path:
+        choices.append(inquirer.Choice(current_project_path))
+    choices.append(inquirer.Choice("Add a new project path"))
+    paths = get_settings().get("project_paths", [])
+    if len(paths) > 0:
+        choices.extend([inquirer.Choice(path) for path in paths])
+    
+    selected = inquirer.select(
+        message="Select a project path:",
+        choices=choices
+    ).execute()
+    if selected == "Add a new project path":
+        path = prompt("Enter the path to the project: ")
+        set_current_project_path(path)
+    else:
+        path = selected
+    return path
+        
+
 
 def main():
+    path = select_project_path()
+    return
     # get the first argument as the relative path
     path = sys.argv[1]
 
