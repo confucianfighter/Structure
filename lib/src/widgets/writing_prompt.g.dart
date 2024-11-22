@@ -21,13 +21,14 @@ class WritingPromptAdapter extends TypeAdapter<WritingPrompt> {
       prompt: fields[1] as String,
       dateCreated: fields[2] as DateTime,
       lastTimeAnswered: fields[3] as DateTime?,
+      category: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, WritingPrompt obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class WritingPromptAdapter extends TypeAdapter<WritingPrompt> {
       ..writeByte(2)
       ..write(obj.dateCreated)
       ..writeByte(3)
-      ..write(obj.lastTimeAnswered);
+      ..write(obj.lastTimeAnswered)
+      ..writeByte(4)
+      ..write(obj.category);
   }
 
   @override
@@ -49,17 +52,17 @@ class WritingPromptAdapter extends TypeAdapter<WritingPrompt> {
           typeId == other.typeId;
 }
 
-class PromptAnswerAdapter extends TypeAdapter<PromptAnswer> {
+class WritingPromptAnswerAdapter extends TypeAdapter<WritingPromptAnswer> {
   @override
   final int typeId = 3;
 
   @override
-  PromptAnswer read(BinaryReader reader) {
+  WritingPromptAnswer read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PromptAnswer(
+    return WritingPromptAnswer(
       id: fields[0] as String,
       answer: fields[1] as String,
       dateAnswered: fields[2] as DateTime,
@@ -67,7 +70,7 @@ class PromptAnswerAdapter extends TypeAdapter<PromptAnswer> {
   }
 
   @override
-  void write(BinaryWriter writer, PromptAnswer obj) {
+  void write(BinaryWriter writer, WritingPromptAnswer obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
@@ -84,7 +87,7 @@ class PromptAnswerAdapter extends TypeAdapter<PromptAnswer> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PromptAnswerAdapter &&
+      other is WritingPromptAnswerAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

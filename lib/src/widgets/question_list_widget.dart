@@ -24,9 +24,11 @@ class QuestionListWidget extends StatelessWidget {
         valueListenable: Hive.box<QuizQuestion>('quiz_questions').listenable(),
         builder: (context, box, _) {
           // Filter questions for the current subject
-          final questions = box.values
-              .where((question) => question.subjects.contains(subject))
-              .toList();
+          final questions = subject == 'All'
+              ? box.values.toList()
+              : box.values
+                  .where((question) => question.subjects.contains(subject))
+                  .toList();
 
           return ListView.builder(
             itemCount: questions.length,

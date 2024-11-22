@@ -4,11 +4,12 @@ import 'dart:io'; // Add this import
 import '../settings/settings_view.dart';
 import 'menu_item.dart';
 import 'subject_list_view.dart';
+import 'writing_prompt_category_view.dart';
 
 /// Displays a list of SampleItems.
-class SampleItemListView extends StatefulWidget {
+class MainMenu extends StatefulWidget {
   // Change from StatelessWidget to StatefulWidget
-  const SampleItemListView({
+  const MainMenu({
     super.key,
     this.items = const [
       MenuItem(
@@ -16,6 +17,11 @@ class SampleItemListView extends StatefulWidget {
           route: SubjectListView.routeName,
           icon: Icon(Icons.edit),
           title: 'Flash Cards'),
+            MenuItem(
+          id: 2,
+          route: CategoriesWidget.routeName,
+          icon: Icon(Icons.category),
+          title: 'Writing Prompts'),
     ],
   });
 
@@ -24,11 +30,10 @@ class SampleItemListView extends StatefulWidget {
   final List<MenuItem> items;
 
   @override
-  SampleItemListViewState createState() =>
-      SampleItemListViewState(); // Change this line
+  MainMenuState createState() => MainMenuState(); // Change this line
 }
 
-class SampleItemListViewState extends State<SampleItemListView> {
+class MainMenuState extends State<MainMenu> {
   // Change this class to public
   // Add this class
   bool _isAlwaysOnTop = false;
@@ -92,7 +97,6 @@ class SampleItemListViewState extends State<SampleItemListView> {
                 //Icons.edit_rounded,
                 Icons.quiz,
                 color: Colors.orange,
-                
               ),
               // add another icon to left of leading icon
               onTap: () {

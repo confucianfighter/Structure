@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/main_menu.dart';
+import 'widgets/main_menu.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
-import 'sample_feature/question_list_widget.dart';
-import 'sample_feature/subject_list_view.dart';
+import 'widgets/question_list_widget.dart';
+import 'widgets/subject_list_view.dart';
+import 'widgets/writing_prompt_category_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -78,19 +77,19 @@ class MyApp extends StatelessWidget {
                 switch (routeSettings.name) {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
                   // case QuestionListWidget.routeName:
                   //   return QuestionListWidget(
                   //       subject: ModalRoute.of(context)!.settings.arguments
                   //           as String);
                   case SubjectListView.routeName:
                     return const SubjectListView();
-                  case SampleItemListView.routeName:
+                  case CategoriesWidget.routeName:
+                    return const CategoriesWidget();
+                  case MainMenu.routeName:
                   // fall through to the default case
                   default:
                     // as there is no explicit call to the constructor or routeName, I'm assuming this is the entry point.
-                    return const SampleItemListView();
+                    return const MainMenu();
                 }
               },
             );
