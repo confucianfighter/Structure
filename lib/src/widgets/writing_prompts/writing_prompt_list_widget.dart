@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'writing_prompt.dart';
+import '../../data_types/writing_prompt.dart';
 import 'WritingPromptCard.dart';
 import 'writing_prompt_editor_card.dart';
 
 class WritingPromptListWidget extends StatelessWidget {
-  const WritingPromptListWidget({Key? key, required this.category})
-      : super(key: key);
+  const WritingPromptListWidget({super.key, required this.category});
 
   final String category;
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'quiz_question.dart';
-import 'subjects.dart';
+import '../../data_types/quiz_question.dart';
+import '../../data_types/subjects.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class QuizQuestionEditorCard extends StatelessWidget {

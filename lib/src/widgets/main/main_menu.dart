@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:io'; // Add this import
 
-import '../settings/settings_view.dart';
+import '../../settings/settings_view.dart';
 import 'menu_item.dart';
-import 'subject_list_view.dart';
-import 'writing_prompt_category_view.dart';
+import '../subjects/subject_list_view.dart';
+import '../writing_prompts/writing_prompt_category_view.dart';
+import '../object_box_countdown_widget.dart';
+import '../../systems/object_box_timer.dart';
 
 /// Displays a list of SampleItems.
 class MainMenu extends StatefulWidget {
@@ -17,7 +19,7 @@ class MainMenu extends StatefulWidget {
           route: SubjectListView.routeName,
           icon: Icon(Icons.edit),
           title: 'Flash Cards'),
-            MenuItem(
+      MenuItem(
           id: 2,
           route: CategoriesWidget.routeName,
           icon: Icon(Icons.category),
@@ -37,15 +39,21 @@ class MainMenuState extends State<MainMenu> {
   // Change this class to public
   // Add this class
   bool _isAlwaysOnTop = false;
+  @override
+  void initState() {
+    super.initState();
+    _isAlwaysOnTop = false;
+    //TimerStateNotifier().startTimer();
+  }
 
   Future<void> _toggleAlwaysOnTop() async {
     setState(() {
       _isAlwaysOnTop = !_isAlwaysOnTop;
     });
     final result = await Process.run(
-      'lib/src/AlwaysOnTop/bin/Debug/net9.0/AlwaysOnTop.exe', // Use relative path
-      [_isAlwaysOnTop.toString()],
-    );
+        'lib/src/AlwaysOnTop/bin/Debug/net9.0/AlwaysOnTop.exe', // Use relative path
+        [_isAlwaysOnTop.toString()]);
+
     if (result.exitCode != 0) {
       // Handle error if needed
       print('Error: ${result.stderr}');
@@ -58,6 +66,10 @@ class MainMenuState extends State<MainMenu> {
       appBar: AppBar(
         title: const Text('Main Menu'),
         actions: [
+          ObjectBoxCountdownWidget(
+            // Add ObjectBoxCountdownWidget
+            countdownId: TimerID.main.id,
+          ),
           IconButton(
             icon: Icon(_isAlwaysOnTop
                 ? Icons.push_pin
@@ -73,6 +85,17 @@ class MainMenuState extends State<MainMenu> {
               Navigator.restorablePushNamed(context, SettingsView.routeName);
             },
           ),
+
+          // insert listenable builder that listends for AppState time remaining seconds from hive and displays it
+          // ValueListenableBuilder(
+          //   valueListenable: Hive.box<AppState>('state').listenable(),
+          //   builder: (context, Box<AppState> box, _) {
+          //     final appState = getAppState(); // Now it's synchronous
+          //     final timeRemaining = appState.timeRemainingSeconds?.toString() ?? '0';
+
+          //     return Text('Time Remaining: $timeRemaining');
+          //   },
+          // ),
         ],
       ),
 

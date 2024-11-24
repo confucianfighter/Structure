@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'writing_prompt.dart';
+import '../../data_types/writing_prompt.dart';
 
 class WritingPromptCard extends StatefulWidget {
   final WritingPrompt prompt;
@@ -8,11 +8,11 @@ class WritingPromptCard extends StatefulWidget {
   final VoidCallback onDelete;
 
   const WritingPromptCard({
-    Key? key,
+    super.key,
     required this.prompt,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   _WritingPromptCardState createState() => _WritingPromptCardState();

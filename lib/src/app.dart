@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'widgets/main_menu.dart';
+import 'widgets/main/main_menu.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
-import 'widgets/question_list_widget.dart';
-import 'widgets/subject_list_view.dart';
-import 'widgets/writing_prompt_category_view.dart';
+import 'widgets/subjects/subject_list_view.dart';
+import 'widgets/writing_prompts/writing_prompt_category_view.dart';
+import '../objectbox.g.dart';
+import 'systems/object_box_timer.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
     // required means that the parameter is mandatory
     required this.settingsController,
   });
-
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final Store store = Store(getObjectBoxModel());
   // final means that the variable is immutable after initialization, at runtime.
   // const means that it needs to be fully predetermined at compile time.
   final SettingsController settingsController;
@@ -30,10 +32,15 @@ class MyApp extends StatelessWidget {
     //
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
+    ObjectBoxTimer().startCountdown( 
+      seconds: 299,
+      onTimerEnd: () => MyApp.navigatorKey.currentState?.pushNamed(MainMenu.routeName)
+    );
     return ListenableBuilder(
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          navigatorKey: navigatorKey,
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the

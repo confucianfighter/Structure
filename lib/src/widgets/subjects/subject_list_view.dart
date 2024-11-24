@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart'; // Ensure you have the Hive package set up
-import 'question_list_widget.dart';
-import '../settings/settings_view.dart';
-import 'subjects.dart'; // Import CRUD operations
+import '../quiz_questions/question_list_widget.dart';
+import '../../settings/settings_view.dart';
+// Import CRUD operations
 
 class SubjectListView extends StatelessWidget {
-  const SubjectListView({Key? key}) : super(key: key);
+  const SubjectListView({super.key});
   static const String routeName = '/subjects';
 
   @override
@@ -99,6 +99,7 @@ class SubjectListView extends StatelessWidget {
                     );
                   },
                 );
+                
               }
             },
           );
@@ -111,6 +112,7 @@ class SubjectListView extends StatelessWidget {
         tooltip: 'Add Subject',
         child: Icon(Icons.add),
       ),
+      
     );
   }
 

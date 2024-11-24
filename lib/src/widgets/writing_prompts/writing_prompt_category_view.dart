@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'writing_prompt_list_widget.dart';
 
 class CategoriesWidget extends StatelessWidget {
-  const CategoriesWidget({Key? key}) : super(key: key);
+  const CategoriesWidget({super.key});
   static const String routeName = '/writing_prompt_categories';
   @override
   Widget build(BuildContext context) {

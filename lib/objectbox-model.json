@@ -1,0 +1,103 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:146195575595869195",
+      "lastPropertyId": "2:4543042334429189001",
+      "name": "Countdown",
+      "properties": [
+        {
+          "id": "1:5203136631529040311",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:4543042334429189001",
+          "name": "remainingSeconds",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:4562760401703630193",
+      "lastPropertyId": "5:1643685379610388084",
+      "name": "WritingPrompt",
+      "properties": [
+        {
+          "id": "1:7069261292951093926",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7821508857526449903",
+          "name": "prompt",
+          "type": 9
+        },
+        {
+          "id": "3:4490942566436496262",
+          "name": "dateCreated",
+          "type": 10
+        },
+        {
+          "id": "4:4192646412743095980",
+          "name": "lastTimeAnswered",
+          "type": 10
+        },
+        {
+          "id": "5:1643685379610388084",
+          "name": "category",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:8016132364118866485",
+      "lastPropertyId": "4:3456486402785270961",
+      "name": "WritingPromptAnswer",
+      "properties": [
+        {
+          "id": "1:3949528071363160509",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6631672326208742983",
+          "name": "answer",
+          "type": 9
+        },
+        {
+          "id": "3:1855726055833227939",
+          "name": "dateAnswered",
+          "type": 10
+        },
+        {
+          "id": "4:3456486402785270961",
+          "name": "writingPromptId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:868981703487449150",
+          "relationTarget": "WritingPrompt"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:8016132364118866485",
+  "lastIndexId": "1:868981703487449150",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

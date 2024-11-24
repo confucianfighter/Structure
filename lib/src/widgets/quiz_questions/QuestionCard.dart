@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'quiz_question.dart';
+import '../../data_types/quiz_question.dart';
 
 class QuestionCard extends StatefulWidget {
   final QuizQuestion question;
@@ -8,11 +8,11 @@ class QuestionCard extends StatefulWidget {
   final VoidCallback onDelete;
 
   const QuestionCard({
-    Key? key,
+    super.key,
     required this.question,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   _QuestionCardState createState() => _QuestionCardState();

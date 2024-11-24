@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'writing_prompt.dart';
+import '../../data_types/writing_prompt.dart';
 
 class WritingPromptEditor extends StatelessWidget {
   const WritingPromptEditor({
-    Key? key,
+    super.key,
     required this.promptId,
-  }) : super(key: key);
+  });
 
   final String promptId;
 
