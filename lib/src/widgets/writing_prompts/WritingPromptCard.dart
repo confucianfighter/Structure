@@ -1,6 +1,10 @@
+import '../../data_types/object_box_types/writing_prompt.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
+import '../../data_store.dart';
+import '../../../objectbox.g.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import '../../data_types/writing_prompt.dart';
 
 class WritingPromptCard extends StatefulWidget {
   final WritingPrompt prompt;
@@ -58,7 +62,7 @@ class _WritingPromptCardState extends State<WritingPromptCard> {
 
             // Date created
             Text(
-              'Created: ${widget.prompt.dateCreated.toLocal()}',
+              'Last Edited: ${widget.prompt.lastEdited.toLocal()}',
               style: const TextStyle(color: Colors.grey),
             ),
 

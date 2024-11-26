@@ -14,6 +14,7 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'src/data_types/object_box_types/category.dart';
 import 'src/data_types/object_box_types/countdown.dart';
 import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'src/data_types/object_box_types/writing_prompt_answer.dart';
@@ -43,7 +44,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(2, 4562760401703630193),
       name: 'WritingPrompt',
-      lastPropertyId: const obx_int.IdUid(5, 1643685379610388084),
+      lastPropertyId: const obx_int.IdUid(8, 6675773488354720603),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -57,20 +58,22 @@ final _entities = <obx_int.ModelEntity>[
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4490942566436496262),
-            name: 'dateCreated',
-            type: 10,
-            flags: 0),
-        obx_int.ModelProperty(
             id: const obx_int.IdUid(4, 4192646412743095980),
             name: 'lastTimeAnswered',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 1643685379610388084),
-            name: 'category',
-            type: 9,
-            flags: 0)
+            id: const obx_int.IdUid(6, 3903436709462758320),
+            name: 'lastEdited',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 6675773488354720603),
+            name: 'categoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(3, 2601898366546795901),
+            relationTarget: 'Category')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[
@@ -107,6 +110,26 @@ final _entities = <obx_int.ModelEntity>[
             flags: 520,
             indexId: const obx_int.IdUid(1, 868981703487449150),
             relationTarget: 'WritingPrompt')
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(4, 8031683048514304163),
+      name: 'Category',
+      lastPropertyId: const obx_int.IdUid(2, 5294113057338185632),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5502069285358560879),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5294113057338185632),
+            name: 'name',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(2, 8807564465112648040))
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -147,13 +170,17 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(3, 8016132364118866485),
-      lastIndexId: const obx_int.IdUid(1, 868981703487449150),
+      lastEntityId: const obx_int.IdUid(4, 8031683048514304163),
+      lastIndexId: const obx_int.IdUid(3, 2601898366546795901),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        4490942566436496262,
+        1643685379610388084,
+        1576598753525470887
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -189,7 +216,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         }),
     WritingPrompt: obx_int.EntityDefinition<WritingPrompt>(
         model: _entities[1],
-        toOneRelations: (WritingPrompt object) => [],
+        toOneRelations: (WritingPrompt object) => [object.category],
         toManyRelations: (WritingPrompt object) => {
               obx_int.RelInfo<WritingPromptAnswer>.toOneBacklink(
                   4,
@@ -203,13 +230,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (WritingPrompt object, fb.Builder fbb) {
           final promptOffset = fbb.writeString(object.prompt);
-          final categoryOffset = fbb.writeString(object.category);
-          fbb.startTable(6);
+          fbb.startTable(9);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, promptOffset);
-          fbb.addInt64(2, object.dateCreated.millisecondsSinceEpoch);
           fbb.addInt64(3, object.lastTimeAnswered?.millisecondsSinceEpoch);
-          fbb.addOffset(4, categoryOffset);
+          fbb.addInt64(5, object.lastEdited.millisecondsSinceEpoch);
+          fbb.addInt64(7, object.category.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -220,19 +246,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
           final promptParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
-          final dateCreatedParam = DateTime.fromMillisecondsSinceEpoch(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final lastEditedParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
           final lastTimeAnsweredParam = lastTimeAnsweredValue == null
               ? null
               : DateTime.fromMillisecondsSinceEpoch(lastTimeAnsweredValue);
-          final categoryParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 12, '');
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final object = WritingPrompt(
               prompt: promptParam,
-              dateCreated: dateCreatedParam,
+              lastEdited: lastEditedParam,
               lastTimeAnswered: lastTimeAnsweredParam,
-              category: categoryParam)
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              id: idParam);
+          object.category.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0);
+          object.category.attach(store);
           obx_int.InternalToManyAccess.setRelInfo<WritingPrompt>(
               object.answers,
               store,
@@ -272,6 +300,33 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           object.writingPrompt.attach(store);
           return object;
+        }),
+    Category: obx_int.EntityDefinition<Category>(
+        model: _entities[3],
+        toOneRelations: (Category object) => [],
+        toManyRelations: (Category object) => {},
+        getId: (Category object) => object.id,
+        setId: (Category object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Category object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final object = Category(id: idParam, name: nameParam);
+
+          return object;
         })
   };
 
@@ -299,17 +354,17 @@ class WritingPrompt_ {
   static final prompt =
       obx.QueryStringProperty<WritingPrompt>(_entities[1].properties[1]);
 
-  /// See [WritingPrompt.dateCreated].
-  static final dateCreated =
-      obx.QueryDateProperty<WritingPrompt>(_entities[1].properties[2]);
-
   /// See [WritingPrompt.lastTimeAnswered].
   static final lastTimeAnswered =
+      obx.QueryDateProperty<WritingPrompt>(_entities[1].properties[2]);
+
+  /// See [WritingPrompt.lastEdited].
+  static final lastEdited =
       obx.QueryDateProperty<WritingPrompt>(_entities[1].properties[3]);
 
   /// See [WritingPrompt.category].
-  static final category =
-      obx.QueryStringProperty<WritingPrompt>(_entities[1].properties[4]);
+  static final category = obx.QueryRelationToOne<WritingPrompt, Category>(
+      _entities[1].properties[4]);
 
   /// see [WritingPrompt.answers]
   static final answers =
@@ -335,4 +390,15 @@ class WritingPromptAnswer_ {
   static final writingPrompt =
       obx.QueryRelationToOne<WritingPromptAnswer, WritingPrompt>(
           _entities[2].properties[3]);
+}
+
+/// [Category] entity fields to define ObjectBox queries.
+class Category_ {
+  /// See [Category.id].
+  static final id =
+      obx.QueryIntegerProperty<Category>(_entities[3].properties[0]);
+
+  /// See [Category.name].
+  static final name =
+      obx.QueryStringProperty<Category>(_entities[3].properties[1]);
 }

@@ -3,14 +3,7 @@ import 'dart:async';
 import '../app.dart';
 import '../data_types/object_box_types/countdown.dart';
 import 'package:objectbox/objectbox.dart';
-
-enum TimerID {
-  main(id: 1);
-
-  final int id;
-
-  const TimerID({required this.id});
-}
+import '../data_store.dart';
 
 class ObjectBoxTimer {
   static final ObjectBoxTimer _instance = ObjectBoxTimer._internal();
@@ -25,8 +18,8 @@ class ObjectBoxTimer {
       if (countdown.remainingSeconds > 0) {
         countdown.remainingSeconds--;
         // Update the countdown record in the database
-        MyApp.store.runInTransaction(TxMode.write, () {
-          MyApp.store.box<Countdown>().put(countdown);
+        Data().store.runInTransaction(TxMode.write, () {
+          Data().store.box<Countdown>().put(countdown);
         });
       } else {
         timer.cancel();

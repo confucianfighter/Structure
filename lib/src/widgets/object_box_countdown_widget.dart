@@ -21,10 +21,7 @@ class _ObjectBoxCountdownWidgetState extends State<ObjectBoxCountdownWidget> {
   void initState() {
     super.initState();
     // Initialize the query for the countdown
-    final countdownBox = MyApp.store.box<Countdown>();
-    query = countdownBox
-        .query(Countdown_.id.equals(TimerID.main.id))
-        .watch(triggerImmediately: true);
+    query = watchCountdown(TimerID.main);
   }
 
   @override

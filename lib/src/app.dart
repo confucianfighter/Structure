@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
     required this.settingsController,
   });
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  static final Store store = Store(getObjectBoxModel());
   // final means that the variable is immutable after initialization, at runtime.
   // const means that it needs to be fully predetermined at compile time.
   final SettingsController settingsController;
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     ObjectBoxTimer().startCountdown( 
-      seconds: 299,
+      seconds: 30,
       onTimerEnd: () => MyApp.navigatorKey.currentState?.pushNamed(MainMenu.routeName)
     );
     return ListenableBuilder(

@@ -1,119 +1,119 @@
 [[writing_prompts]]
-id = "prompt1"
+id = 1
 prompt = "Describe a time when you had a sense of flow."
 dateCreated = "2024-11-21T00:00:00Z"
 category = "introspection"
 
 [[writing_prompts]]
-id = "prompt2"
+id = 2
 prompt = "What's one thing you could improve about your desk?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "environment"
 
 [[writing_prompts]]
-id = "prompt3"
+id = 3
 prompt = "What's one unnecessary step you could remove from your process?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "productivity"
 
 [[writing_prompts]]
-id = "prompt4"
+id = 4
 prompt = "If money was no object, what would you do differently?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "dreams"
 
 [[writing_prompts]]
-id = "prompt5"
+id = 5
 prompt = "What does success in a project, love, or life look like to you? How do you know when you have achieved this?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "success"
 
 [[writing_prompts]]
-id = "prompt6"
+id = 6
 prompt = "Once AGI has been achieved and you have a personal assistant who can help you train and be mindful, how will you live?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "future"
 
 [[writing_prompts]]
-id = "prompt7"
+id = 7
 prompt = "Reflect on a moment when you felt truly at peace. What were you doing?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "peace"
 
 [[writing_prompts]]
-id = "prompt8"
+id = 8
 prompt = "What is one habit you wish to cultivate, and why?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "habits"
 
 [[writing_prompts]]
-id = "prompt9"
+id = 9
 prompt = "Imagine your ideal day. What activities fill your time?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "vision"
 
 [[writing_prompts]]
-id = "prompt10"
+id = 10
 prompt = "If you could master any skill instantly, what would it be and why?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "skills"
 
 [[writing_prompts]]
-id = "prompt11"
+id = 11
 prompt = "Describe a place that makes you feel safe and why it has that effect on you."
 dateCreated = "2024-11-21T00:00:00Z"
 category = "safety"
 
 [[writing_prompts]]
-id = "prompt12"
+id = 12
 prompt = "What is one thing you wish you could change about your daily routine?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "routine"
 
 [[writing_prompts]]
-id = "prompt13"
+id = 13
 prompt = "Think about a time when you felt proud of yourself. What happened?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "pride"
 
 [[writing_prompts]]
-id = "prompt14"
+id = 14
 prompt = "If you could have dinner with any historical figure, who would it be and why?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "imagination"
 
 [[writing_prompts]]
-id = "prompt15"
+id = 15
 prompt = "What is one goal you have for the next year, and what steps will you take to achieve it?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "goals"
 
 [[writing_prompts]]
-id = "prompt16"
+id = 16
 prompt = "Describe a time when you helped someone. How did it make you feel?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "kindness"
 
 [[writing_prompts]]
-id = "prompt17"
+id = 17
 prompt = "What is one thing you are grateful for today, and why?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "gratitude"
 
 [[writing_prompts]]
-id = "prompt18"
+id = 18
 prompt = "If you could live anywhere in the world, where would it be and why?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "dreams"
 
 [[writing_prompts]]
-id = "prompt19"
+id = 19
 prompt = "What is one book or movie that has significantly impacted your life?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "influence"
 
 [[writing_prompts]]
-id = "prompt20"
+id = 20
 prompt = "Imagine you are writing a letter to your younger self. What advice would you give?"
 dateCreated = "2024-11-21T00:00:00Z"
 category = "reflection"

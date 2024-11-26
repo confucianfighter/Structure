@@ -7,13 +7,12 @@ import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'src/data_types/quiz_question.dart';
-import 'src/data_types/writing_prompt.dart';
+import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'package:path_provider/path_provider.dart';
 // Generated file
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
 
   final dir = await getApplicationDocumentsDirectory();
   // log the path to the Hive data directory
@@ -35,17 +34,9 @@ void main() async {
   await Hive.openBox<String>('writing_prompt_categories');
   await Hive.deleteBoxFromDisk('writing_prompts');
 
-  Hive.registerAdapter(WritingPromptAdapter());
-  await Hive.openBox<WritingPrompt>('writing_prompts');
-
-  Hive.registerAdapter(WritingPromptAnswerAdapter());
-  await Hive.openBox<WritingPromptAnswer>('writing_prompt_answers');
   Hive.registerAdapter(AppStateAdapter());
   await Hive.openBox<AppState>('state');
 
-  await prepopulatePrompts();
-  await prepopulateCategories();
-  await removeUnusedCategories();
   // start the timer
   //CountdownTimer().start();
   // Run the app and pass in the SettingsController. The app listens to the
@@ -61,7 +52,7 @@ void main() async {
 
     //     // Add more providers as needed
     //   ],
-      /*child:*/ MyApp(settingsController: settingsController),
-    );
+    /*child:*/ MyApp(settingsController: settingsController),
+  );
   //);
 }

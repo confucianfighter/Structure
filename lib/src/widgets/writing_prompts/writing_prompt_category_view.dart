@@ -1,5 +1,8 @@
+import '../../data_types/object_box_types/category.dart';
+import '../../data_store.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:objectbox/objectbox.dart';
+import '../../../objectbox.g.dart';
 import 'writing_prompt_list_widget.dart';
 
 class CategoriesWidget extends StatelessWidget {
@@ -7,85 +10,141 @@ class CategoriesWidget extends StatelessWidget {
   static const String routeName = '/writing_prompt_categories';
   @override
   Widget build(BuildContext context) {
-    final categoriesBox = Hive.box<String>('writing_prompt_categories');
+    late var queryBuilder = Data().store.box<Category>().query();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('writing_prompt_categories'),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: categoriesBox.listenable(),
-        builder: (context, Box<String> box, _) {
-          final categories = box.values.toList();
-
-          return ListView.builder(
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-
-              return ListTile(
-                title: Text(category),
-                leading: const Icon(
-                  Icons.category,
-                  color: Colors.blue,
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () async {
-                    final confirmDelete = await showDialog<bool>(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Confirm Deletion'),
-                          content: Text(
-                              'Are you sure you want to delete the category "$category"?'),
-                          actions: [
-                            TextButton(
-                              child: const Text('Cancel'),
-                              onPressed: () {
-                                Navigator.of(context).pop(false);
-                              },
-                            ),
-                            TextButton(
-                              child: const Text('Delete'),
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                              },
-                            ),
-                          ],
+      body: StreamBuilder<List<Category>>(
+        stream: queryBuilder
+            .watch(triggerImmediately: true)
+            .map((query) => query.find()),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error loading categories'));
+          } else if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            final categories = snapshot.data!;
+            return ListView.builder(
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                final category_name = category.name;
+                return ListTile(
+                  title: Text(category.name),
+                  leading: const Icon(
+                    Icons.category,
+                    color: Colors.blue,
+                  ),
+                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.white54),
+                      onPressed: () async {
+                        String newCategory = category_name;
+                        TextEditingController _controller =
+                            TextEditingController(text: category_name);
+                        showDialog(
+                          context: context,
+                          builder: (dialogueContext) {
+                            return AlertDialog(
+                              title: const Text('Rename Category'),
+                              content: TextField(
+                                controller: _controller,
+                                onChanged: (value) {
+                                  newCategory = value;
+                                },
+                                decoration: const InputDecoration(
+                                    hintText: 'Enter new category name'),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Save'),
+                                  onPressed: () {
+                                    if (newCategory.isNotEmpty) {
+                                      category.name = newCategory;
+                                      Data()
+                                          .store
+                                          .box<Category>()
+                                          .put(category);
+                                    }
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
-                    );
-                    if (confirmDelete == true) {
-                      await box.delete(box.keys
-                          .firstWhere((key) => box.get(key) == category));
-                    }
-                  },
-                ),
-                onTap: () {
-                  // Navigate to the WritingPromptListWidget for the selected category
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          WritingPromptListWidget(category: category),
                     ),
-                  );
-                },
-              );
-            },
-          );
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.purple),
+                      onPressed: () async {
+                        final confirmDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Confirm Deletion'),
+                              content: Text(
+                                  'Are you sure you want to delete the category "$category_name"?'),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Delete'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (confirmDelete == true) {
+                          if (category != Category.getDefault()) {
+                            Data().store.box<Category>().remove(category.id);
+                          }
+                        }
+                      },
+                    ),
+                  ] //children
+                      ),
+                  onTap: () {
+                    // Navigate to the WritingPromptListWidget for the selected category
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            WritingPromptListWidget(category: category),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddCategoryDialog(context, categoriesBox),
+        onPressed: () => _showAddCategoryDialog(context),
         tooltip: 'Add Category',
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddCategoryDialog(BuildContext context, Box<String> categoriesBox) {
+  void _showAddCategoryDialog(BuildContext context) {
     String newCategory = '';
 
     showDialog(
@@ -109,9 +168,8 @@ class CategoriesWidget extends StatelessWidget {
             TextButton(
               child: const Text('Add'),
               onPressed: () {
-                if (newCategory.isNotEmpty &&
-                    !categoriesBox.values.contains(newCategory)) {
-                  categoriesBox.add(newCategory);
+                if (newCategory.isNotEmpty) {
+                  Category.AddIfNotExists(newCategory);
                 }
                 Navigator.of(context).pop();
               },

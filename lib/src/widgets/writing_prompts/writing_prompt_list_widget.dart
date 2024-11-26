@@ -1,68 +1,76 @@
+// Import necessary packages
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../../data_types/writing_prompt.dart';
+import 'package:objectbox/objectbox.dart';
+import '../../data_types/object_box_types/writing_prompt.dart';
+import '../../data_store.dart'; // Adjust the import path as necessary
 import 'WritingPromptCard.dart';
 import 'writing_prompt_editor_card.dart';
-
+import '../../../objectbox.g.dart'; // This is the generated file by ObjectBox
+import '../../data_types/object_box_types/category.dart';
 class WritingPromptListWidget extends StatelessWidget {
   const WritingPromptListWidget({super.key, required this.category});
 
-  final String category;
+  final Category category;
 
   @override
   Widget build(BuildContext context) {
+    // Build the query based on the category
+    late var queryBuilder = Data().store.box<WritingPrompt>().query();
+    if (category != Category.getDefault()) {
+      queryBuilder = Data().store.box<WritingPrompt>().query(WritingPrompt_.category.equals(category.id));
+    }
+    
+    final stream = queryBuilder.watch(triggerImmediately: true);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Category: $category'),
       ),
-      body: ValueListenableBuilder<Box<WritingPrompt>>(
-        valueListenable:
-            Hive.box<WritingPrompt>('writing_prompts').listenable(),
-        builder: (context, box, _) {
-          // Filter prompts for the current category
-          final prompts = category == "All"
-              ? box.values.toList()
-              : box.values
-                  .where((prompt) => prompt.category == category)
-                  .toList();
-
-          return ListView.builder(
-            itemCount: prompts.length,
-            itemBuilder: (context, index) {
-              final prompt = prompts[index];
-              return WritingPromptCard(
-                prompt: prompt,
-                onEdit: () {
-                  // Navigate to an editor page or show an edit dialog
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WritingPromptEditor(
-                        promptId: prompt.id,
+      body: StreamBuilder<List<WritingPrompt>>(
+        stream: stream.map((query) => query.find()),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<WritingPrompt> prompts = snapshot.data!;
+            return ListView.builder(
+              itemCount: prompts.length,
+              itemBuilder: (context, index) {
+                final prompt = prompts[index];
+                return WritingPromptCard(
+                  prompt: prompt,
+                  onEdit: () {
+                    // Navigate to the editor page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WritingPromptEditor(
+                          promptId: prompt.id,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                onDelete: () async {
-                  await Hive.box<WritingPrompt>('writing_prompts')
-                      .delete(prompt.id);
-                },
-              );
-            },
-          );
+                    );
+                  },
+                  onDelete: () async {
+                    // Remove the prompt using ObjectBox
+                    Data().store.box<WritingPrompt>().remove(prompt.id);
+                  },
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading prompts'));
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Add a new blank writing prompt
           final newPrompt = WritingPrompt(
-            id: DateTime.now().toString(),
             prompt: "",
-            dateCreated: DateTime.now(),
+            lastEdited: DateTime.now(),
             category: category,
           );
-          await Hive.box<WritingPrompt>('writing_prompts')
-              .put(newPrompt.id, newPrompt);
+          Data().store.box<WritingPrompt>().put(newPrompt);
         },
         tooltip: 'Add Prompt',
         child: const Icon(Icons.add),
