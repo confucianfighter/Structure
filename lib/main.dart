@@ -7,7 +7,6 @@ import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'src/data_types/quiz_question.dart';
-import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'package:path_provider/path_provider.dart';
 // Generated file
 

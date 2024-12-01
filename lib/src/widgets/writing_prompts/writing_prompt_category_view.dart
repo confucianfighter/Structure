@@ -14,7 +14,7 @@ class CategoriesWidget extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('writing_prompt_categories'),
+        title: const Text('Writing Prompt Categories'),
       ),
       body: StreamBuilder<List<Category>>(
         stream: queryBuilder
@@ -28,10 +28,28 @@ class CategoriesWidget extends StatelessWidget {
           } else {
             final categories = snapshot.data!;
             return ListView.builder(
-              itemCount: categories.length,
+              itemCount: categories.length + 1,
               itemBuilder: (context, index) {
-                final category = categories[index];
-                final category_name = category.name;
+                if (index == 0) {
+                  return ListTile(
+                    title: const Text('All'),
+                    leading: const Icon(
+                      Icons.list,
+                      color: Colors.blue,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              WritingPromptListWidget(category: null),
+                        ),
+                      );
+                    },
+                  );
+                }
+                final category = categories[index - 1];
+                final categoryName = category.name;
                 return ListTile(
                   title: Text(category.name),
                   leading: const Icon(
@@ -42,16 +60,16 @@ class CategoriesWidget extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.white54),
                       onPressed: () async {
-                        String newCategory = category_name;
-                        TextEditingController _controller =
-                            TextEditingController(text: category_name);
+                        String newCategory = categoryName;
+                        TextEditingController controller =
+                            TextEditingController(text: categoryName);
                         showDialog(
                           context: context,
                           builder: (dialogueContext) {
                             return AlertDialog(
                               title: const Text('Rename Category'),
                               content: TextField(
-                                controller: _controller,
+                                controller: controller,
                                 onChanged: (value) {
                                   newCategory = value;
                                 },
@@ -93,7 +111,7 @@ class CategoriesWidget extends StatelessWidget {
                             return AlertDialog(
                               title: const Text('Confirm Deletion'),
                               content: Text(
-                                  'Are you sure you want to delete the category "$category_name"?'),
+                                  'Are you sure you want to delete the category "$categoryName"?'),
                               actions: [
                                 TextButton(
                                   child: const Text('Cancel'),

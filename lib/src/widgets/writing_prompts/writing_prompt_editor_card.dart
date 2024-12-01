@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:objectbox/objectbox.dart';
 // import '../../data_types/object_box_types/writing_prompt.dart';
 import '../../data_store.dart';
+import 'category_input_widget.dart';
+
 // import '../../../objectbox.g.dart';
 // import '../../data_types/object_box_types/category.dart';
 class WritingPromptEditor extends StatelessWidget {
@@ -14,8 +16,13 @@ class WritingPromptEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final promptStream = Data().store.box<WritingPrompt>().query(WritingPrompt_.id.equals(promptId)).watch(triggerImmediately: true);
-    final categoryStream = Data().store.box<Category>().query().watch(triggerImmediately: true);
+    final promptStream = Data()
+        .store
+        .box<WritingPrompt>()
+        .query(WritingPrompt_.id.equals(promptId))
+        .watch(triggerImmediately: true);
+    final categoryStream =
+        Data().store.box<Category>().query().watch(triggerImmediately: true);
 
     return StreamBuilder<Query<WritingPrompt>>(
       stream: promptStream,
@@ -67,45 +74,12 @@ class WritingPromptEditor extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 8.0),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButton<Category>(
-                              hint: const Text('Select a category'),
-                              value: prompt.category.target,
-                              items: categories.map((category) {
-                                return DropdownMenuItem<Category>(
-                                  value: category,
-                                  child: Text(category.name),
-                                );
-                              }).toList(),
-                              onChanged: (Category? newCategory) {
-                                if (newCategory != null) {
-                                  prompt.category.target = newCategory;
-                                  Data().store.box<WritingPrompt>().put(prompt);
-                                }
-                              },
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              _showAddCategoryDialog(context, categories);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      TextFormField(
-                        initialValue: prompt.lastTimeAnswered?.toString() ?? '',
-                        decoration:
-                            const InputDecoration(labelText: 'Last Time Answered'),
-                        onChanged: (value) {
-                          final newDate = DateTime.tryParse(value);
-                          if (newDate != null) {
-                            prompt.lastTimeAnswered = newDate;
-                            Data().store.box<WritingPrompt>().put(prompt);
-                          }
+                      CategoryInputWidget(
+                        allCategories: categories,
+                        prompt: prompt,
+                        onPromptUpdated: (updatedPrompt) {
+                          // Update the WritingPrompt in the database
+                          Data().store.box<WritingPrompt>().put(updatedPrompt);
                         },
                       ),
                       const Spacer(),
@@ -114,7 +88,10 @@ class WritingPromptEditor extends StatelessWidget {
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
-                              Data().store.box<WritingPrompt>().remove(prompt.id);
+                              Data()
+                                  .store
+                                  .box<WritingPrompt>()
+                                  .remove(prompt.id);
                               Navigator.pop(context); // Go back after deletion
                             },
                             icon: const Icon(Icons.delete),
@@ -135,46 +112,6 @@ class WritingPromptEditor extends StatelessWidget {
               ),
             );
           },
-        );
-      },
-    );
-  }
-
-  void _showAddCategoryDialog(BuildContext context, List<Category> categories) {
-    final TextEditingController categoryController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add New Category'),
-          content: TextField(
-            controller: categoryController,
-            decoration: const InputDecoration(labelText: 'Category Name'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final newCategory = categoryController.text.trim();
-                if (newCategory.isNotEmpty && !categories.contains(newCategory)) {
-                  // Create a dummy WritingPrompt to store the category
-                  final dummyPrompt = WritingPrompt(
-                    prompt: '',
-                    lastEdited: DateTime.now(),
-                    category: Category.getDefault(),
-                  );
-                  Data().store.box<WritingPrompt>().put(dummyPrompt);
-                }
-                Navigator.pop(context);
-              },
-              child: const Text('Add'),
-            ),
-          ],
         );
       },
     );

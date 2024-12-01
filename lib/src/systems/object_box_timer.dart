@@ -1,8 +1,5 @@
 // timer_state_notifier.dart
 import 'dart:async';
-import '../app.dart';
-import '../data_types/object_box_types/countdown.dart';
-import 'package:objectbox/objectbox.dart';
 import '../data_store.dart';
 
 class ObjectBoxTimer {

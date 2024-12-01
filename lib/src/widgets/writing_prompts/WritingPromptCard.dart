@@ -1,9 +1,6 @@
 import '../../data_types/object_box_types/writing_prompt.dart';
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import '../../data_store.dart';
-import '../../../objectbox.g.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class WritingPromptCard extends StatefulWidget {
@@ -55,7 +52,7 @@ class _WritingPromptCardState extends State<WritingPromptCard> {
 
             // Category
             Text(
-              'Category: ${widget.prompt.category}',
+              'Category: ${widget.prompt.category.target?.name ?? "Uncategorized"}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),

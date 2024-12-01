@@ -12,7 +12,7 @@ Future<bool> setAlwaysOnTop(bool isAlwaysOnTop) async {
     log('Error: ${result.stderr}');
     return false;
   } else {
-    log('AlwaysOnTop has been set to ${isAlwaysOnTop}');
+    log('AlwaysOnTop has been set to $isAlwaysOnTop');
     return true;
   }
 }

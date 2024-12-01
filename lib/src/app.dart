@@ -6,7 +6,6 @@ import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 import 'widgets/subjects/subject_list_view.dart';
 import 'widgets/writing_prompts/writing_prompt_category_view.dart';
-import '../objectbox.g.dart';
 import 'systems/object_box_timer.dart';
 
 /// The Widget that configures your application.

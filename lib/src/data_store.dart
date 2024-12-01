@@ -6,6 +6,7 @@ import 'data_types/object_box_types/category.dart';
 export '../objectbox.g.dart';
 export 'data_types/object_box_types/category.dart';
 export 'data_types/object_box_types/writing_prompt.dart';
+export 'data_types/object_box_types/writing_prompt_answer.dart';
 export 'data_types/object_box_types/countdown.dart';
 
 // singleton class to manage the ObjectBox store
@@ -25,8 +26,10 @@ class Data {
     return _store!;
   }
   Future<void> _init_tables () async {
+    // Data().store.box<WritingPrompt>().removeAll();
+    // Data().store.box<Category>().removeAll();
+    
     await prepopulateWritingPrompts();
-    await loadInitialCategoryData();
   }
   
 }

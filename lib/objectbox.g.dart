@@ -44,7 +44,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(2, 4562760401703630193),
       name: 'WritingPrompt',
-      lastPropertyId: const obx_int.IdUid(8, 6675773488354720603),
+      lastPropertyId: const obx_int.IdUid(9, 5420318153679335413),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -56,7 +56,8 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 7821508857526449903),
             name: 'prompt',
             type: 9,
-            flags: 0),
+            flags: 2080,
+            indexId: const obx_int.IdUid(4, 2350582702432164612)),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(4, 4192646412743095980),
             name: 'lastTimeAnswered',
@@ -68,11 +69,11 @@ final _entities = <obx_int.ModelEntity>[
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 6675773488354720603),
+            id: const obx_int.IdUid(9, 5420318153679335413),
             name: 'categoryId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(3, 2601898366546795901),
+            indexId: const obx_int.IdUid(5, 8106221824084237315),
             relationTarget: 'Category')
       ],
       relations: <obx_int.ModelRelation>[],
@@ -171,17 +172,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
       lastEntityId: const obx_int.IdUid(4, 8031683048514304163),
-      lastIndexId: const obx_int.IdUid(3, 2601898366546795901),
-      lastRelationId: const obx_int.IdUid(0, 0),
+      lastIndexId: const obx_int.IdUid(5, 8106221824084237315),
+      lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
-      retiredIndexUids: const [],
+      retiredIndexUids: const [2601898366546795901],
       retiredPropertyUids: const [
         4490942566436496262,
         1643685379610388084,
-        1576598753525470887
+        1576598753525470887,
+        6675773488354720603
       ],
-      retiredRelationUids: const [],
+      retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
@@ -230,12 +232,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (WritingPrompt object, fb.Builder fbb) {
           final promptOffset = fbb.writeString(object.prompt);
-          fbb.startTable(9);
+          fbb.startTable(10);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, promptOffset);
           fbb.addInt64(3, object.lastTimeAnswered?.millisecondsSinceEpoch);
           fbb.addInt64(5, object.lastEdited.millisecondsSinceEpoch);
-          fbb.addInt64(7, object.category.targetId);
+          fbb.addInt64(8, object.category.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -259,7 +261,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               lastTimeAnswered: lastTimeAnsweredParam,
               id: idParam);
           object.category.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.category.attach(store);
           obx_int.InternalToManyAccess.setRelInfo<WritingPrompt>(
               object.answers,

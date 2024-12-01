@@ -1,7 +1,5 @@
-import 'package:objectbox/objectbox.dart';
 import 'dart:async';
 import '../../data_store.dart';
-import '../../../objectbox.g.dart';
 
 enum TimerID {
   main(id: 1);

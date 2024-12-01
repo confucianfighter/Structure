@@ -1,31 +1,54 @@
 // Import necessary packages
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
-import '../../data_types/object_box_types/writing_prompt.dart';
 import '../../data_store.dart'; // Adjust the import path as necessary
 import 'WritingPromptCard.dart';
 import 'writing_prompt_editor_card.dart';
-import '../../../objectbox.g.dart'; // This is the generated file by ObjectBox
-import '../../data_types/object_box_types/category.dart';
+import 'prompt_screen.dart';
+
+// This is the generated file by ObjectBox
 class WritingPromptListWidget extends StatelessWidget {
   const WritingPromptListWidget({super.key, required this.category});
 
-  final Category category;
+  final Category? category;
 
   @override
   Widget build(BuildContext context) {
     // Build the query based on the category
-    late var queryBuilder = Data().store.box<WritingPrompt>().query();
-    if (category != Category.getDefault()) {
-      queryBuilder = Data().store.box<WritingPrompt>().query(WritingPrompt_.category.equals(category.id));
+    var queryBuilder = Data().store.box<WritingPrompt>().query();
+    if (category != null) {
+      queryBuilder = Data()
+          .store
+          .box<WritingPrompt>()
+          .query(WritingPrompt_.category.equals(category?.id as int));
     }
-    
+
     final stream = queryBuilder.watch(triggerImmediately: true);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category: $category'),
-      ),
+          title: Text('Writing Prompts\nCategory: ${category?.name}'),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.play_arrow),
+                onPressed: () {
+                  final promptList = Data()
+                      .store
+                      .box<WritingPrompt>()
+                      .query(
+                          WritingPrompt_.category.equals(category?.id as int))
+                      .build()
+                      .find();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WritingPromptScreen(
+                        index: 0,
+                        promptList: promptList,
+                      ),
+                    ),
+                  );
+                })
+          ]),
       body: StreamBuilder<List<WritingPrompt>>(
         stream: stream.map((query) => query.find()),
         builder: (context, snapshot) {
@@ -68,8 +91,8 @@ class WritingPromptListWidget extends StatelessWidget {
           final newPrompt = WritingPrompt(
             prompt: "",
             lastEdited: DateTime.now(),
-            category: category,
           );
+          newPrompt.category.target = category;
           Data().store.box<WritingPrompt>().put(newPrompt);
         },
         tooltip: 'Add Prompt',
