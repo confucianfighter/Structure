@@ -113,10 +113,71 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "5:5068284084408045983",
+      "lastPropertyId": "2:4205037057387307521",
+      "name": "Sequence",
+      "properties": [
+        {
+          "id": "1:1453121725179244857",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4205037057387307521",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:4113595854453584037",
+      "lastPropertyId": "6:5824347107063604006",
+      "name": "SequenceListItem",
+      "properties": [
+        {
+          "id": "1:5633534938073970032",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:6329965284889014362",
+          "name": "index",
+          "type": 6
+        },
+        {
+          "id": "3:7240077867940477600",
+          "name": "type",
+          "type": 9
+        },
+        {
+          "id": "4:8364044782680838125",
+          "name": "tableName",
+          "type": 9
+        },
+        {
+          "id": "5:4011602275894529467",
+          "name": "entityId",
+          "type": 6
+        },
+        {
+          "id": "6:5824347107063604006",
+          "name": "sequenceId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "6:2775541570560195567",
+          "relationTarget": "Sequence"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "4:8031683048514304163",
-  "lastIndexId": "5:8106221824084237315",
+  "lastEntityId": "6:4113595854453584037",
+  "lastIndexId": "6:2775541570560195567",
   "lastRelationId": "1:2382961371279645997",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

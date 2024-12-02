@@ -16,6 +16,7 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'src/data_types/object_box_types/category.dart';
 import 'src/data_types/object_box_types/countdown.dart';
+import 'src/data_types/object_box_types/sequence_item.dart';
 import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'src/data_types/object_box_types/writing_prompt_answer.dart';
 
@@ -133,6 +134,69 @@ final _entities = <obx_int.ModelEntity>[
             indexId: const obx_int.IdUid(2, 8807564465112648040))
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 5068284084408045983),
+      name: 'Sequence',
+      lastPropertyId: const obx_int.IdUid(2, 4205037057387307521),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 1453121725179244857),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 4205037057387307521),
+            name: 'name',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[
+        obx_int.ModelBacklink(
+            name: 'slots', srcEntity: 'SequenceListItem', srcField: '')
+      ]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(6, 4113595854453584037),
+      name: 'SequenceListItem',
+      lastPropertyId: const obx_int.IdUid(6, 5824347107063604006),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5633534938073970032),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 6329965284889014362),
+            name: 'index',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 7240077867940477600),
+            name: 'type',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 8364044782680838125),
+            name: 'tableName',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 4011602275894529467),
+            name: 'entityId',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 5824347107063604006),
+            name: 'sequenceId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(6, 2775541570560195567),
+            relationTarget: 'Sequence')
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -171,8 +235,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(4, 8031683048514304163),
-      lastIndexId: const obx_int.IdUid(5, 8106221824084237315),
+      lastEntityId: const obx_int.IdUid(6, 4113595854453584037),
+      lastIndexId: const obx_int.IdUid(6, 2775541570560195567),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
@@ -329,6 +393,87 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final object = Category(id: idParam, name: nameParam);
 
           return object;
+        }),
+    Sequence: obx_int.EntityDefinition<Sequence>(
+        model: _entities[4],
+        toOneRelations: (Sequence object) => [],
+        toManyRelations: (Sequence object) => {
+              obx_int.RelInfo<SequenceItem>.toOneBacklink(6, object.id,
+                  (SequenceItem srcObject) => srcObject.sequence): object.slots
+            },
+        getId: (Sequence object) => object.id,
+        setId: (Sequence object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Sequence object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final object = Sequence(id: idParam, name: nameParam);
+          obx_int.InternalToManyAccess.setRelInfo<Sequence>(
+              object.slots,
+              store,
+              obx_int.RelInfo<SequenceItem>.toOneBacklink(6, object.id,
+                  (SequenceItem srcObject) => srcObject.sequence));
+          return object;
+        }),
+    SequenceItem: obx_int.EntityDefinition<SequenceItem>(
+        model: _entities[5],
+        toOneRelations: (SequenceItem object) => [object.sequence],
+        toManyRelations: (SequenceItem object) => {},
+        getId: (SequenceItem object) => object.id,
+        setId: (SequenceItem object, int id) {
+          object.id = id;
+        },
+        objectToFB: (SequenceItem object, fb.Builder fbb) {
+          final typeOffset = fbb.writeString(object.type);
+          final tableNameOffset = fbb.writeString(object.tableName);
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.index);
+          fbb.addOffset(2, typeOffset);
+          fbb.addOffset(3, tableNameOffset);
+          fbb.addInt64(4, object.entityId);
+          fbb.addInt64(5, object.sequence.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final indexParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final typeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final tableNameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final entityIdParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final sequenceParam = obx.ToOne<Sequence>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
+          final object = SequenceItem(
+              id: idParam,
+              index: indexParam,
+              type: typeParam,
+              tableName: tableNameParam,
+              entityId: entityIdParam,
+              sequence: sequenceParam);
+          object.sequence.attach(store);
+          return object;
         })
   };
 
@@ -403,4 +548,46 @@ class Category_ {
   /// See [Category.name].
   static final name =
       obx.QueryStringProperty<Category>(_entities[3].properties[1]);
+}
+
+/// [Sequence] entity fields to define ObjectBox queries.
+class Sequence_ {
+  /// See [Sequence.id].
+  static final id =
+      obx.QueryIntegerProperty<Sequence>(_entities[4].properties[0]);
+
+  /// See [Sequence.name].
+  static final name =
+      obx.QueryStringProperty<Sequence>(_entities[4].properties[1]);
+
+  /// see [Sequence.slots]
+  static final slots = obx.QueryBacklinkToMany<SequenceItem, Sequence>(
+      SequenceListItem_.sequence);
+}
+
+/// [SequenceItem] entity fields to define ObjectBox queries.
+class SequenceListItem_ {
+  /// See [SequenceItem.id].
+  static final id =
+      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[0]);
+
+  /// See [SequenceItem.index].
+  static final index =
+      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[1]);
+
+  /// See [SequenceItem.type].
+  static final type =
+      obx.QueryStringProperty<SequenceItem>(_entities[5].properties[2]);
+
+  /// See [SequenceItem.tableName].
+  static final tableName =
+      obx.QueryStringProperty<SequenceItem>(_entities[5].properties[3]);
+
+  /// See [SequenceItem.entityId].
+  static final entityId =
+      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[4]);
+
+  /// See [SequenceItem.sequence].
+  static final sequence = obx.QueryRelationToOne<SequenceItem, Sequence>(
+      _entities[5].properties[5]);
 }

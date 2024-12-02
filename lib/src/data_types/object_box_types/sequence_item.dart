@@ -6,23 +6,24 @@ class Sequence {
   String name;
 
   @Backlink()
-  final slots = ToMany<SequenceListItem>();
+  final slots = ToMany<SequenceItem>();
 
   Sequence({this.id = 0, required this.name});
 }
+
 @Entity()
-class SequenceListItem {
+class SequenceItem {
   @Id(assignable: true)
   int id = 0;
   int index;
   String type;
-  String tableName; //type and table name may or may not be identical. What if we want two types of things with the same data?
+  String
+      tableName; //type and table name may or may not be identical. What if we want two types of things with the same data?
   int entityId; // since we can't have generics, we have to have separate tables.
-
 
   ToOne<Sequence> sequence = ToOne<Sequence>();
 
-  SequenceListItem({
+  SequenceItem({
     this.id = 0,
     required this.index,
     required this.type,

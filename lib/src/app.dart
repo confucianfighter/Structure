@@ -7,6 +7,7 @@ import 'settings/settings_view.dart';
 import 'widgets/subjects/subject_list_view.dart';
 import 'widgets/writing_prompts/writing_prompt_category_view.dart';
 import 'systems/object_box_timer.dart';
+import 'widgets/sequences/sequence_list.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -88,6 +89,8 @@ class MyApp extends StatelessWidget {
                   //           as String);
                   case SubjectListView.routeName:
                     return const SubjectListView();
+                  case SequenceListWidget.route:
+                    return const SequenceListWidget();
                   case CategoriesWidget.routeName:
                     return const CategoriesWidget();
                   case MainMenu.routeName:

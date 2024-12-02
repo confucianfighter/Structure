@@ -5,10 +5,10 @@ class MenuItem {
     required this.id,
     required this.title,
     required this.route,
-    this.icon,
+    required this.icon,
   });
   final int id;
   final String route;
-  final Icon? icon;
+  final IconData icon;
   final String title;
 }

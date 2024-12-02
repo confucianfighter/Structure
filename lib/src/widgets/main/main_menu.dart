@@ -9,6 +9,7 @@ import '../object_box_countdown_widget.dart';
 import '../app_bar/pin_button.dart';
 //import '../../data_types/object_box_types/countdown.dart';
 import '../../data_store.dart';
+import '../sequences/sequence_list.dart';
 
 /// Displays a list of SampleItems.
 class MainMenu extends StatelessWidget {
@@ -18,13 +19,21 @@ class MainMenu extends StatelessWidget {
       MenuItem(
           id: 1,
           route: SubjectListView.routeName,
-          icon: Icon(Icons.edit),
+          icon: Icons.edit,
           title: 'Flash Cards'),
       MenuItem(
           id: 2,
           route: CategoriesWidget.routeName,
-          icon: Icon(Icons.category),
+          icon: Icons.category,
           title: 'Writing Prompts'),
+      // Create sequences menu item
+      MenuItem(
+          id: 3,
+          route: SequenceListWidget.route,
+          icon: Icons.timeline,
+          title: 'Sequences'),
+      
+      
     ],
   });
 
@@ -63,7 +72,7 @@ class MainMenu extends StatelessWidget {
           return ListTile(
               title: Text(item.title),
               leading: Icon(
-                Icons.quiz,
+                item.icon,
                 color: Colors.orange,
               ),
               onTap: () {

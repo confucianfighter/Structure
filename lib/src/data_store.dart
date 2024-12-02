@@ -8,7 +8,7 @@ export 'data_types/object_box_types/category.dart';
 export 'data_types/object_box_types/writing_prompt.dart';
 export 'data_types/object_box_types/writing_prompt_answer.dart';
 export 'data_types/object_box_types/countdown.dart';
-
+export 'data_types/object_box_types/sequence_item.dart';
 // singleton class to manage the ObjectBox store
 class Data {
   static final Data _data = Data._internal();
