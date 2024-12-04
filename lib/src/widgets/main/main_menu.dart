@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../../settings/settings_view.dart';
 import 'menu_item.dart';
-import '../subjects/subject_list_view.dart';
 import '../writing_prompts/writing_prompt_category_view.dart';
 import '../object_box_countdown_widget.dart';
 import '../app_bar/pin_button.dart';
 //import '../../data_types/object_box_types/countdown.dart';
 import '../../data_store.dart';
 import '../sequences/sequence_list.dart';
+import '../subjects/subject_list_widget.dart';
+
 
 /// Displays a list of SampleItems.
 class MainMenu extends StatelessWidget {
@@ -18,7 +19,7 @@ class MainMenu extends StatelessWidget {
     this.items = const [
       MenuItem(
           id: 1,
-          route: SubjectListView.routeName,
+          route: SubjectListWidget.route,
           icon: Icons.edit,
           title: 'Flash Cards'),
       MenuItem(

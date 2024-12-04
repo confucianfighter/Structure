@@ -16,7 +16,10 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'src/data_types/object_box_types/category.dart';
 import 'src/data_types/object_box_types/countdown.dart';
+import 'src/data_types/object_box_types/flash_card.dart';
+import 'src/data_types/object_box_types/flash_card_sequence.dart';
 import 'src/data_types/object_box_types/sequence_item.dart';
+import 'src/data_types/object_box_types/subject.dart';
 import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'src/data_types/object_box_types/writing_prompt_answer.dart';
 
@@ -138,7 +141,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(5, 5068284084408045983),
       name: 'Sequence',
-      lastPropertyId: const obx_int.IdUid(2, 4205037057387307521),
+      lastPropertyId: const obx_int.IdUid(3, 9148759602975562326),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -150,51 +153,154 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 4205037057387307521),
             name: 'name',
             type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 9148759602975562326),
+            name: 'description',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[
         obx_int.ModelBacklink(
-            name: 'slots', srcEntity: 'SequenceListItem', srcField: '')
+            name: 'slots', srcEntity: 'SequenceItem', srcField: '')
       ]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(6, 4113595854453584037),
-      name: 'SequenceListItem',
-      lastPropertyId: const obx_int.IdUid(6, 5824347107063604006),
+      id: const obx_int.IdUid(7, 2020180581908519582),
+      name: 'FlashCard',
+      lastPropertyId: const obx_int.IdUid(7, 3832174913847307587),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5633534938073970032),
+            id: const obx_int.IdUid(1, 4749978696193239874),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 3784553455054995023),
+            name: 'question',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(7, 1127005364175938284)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4483919900487948709),
+            name: 'answer',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 3274326393137651722),
+            name: 'timesCorrect',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 3917552731831000198),
+            name: 'timesIncorrect',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 1924135883995477663),
+            name: 'userRating',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 3832174913847307587),
+            name: 'subjectId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(10, 6888978690879247321),
+            relationTarget: 'Subject')
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(8, 3684946452892985486),
+      name: 'SequenceItem',
+      lastPropertyId: const obx_int.IdUid(7, 646008176532535316),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5632928414777226730),
             name: 'id',
             type: 6,
             flags: 129),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 6329965284889014362),
+            id: const obx_int.IdUid(2, 7014212585881900785),
             name: 'index',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 7240077867940477600),
-            name: 'type',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8364044782680838125),
-            name: 'tableName',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4011602275894529467),
+            id: const obx_int.IdUid(5, 6169072553113434335),
             name: 'entityId',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 5824347107063604006),
+            id: const obx_int.IdUid(6, 7821170781216320390),
             name: 'sequenceId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(6, 2775541570560195567),
-            relationTarget: 'Sequence')
+            indexId: const obx_int.IdUid(8, 1652350237717642594),
+            relationTarget: 'Sequence'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 646008176532535316),
+            name: 'type',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(9, 3518682031366318632),
+      name: 'Subject',
+      lastPropertyId: const obx_int.IdUid(4, 6046915051004450969),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 6149063534090813934),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1290040545491520401),
+            name: 'name',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(9, 2249157558307694662)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 2141324371269352130),
+            name: 'description',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 6046915051004450969),
+            name: 'color',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(10, 4887035928040764209),
+      name: 'FlashCardSequence',
+      lastPropertyId: const obx_int.IdUid(5, 2351647733983166443),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5233234839710568956),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1964265748702605284),
+            name: 'number_of_cards',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 2351647733983166443),
+            name: 'subjectId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(11, 1402608994932849385),
+            relationTarget: 'Subject')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -235,17 +341,27 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(6, 4113595854453584037),
-      lastIndexId: const obx_int.IdUid(6, 2775541570560195567),
+      lastEntityId: const obx_int.IdUid(10, 4887035928040764209),
+      lastIndexId: const obx_int.IdUid(11, 1402608994932849385),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [4113595854453584037],
       retiredIndexUids: const [2601898366546795901],
       retiredPropertyUids: const [
         4490942566436496262,
         1643685379610388084,
         1576598753525470887,
-        6675773488354720603
+        6675773488354720603,
+        5633534938073970032,
+        6329965284889014362,
+        7240077867940477600,
+        8364044782680838125,
+        4011602275894529467,
+        5824347107063604006,
+        1356691746063744145,
+        7496608828734208995,
+        3027987310927362070,
+        1084116758278597434
       ],
       retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
@@ -407,9 +523,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Sequence object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
+          final descriptionOffset = fbb.writeString(object.description);
+          fbb.startTable(4);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, descriptionOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -420,7 +538,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final nameParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
-          final object = Sequence(id: idParam, name: nameParam);
+          final descriptionParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 8, '');
+          final object = Sequence(
+              id: idParam, name: nameParam, description: descriptionParam);
           obx_int.InternalToManyAccess.setRelInfo<Sequence>(
               object.slots,
               store,
@@ -428,8 +550,52 @@ obx_int.ModelDefinition getObjectBoxModel() {
                   (SequenceItem srcObject) => srcObject.sequence));
           return object;
         }),
-    SequenceItem: obx_int.EntityDefinition<SequenceItem>(
+    FlashCard: obx_int.EntityDefinition<FlashCard>(
         model: _entities[5],
+        toOneRelations: (FlashCard object) => [object.subject],
+        toManyRelations: (FlashCard object) => {},
+        getId: (FlashCard object) => object.id,
+        setId: (FlashCard object, int id) {
+          object.id = id;
+        },
+        objectToFB: (FlashCard object, fb.Builder fbb) {
+          final questionOffset = fbb.writeString(object.question);
+          final answerOffset = fbb.writeString(object.answer);
+          fbb.startTable(8);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, questionOffset);
+          fbb.addOffset(2, answerOffset);
+          fbb.addInt64(3, object.timesCorrect);
+          fbb.addInt64(4, object.timesIncorrect);
+          fbb.addInt64(5, object.userRating);
+          fbb.addInt64(6, object.subject.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final questionParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final answerParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final object = FlashCard(
+              id: idParam, question: questionParam, answer: answerParam)
+            ..timesCorrect =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)
+            ..timesIncorrect =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0)
+            ..userRating =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          object.subject.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
+          object.subject.attach(store);
+          return object;
+        }),
+    SequenceItem: obx_int.EntityDefinition<SequenceItem>(
+        model: _entities[6],
         toOneRelations: (SequenceItem object) => [object.sequence],
         toManyRelations: (SequenceItem object) => {},
         getId: (SequenceItem object) => object.id,
@@ -438,14 +604,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (SequenceItem object, fb.Builder fbb) {
           final typeOffset = fbb.writeString(object.type);
-          final tableNameOffset = fbb.writeString(object.tableName);
-          fbb.startTable(7);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addInt64(1, object.index);
-          fbb.addOffset(2, typeOffset);
-          fbb.addOffset(3, tableNameOffset);
           fbb.addInt64(4, object.entityId);
           fbb.addInt64(5, object.sequence.targetId);
+          fbb.addOffset(6, typeOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -457,9 +621,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final indexParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
           final typeParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final tableNameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 10, '');
+              .vTableGet(buffer, rootOffset, 16, '');
           final entityIdParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           final sequenceParam = obx.ToOne<Sequence>(
@@ -469,10 +631,82 @@ obx_int.ModelDefinition getObjectBoxModel() {
               id: idParam,
               index: indexParam,
               type: typeParam,
-              tableName: tableNameParam,
               entityId: entityIdParam,
               sequence: sequenceParam);
           object.sequence.attach(store);
+          return object;
+        }),
+    Subject: obx_int.EntityDefinition<Subject>(
+        model: _entities[7],
+        toOneRelations: (Subject object) => [],
+        toManyRelations: (Subject object) => {},
+        getId: (Subject object) => object.id,
+        setId: (Subject object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Subject object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          final descriptionOffset = fbb.writeString(object.description);
+          final colorOffset = fbb.writeString(object.color);
+          fbb.startTable(5);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, descriptionOffset);
+          fbb.addOffset(3, colorOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final descriptionParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 8, '');
+          final colorParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final object = Subject(
+              id: idParam,
+              name: nameParam,
+              description: descriptionParam,
+              color: colorParam);
+
+          return object;
+        }),
+    FlashCardSequence: obx_int.EntityDefinition<FlashCardSequence>(
+        model: _entities[8],
+        toOneRelations: (FlashCardSequence object) => [object.subject],
+        toManyRelations: (FlashCardSequence object) => {},
+        getId: (FlashCardSequence object) => object.id,
+        setId: (FlashCardSequence object, int id) {
+          object.id = id;
+        },
+        objectToFB: (FlashCardSequence object, fb.Builder fbb) {
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.number_of_cards);
+          fbb.addInt64(4, object.subject.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final subjectParam = obx.ToOne<Subject>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0));
+          final number_of_cardsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final object = FlashCardSequence(
+              id: idParam,
+              subject: subjectParam,
+              number_of_cards: number_of_cardsParam);
+          object.subject.attach(store);
           return object;
         })
   };
@@ -560,34 +794,99 @@ class Sequence_ {
   static final name =
       obx.QueryStringProperty<Sequence>(_entities[4].properties[1]);
 
+  /// See [Sequence.description].
+  static final description =
+      obx.QueryStringProperty<Sequence>(_entities[4].properties[2]);
+
   /// see [Sequence.slots]
-  static final slots = obx.QueryBacklinkToMany<SequenceItem, Sequence>(
-      SequenceListItem_.sequence);
+  static final slots =
+      obx.QueryBacklinkToMany<SequenceItem, Sequence>(SequenceItem_.sequence);
+}
+
+/// [FlashCard] entity fields to define ObjectBox queries.
+class FlashCard_ {
+  /// See [FlashCard.id].
+  static final id =
+      obx.QueryIntegerProperty<FlashCard>(_entities[5].properties[0]);
+
+  /// See [FlashCard.question].
+  static final question =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[1]);
+
+  /// See [FlashCard.answer].
+  static final answer =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[2]);
+
+  /// See [FlashCard.timesCorrect].
+  static final timesCorrect =
+      obx.QueryIntegerProperty<FlashCard>(_entities[5].properties[3]);
+
+  /// See [FlashCard.timesIncorrect].
+  static final timesIncorrect =
+      obx.QueryIntegerProperty<FlashCard>(_entities[5].properties[4]);
+
+  /// See [FlashCard.userRating].
+  static final userRating =
+      obx.QueryIntegerProperty<FlashCard>(_entities[5].properties[5]);
+
+  /// See [FlashCard.subject].
+  static final subject =
+      obx.QueryRelationToOne<FlashCard, Subject>(_entities[5].properties[6]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.
-class SequenceListItem_ {
+class SequenceItem_ {
   /// See [SequenceItem.id].
   static final id =
-      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[0]);
+      obx.QueryIntegerProperty<SequenceItem>(_entities[6].properties[0]);
 
   /// See [SequenceItem.index].
   static final index =
-      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[1]);
-
-  /// See [SequenceItem.type].
-  static final type =
-      obx.QueryStringProperty<SequenceItem>(_entities[5].properties[2]);
-
-  /// See [SequenceItem.tableName].
-  static final tableName =
-      obx.QueryStringProperty<SequenceItem>(_entities[5].properties[3]);
+      obx.QueryIntegerProperty<SequenceItem>(_entities[6].properties[1]);
 
   /// See [SequenceItem.entityId].
   static final entityId =
-      obx.QueryIntegerProperty<SequenceItem>(_entities[5].properties[4]);
+      obx.QueryIntegerProperty<SequenceItem>(_entities[6].properties[2]);
 
   /// See [SequenceItem.sequence].
   static final sequence = obx.QueryRelationToOne<SequenceItem, Sequence>(
-      _entities[5].properties[5]);
+      _entities[6].properties[3]);
+
+  /// See [SequenceItem.type].
+  static final type =
+      obx.QueryStringProperty<SequenceItem>(_entities[6].properties[4]);
+}
+
+/// [Subject] entity fields to define ObjectBox queries.
+class Subject_ {
+  /// See [Subject.id].
+  static final id =
+      obx.QueryIntegerProperty<Subject>(_entities[7].properties[0]);
+
+  /// See [Subject.name].
+  static final name =
+      obx.QueryStringProperty<Subject>(_entities[7].properties[1]);
+
+  /// See [Subject.description].
+  static final description =
+      obx.QueryStringProperty<Subject>(_entities[7].properties[2]);
+
+  /// See [Subject.color].
+  static final color =
+      obx.QueryStringProperty<Subject>(_entities[7].properties[3]);
+}
+
+/// [FlashCardSequence] entity fields to define ObjectBox queries.
+class FlashCardSequence_ {
+  /// See [FlashCardSequence.id].
+  static final id =
+      obx.QueryIntegerProperty<FlashCardSequence>(_entities[8].properties[0]);
+
+  /// See [FlashCardSequence.number_of_cards].
+  static final number_of_cards =
+      obx.QueryIntegerProperty<FlashCardSequence>(_entities[8].properties[1]);
+
+  /// See [FlashCardSequence.subject].
+  static final subject = obx.QueryRelationToOne<FlashCardSequence, Subject>(
+      _entities[8].properties[2]);
 }
