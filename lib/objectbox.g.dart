@@ -180,8 +180,7 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 3784553455054995023),
             name: 'question',
             type: 9,
-            flags: 2080,
-            indexId: const obx_int.IdUid(7, 1127005364175938284)),
+            flags: 0),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(3, 4483919900487948709),
             name: 'answer',
@@ -346,7 +345,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [4113595854453584037],
-      retiredIndexUids: const [2601898366546795901],
+      retiredIndexUids: const [2601898366546795901, 1127005364175938284],
       retiredPropertyUids: const [
         4490942566436496262,
         1643685379610388084,

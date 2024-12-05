@@ -5,65 +5,77 @@ import 'sequence_item_widget.dart';
 import '../../data_store.dart';
 import 'sequence_card.dart';
 
-class SequenceEditor extends StatelessWidget {
-  final int sequenceId; // Added to identify the specific sequence
+class SequenceEditor extends StatefulWidget {
+  final int sequenceId;
 
-  const SequenceEditor({
-    Key? key,
-    required this.sequenceId,
-  }) : super(key: key);
+  const SequenceEditor({Key? key, required this.sequenceId}) : super(key: key);
+
+  @override
+  _SequenceEditorState createState() => _SequenceEditorState();
+}
+
+class _SequenceEditorState extends State<SequenceEditor> {
+  List<SequenceItem> sequenceItems = [];
+  late Box<SequenceItem> sequenceItemBox;
+
+  @override
+  void initState() {
+    super.initState();
+    sequenceItemBox = Data().store.box<SequenceItem>();
+    loadSequenceItems();
+  }
+
+  void loadSequenceItems() {
+    final query = sequenceItemBox.query(SequenceItem_.sequence.equals(widget.sequenceId))
+        .order(SequenceItem_.index);
+    setState(() {
+      sequenceItems = query.build().find();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final sequenceItemBox = Data().store.box<SequenceItem>();
-    final queryStream = sequenceItemBox
-        .query(SequenceItem_.sequence.equals(sequenceId))
-        .order(SequenceItem_.index) // Sort by index in ascending order
-        .watch(triggerImmediately: true)
-        .map((query) => query.find());
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Sequence Editor'),
       ),
-      body: StreamBuilder<List<SequenceItem>>(
-        stream: queryStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No sequence items available.'));
-          } else {
-            final sequenceItems = snapshot.data!;
-            return ReorderableListView(
-              onReorder: (oldIndex, newIndex) {
-                if (newIndex > oldIndex) newIndex -= 1;
-                final item = sequenceItems.removeAt(oldIndex);
-                sequenceItems.insert(newIndex, item);
-                // Update indices in the database
-                for (int i = 0; i < sequenceItems.length; i++) {
-                  sequenceItems[i].index = i;
-                  Data().store.box<SequenceItem>().put(sequenceItems[i]);
-                }
-              },
-              children: sequenceItems.map((item) {
-                return SequenceItemWidget(
-                  key: ValueKey(item.id),
-                  sequenceItemId: item.id,
-                );
-              }).toList(),
-            );
-          }
+      body: ReorderableListView(
+        onReorder: (oldIndex, newIndex) {
+
+            if (newIndex > oldIndex) newIndex -= 1;
+            final item = sequenceItems.removeAt(oldIndex);
+            sequenceItems.insert(newIndex, item);
+
+            // Update indices
+            for (int i = 0; i < sequenceItems.length; i++) {
+              sequenceItems[i].index = i;
+            }
+            saveChanges();
+            setState(() {});         
         },
+        children: sequenceItems.map((item) {
+          return SequenceItemWidget(
+            key: ValueKey(item.id),
+            sequenceItem: item,
+          );
+        }).toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddItemDialog(context, sequenceItemBox),
+        onPressed: () {
+          _showAddItemDialog(context, sequenceItemBox);
+        },
         child: Icon(Icons.add),
       ),
     );
   }
+
+  void saveChanges() {
+    // Batch update all changes to minimize triggering watch events.
+    sequenceItemBox.putMany(sequenceItems);
+  }
+
+  
+
 
   void _showAddItemDialog(
       BuildContext context, Box<SequenceItem> sequenceItemBox) {
@@ -92,17 +104,17 @@ class SequenceEditor extends StatelessWidget {
               onPressed: () {
                 if (selectedType != null) {
                   final newItem = SequenceItem(
-                    index: sequenceItemBox
-                        .query(SequenceItem_.sequence.equals(sequenceId))
-                        .build()
-                        .count(),
+                    index: sequenceItems.length,
                     type: selectedType!.name,
                     entityId: 0, // Replace with actual entityId
-                    sequence: ToOne<Sequence>()..targetId = sequenceId,
+                    sequence: ToOne<Sequence>()..targetId = widget.sequenceId,
                   );
+                  newItem.entityId = newWidgetForSequenceType(newItem);
                   sequenceItemBox.put(newItem);
-                  newWidgetForSequenceType(newItem);
-                }
+                  setState(() {
+                    sequenceItems.add(newItem);
+                  });
+                                  }
                 Navigator.of(context).pop();
               },
               child: Text('Add'),

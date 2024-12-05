@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
 import '../../data_store.dart';
 
-class FlashCardSequenceItemWidget extends StatelessWidget {
+class FlashCardSequenceItemWidget extends StatefulWidget {
   final int sequenceItemId;
 
   const FlashCardSequenceItemWidget({
@@ -11,84 +11,79 @@ class FlashCardSequenceItemWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _FlashCardSequenceItemWidgetState createState() =>
+      _FlashCardSequenceItemWidgetState();
+}
+
+class _FlashCardSequenceItemWidgetState
+    extends State<FlashCardSequenceItemWidget> {
+  late Box<FlashCardSequence> flashCardSequenceBox;
+  late Box<Subject> subjectBox;
+  FlashCardSequence? flashCardSequence;
+  List<Subject> subjects = [];
+  Subject? selectedSubject;
+
+  @override
+  void initState() {
+    super.initState();
+    flashCardSequenceBox = Data().store.box<FlashCardSequence>();
+    subjectBox = Data().store.box<Subject>();
+
+    loadData();
+  }
+
+  void loadData() {
+    // Load the flashcard sequence
+    flashCardSequence =
+        flashCardSequenceBox.get(widget.sequenceItemId);
+    
+    if (flashCardSequence != null) {
+      selectedSubject = flashCardSequence!.subject.target;
+    }
+
+    // Load all subjects
+    subjects = Data().store.box<Subject>().getAll();
+    
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final flashCardSequenceBox = Data().store.box<FlashCardSequence>();
-    final subjectBox = Data().store.box<Subject>();
+    if (flashCardSequence == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    // Stream for the FlashCardSequence
-    final flashCardSequenceQuery = flashCardSequenceBox
-        .query(FlashCardSequence_.id.equals(sequenceItemId))
-        .watch(triggerImmediately: true)
-        .map((query) => query.findFirst());
-
-    // Stream for all Subjects
-    final subjectsQuery = subjectBox
-        .query()
-        .watch(triggerImmediately: true)
-        .map((query) => query.find());
-
-    return StreamBuilder<FlashCardSequence?>(
-      stream: flashCardSequenceQuery,
-      builder: (context, flashCardSnapshot) {
-        if (flashCardSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (flashCardSnapshot.hasError) {
-          return Text('Error: ${flashCardSnapshot.error}');
-        } else if (!flashCardSnapshot.hasData ||
-            flashCardSnapshot.data == null) {
-          return Text('Flashcard sequence not found.');
-        } else {
-          final flashCardSequence = flashCardSnapshot.data!;
-
-          return StreamBuilder<List<Subject>>(
-            stream: subjectsQuery,
-            builder: (context, subjectsSnapshot) {
-              if (subjectsSnapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (subjectsSnapshot.hasError) {
-                return Text('Error: ${subjectsSnapshot.error}');
-              } else if (!subjectsSnapshot.hasData ||
-                  subjectsSnapshot.data!.isEmpty) {
-                return Text('No subjects available.');
-              } else {
-                final subjects = subjectsSnapshot.data!;
-                final selectedSubject = flashCardSequence.subject.target;
-
-                return Card(
-                  child: ListTile(
-                    title: Text('Flash Card Sequence ${flashCardSequence.id}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            'Number of Cards: ${flashCardSequence.number_of_cards}'),
-                        SizedBox(height: 8.0),
-                        Text('Subject:'),
-                        DropdownButton<Subject>(
-                          value: selectedSubject,
-                          hint: Text('Select a subject'),
-                          items: subjects.map((Subject subject) {
-                            return DropdownMenuItem<Subject>(
-                              value: subject,
-                              child: Text(subject.name),
-                            );
-                          }).toList(),
-                          onChanged: (Subject? newSubject) {
-                            if (newSubject != null) {
-                              flashCardSequence.subject.target = newSubject;
-                              Data().store.box<FlashCardSequence>().put(flashCardSequence);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+    return Card(
+      child: ListTile(
+        title: Text('Flash Card Sequence ${flashCardSequence!.id}'),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Number of Cards: ${flashCardSequence!.number_of_cards}'),
+            const SizedBox(height: 8.0),
+            const Text('Subject:'),
+            DropdownButton<int>(
+              value: selectedSubject?.id,
+              hint: const Text('Select a subject'),
+              items: subjects.map((Subject subject) {
+                return DropdownMenuItem<int>(
+                  value: subject.id,
+                  child: Text(subject.name),
                 );
-              }
-            },
-          );
-        }
-      },
+              }).toList(),
+              onChanged: (int? newSubjectId) {
+                if (newSubjectId != null) {
+                  setState(() {
+                    selectedSubject = subjects.firstWhere((subject) => subject.id == newSubjectId);
+                    flashCardSequence!.subject.target = selectedSubject;
+                    flashCardSequenceBox.put(flashCardSequence!);
+                  });
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

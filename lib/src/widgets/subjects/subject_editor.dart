@@ -44,7 +44,9 @@ class SubjectEditor extends StatelessWidget {
                   decoration: const InputDecoration(labelText: 'Name'),
                   onChanged: (value) {
                     subject.name = value;
-                    Data().store.box<Subject>().put(subject);
+                    if (subject.name != 'All' && subject.name != 'Orphaned') {
+                      Data().store.box<Subject>().put(subject);
+                    }
                   },
                 ),
                 TextFormField(

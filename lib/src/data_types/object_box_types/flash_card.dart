@@ -5,7 +5,6 @@ import '../../data_store.dart';
 class FlashCard {
   @Id()
   int id;
-  @Unique()
   String question;
   String answer;
   int timesCorrect = 0;

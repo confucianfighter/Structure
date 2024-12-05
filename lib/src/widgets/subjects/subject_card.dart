@@ -25,10 +25,10 @@ class SubjectCard extends StatelessWidget {
           subtitle: Text(subject.description),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: (subject.name != 'All' && subject.name != 'Orphaned')? [
               IconButton(icon: const Icon(Icons.edit), onPressed: onEdit),
               IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
-            ],
+            ]: [],
           ),
           onTap: () {
             // Navigate to FlashCardListWidget and pass the subject.id

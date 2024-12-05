@@ -17,6 +17,14 @@ class SubjectListWidget extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final subjects = snapshot.data!;
+            // make sure that the All and Orphaned subjects are always at the top
+            subjects.sort((a, b) {
+              if (a.name == 'All') return -1;
+              if (b.name == 'All') return 1;
+              if (a.name == 'Orphaned') return -1;
+              if (b.name == 'Orphaned') return 1;
+              return a.name.compareTo(b.name);
+            });
             return ListView.builder(
               itemCount: subjects.length,
               itemBuilder: (context, index) {

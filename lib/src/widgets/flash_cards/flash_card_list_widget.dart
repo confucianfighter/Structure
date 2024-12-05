@@ -8,8 +8,19 @@ class FlashCardListWidget extends StatelessWidget {
   final Subject subject;
   @override
   Widget build(BuildContext context) {
-    final stream =
-        Data().store.box<FlashCard>().query(FlashCard_.subject.equals(subject.id)).watch(triggerImmediately: true);
+    final stream = (subject.name == 'All')
+        ? Data().store.box<FlashCard>().query().watch(triggerImmediately: true)
+        : (subject.name == 'Orphaned')
+            ? Data()
+                .store
+                .box<FlashCard>()
+                .query(FlashCard_.subject.isNull())
+                .watch(triggerImmediately: true)
+            : Data()
+                .store
+                .box<FlashCard>()
+                .query(FlashCard_.subject.equals(subject.id))
+                .watch(triggerImmediately: true);
 
     return Scaffold(
       appBar: AppBar(title: const Text('FlashCards')),
@@ -17,6 +28,8 @@ class FlashCardListWidget extends StatelessWidget {
         stream: stream.map((query) => query.find()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            // if subject is all populate with all flashcards from all subjects
+
             final flashCards = snapshot.data!;
             return ListView.builder(
               itemCount: flashCards.length,

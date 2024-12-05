@@ -15,6 +15,7 @@ export 'data_types/object_box_types/sequence_type_enum.dart';
 export 'data_types/object_box_types/flash_card_sequence.dart';
 import 'data_types/object_box_types/sequence_item.dart';
 import 'data_types/object_box_types/flash_card_sequence.dart';
+import 'data_types/object_box_types/subject.dart';
 // singleton class to manage the ObjectBox store
 class Data {
   static final Data _data = Data._internal();
@@ -23,7 +24,7 @@ class Data {
     return _data;
   }
   Data._internal();
-  
+
   Store get store {
     if (_store == null) {
       _store = Store(getObjectBoxModel());
@@ -31,13 +32,14 @@ class Data {
     }
     return _store!;
   }
-  Future<void> _init_tables () async {
+
+  Future<void> _init_tables() async {
     // Data().store.box<WritingPrompt>().removeAll();
     // Data().store.box<Category>().removeAll();
-    Data().store.box<SequenceItem>().removeAll();
-    Data().store.box<FlashCardSequence>().removeAll();
-    Data().store.box<Sequence>().removeAll();
+    // Data().store.box<SequenceItem>().removeAll();
+    // Data().store.box<FlashCardSequence>().removeAll();
+    // Data().store.box<Sequence>().removeAll();
+    Subject.Init();
     await prepopulateWritingPrompts();
   }
-  
 }
