@@ -7,7 +7,7 @@ import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart'; // You can choose any theme
 import '../../data_store.dart';
 import '../../utils/syntax_highlighter_helper.dart';
-
+import '../md/md_viewer.dart';
 
 class FlashCardEditor extends StatelessWidget {
   final int flashCardId;
@@ -40,7 +40,7 @@ class FlashCardEditor extends StatelessWidget {
         }
 
         final flashCard = snapshot.data!.first;
-        final language = extractLanguage(flashCard.question);
+        
         return Scaffold(
           appBar: AppBar(title: const Text('Edit FlashCard')),
           body: Padding(
@@ -70,12 +70,7 @@ class FlashCardEditor extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   // Question Preview
-                  MarkdownBody(
-                    data: flashCard.question,
-                    selectable: true,
-                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
-                    syntaxHighlighter: CustomSyntaxHighlighter(theme: gruvboxDarkTheme, language: language),
-                  ),
+                  MdPreview(markdownContent: flashCard.question),
                   const Divider(height: 32.0),
                   // Answer Input Field
                   TextFormField(
@@ -98,12 +93,7 @@ class FlashCardEditor extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   // Answer Preview
-                  MarkdownBody(
-                    data: flashCard.answer,
-                    selectable: true,
-                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
-                    syntaxHighlighter: CustomSyntaxHighlighter(theme: gruvboxDarkTheme, language: language),
-                  ),
+                  MdPreview(markdownContent: flashCard.answer),
                   const Divider(height: 32.0),
                   // Action Buttons
                   Row(
