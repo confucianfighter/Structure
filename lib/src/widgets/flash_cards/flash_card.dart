@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/monokai-sublime.dart';
-import 'package:highlight/languages/dart.dart'; // Replace with your preferred language.
+import 'package:highlight/languages/dart.dart';
 
 import '../../data_store.dart';
 import '../md/md_viewer.dart';
 import 'flash_card_result_screen.dart';
 import 'flash_card_result.dart';
-import '../code_editor/language_selector.dart';
+import '../code_editor/code_editor.dart'; // Import the new widget
+
 class FlashCardWidget extends StatefulWidget {
   final FlashCard flashCard;
   final bool testMode;
@@ -25,31 +26,10 @@ class FlashCardWidget extends StatefulWidget {
 }
 
 class _FlashCardWidgetState extends State<FlashCardWidget> {
-  late CodeController _codeController;
-  final FocusNode _focusNode = FocusNode(); // Create a FocusNode for the editor
-
-  @override
-  void initState() {
-    super.initState();
-    _codeController = CodeController(
-      text: '', // Empty initial user input
-      language: dart, // Syntax highlighting for Dart
-    );
-
-    // Request focus as soon as the widget is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose(); // Clean up the FocusNode
-    super.dispose();
-  }
+  final GlobalKey<CodeEditorWidgetState> _editorKey = GlobalKey();
 
   void _submitAnswer() {
-    final userAnswer = _codeController.text;
+    final userAnswer = _editorKey.currentState?.getCode() ?? '';
     Navigator.pop(context);
     Navigator.push(
       context,
@@ -65,7 +45,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
 
   void _skipAnswer() {
     Navigator.pop(context);
-    widget.onAnswerSubmitted(FlashCardResult.skipped); // Callback for skip
+    widget.onAnswerSubmitted(FlashCardResult.skipped);
   }
 
   @override
@@ -74,7 +54,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Hides the back button
+        automaticallyImplyLeading: false,
         title: const Text('Flash Card', style: TextStyle(fontSize: 18)),
         centerTitle: true,
         elevation: 0,
@@ -83,7 +63,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.1, // Responsive padding
+            horizontal: screenWidth * 0.1,
             vertical: 16.0,
           ),
           child: Column(
@@ -97,17 +77,17 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(height: 12.0),
-              
+
+              // Insert our new code editor widget here
               Expanded(
-                child: CodeTheme(
-                  data: CodeThemeData(styles: monokaiSublimeTheme),
-                  child: CodeField(
-                    controller: _codeController,
-                    focusNode: _focusNode, // Attach the FocusNode
-                    gutterStyle: GutterStyle.none, // Removes line numbers, errors
-                  ),
+                child: CodeEditorWidget(
+                  key: _editorKey,
+                  initialCode: '', // or prefill if needed
+                  language: widget.flashCard.answerLanguage,
+                  // onLanguageChanged: (lang) { ... if needed }
                 ),
               ),
+
               const SizedBox(height: 24.0),
               Align(
                 alignment: Alignment.centerRight,
@@ -118,7 +98,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                       onPressed: _skipAnswer,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 12.0),
+                          horizontal: 24.0,
+                          vertical: 12.0,
+                        ),
                       ),
                       child: const Text('Skip'),
                     ),
@@ -127,7 +109,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                       onPressed: _submitAnswer,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 12.0),
+                          horizontal: 24.0,
+                          vertical: 12.0,
+                        ),
                       ),
                       child: const Text('Submit'),
                     ),

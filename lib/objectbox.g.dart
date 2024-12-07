@@ -571,7 +571,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final questionOffset = fbb.writeString(object.question);
           final answerOffset = fbb.writeString(object.answer);
           final typeOffset = fbb.writeString(object.type);
-          final languageOffset = fbb.writeString(object.language);
+          final languageOffset = fbb.writeString(object.answerLanguage);
           fbb.startTable(10);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
@@ -604,7 +604,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0)
             ..type = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 18, '')
-            ..language = const fb.StringReader(asciiOptimization: true)
+            ..answerLanguage = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 20, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
@@ -854,7 +854,7 @@ class FlashCard_ {
   static final type =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[7]);
 
-  /// See [FlashCard.language].
+  /// See [FlashCard.answerLanguage].
   static final language =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[8]);
 }

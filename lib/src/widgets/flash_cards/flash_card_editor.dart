@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../../data_store.dart';
 import '../md/md_editor.dart';
 import 'flash_card.dart';
-import '../code_editor/language_selector.dart';
+import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
+
 class FlashCardEditor extends StatefulWidget {
   final int flashCardId;
 
@@ -92,10 +93,10 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                   const SizedBox(height: 8.0),
                   SearchableDropdown(
                       onChanged: (language) {
-                        flashCard.language = language;
+                        flashCard.answerLanguage = language;
                         Data().store.box<FlashCard>().put(flashCard);
                       },
-                      initialValue: flashCard.language,
+                      initialValue: flashCard.answerLanguage,
                       items: languageMap.keys.toList()),
                   // MdEditor for Question
                   const SizedBox(height: 8.0),

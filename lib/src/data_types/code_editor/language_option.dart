@@ -23,7 +23,7 @@ import 'package:highlight/languages/scala.dart';
 import 'package:highlight/languages/markdown.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:highlight/highlight_core.dart';
-
+export 'package:highlight/highlight_core.dart';
 class LanguageItem {
   final Mode flutterCodeEditorType;
   final String markdownIdentifier;

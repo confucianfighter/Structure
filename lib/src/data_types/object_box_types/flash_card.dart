@@ -6,7 +6,8 @@ class FlashCard {
   @Id()
   int id;
   String type = 'essay_question';
-  String language = 'markdown';
+  String answerLanguage = 'markdown';
+  String questionLanguage = 'markdown';
   String question;
   String answer;
   int timesCorrect = 0;
