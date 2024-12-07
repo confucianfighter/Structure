@@ -140,7 +140,7 @@
     },
     {
       "id": "7:2020180581908519582",
-      "lastPropertyId": "7:3832174913847307587",
+      "lastPropertyId": "9:8432674962636872497",
       "name": "FlashCard",
       "properties": [
         {
@@ -181,6 +181,16 @@
           "flags": 520,
           "indexId": "10:6888978690879247321",
           "relationTarget": "Subject"
+        },
+        {
+          "id": "8:1311130929163470500",
+          "name": "type",
+          "type": 9
+        },
+        {
+          "id": "9:8432674962636872497",
+          "name": "language",
+          "type": 9
         }
       ],
       "relations": []

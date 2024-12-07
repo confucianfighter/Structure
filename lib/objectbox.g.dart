@@ -168,7 +168,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 2020180581908519582),
       name: 'FlashCard',
-      lastPropertyId: const obx_int.IdUid(7, 3832174913847307587),
+      lastPropertyId: const obx_int.IdUid(9, 8432674962636872497),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -207,7 +207,17 @@ final _entities = <obx_int.ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const obx_int.IdUid(10, 6888978690879247321),
-            relationTarget: 'Subject')
+            relationTarget: 'Subject'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 1311130929163470500),
+            name: 'type',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 8432674962636872497),
+            name: 'language',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -560,7 +570,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectToFB: (FlashCard object, fb.Builder fbb) {
           final questionOffset = fbb.writeString(object.question);
           final answerOffset = fbb.writeString(object.answer);
-          fbb.startTable(8);
+          final typeOffset = fbb.writeString(object.type);
+          final languageOffset = fbb.writeString(object.language);
+          fbb.startTable(10);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
           fbb.addOffset(2, answerOffset);
@@ -568,6 +580,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(4, object.timesIncorrect);
           fbb.addInt64(5, object.userRating);
           fbb.addInt64(6, object.subject.targetId);
+          fbb.addOffset(7, typeOffset);
+          fbb.addOffset(8, languageOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -587,7 +601,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..timesIncorrect =
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0)
             ..userRating =
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0)
+            ..type = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 18, '')
+            ..language = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 20, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
@@ -831,6 +849,14 @@ class FlashCard_ {
   /// See [FlashCard.subject].
   static final subject =
       obx.QueryRelationToOne<FlashCard, Subject>(_entities[5].properties[6]);
+
+  /// See [FlashCard.type].
+  static final type =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[7]);
+
+  /// See [FlashCard.language].
+  static final language =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[8]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.

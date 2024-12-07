@@ -8,11 +8,13 @@ import 'src/settings/settings_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'src/data_types/quiz_question.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:window_manager/window_manager.dart';
+
 // Generated file
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await windowManager.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   // log the path to the Hive data directory
   log('Hive data directory: ${dir.path}');

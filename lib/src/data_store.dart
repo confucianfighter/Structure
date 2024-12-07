@@ -16,6 +16,8 @@ export 'data_types/object_box_types/flash_card_sequence.dart';
 import 'data_types/object_box_types/sequence_item.dart';
 import 'data_types/object_box_types/flash_card_sequence.dart';
 import 'data_types/object_box_types/subject.dart';
+export 'data_types/object_box_types/countdown.dart';
+import 'data_types/object_box_types/flash_card.dart';
 // singleton class to manage the ObjectBox store
 class Data {
   static final Data _data = Data._internal();
@@ -39,6 +41,7 @@ class Data {
     // Data().store.box<SequenceItem>().removeAll();
     // Data().store.box<FlashCardSequence>().removeAll();
     // Data().store.box<Sequence>().removeAll();
+    Data().store.box<FlashCard>().removeAll();
     Subject.Init();
     await prepopulateWritingPrompts();
   }

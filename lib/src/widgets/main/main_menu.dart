@@ -10,6 +10,7 @@ import '../app_bar/pin_button.dart';
 import '../../data_store.dart';
 import '../sequences/sequence_list.dart';
 import '../subjects/subject_list_widget.dart';
+import '../app_bar/toggle_fullscreen_button.dart';
 
 
 /// Displays a list of SampleItems.
@@ -53,6 +54,7 @@ class MainMenu extends StatelessWidget {
             countdownId: TimerID.main.id,
           ),
           PinToTopButton(),
+          ToggleFullScreenButton(),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {

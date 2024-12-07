@@ -3,17 +3,20 @@ import '../../data_store.dart';
 import 'subject_card.dart';
 import 'subject_editor.dart';
 import '../flash_cards/flash_card_list_widget.dart';
-class SubjectListWidget extends StatelessWidget {
+class SubjectListWidget extends StatefulWidget {
   const SubjectListWidget({super.key});
   static const route = '/subjects';
+  @override _SubjectListWidget createState() => _SubjectListWidget();
+}
+class _SubjectListWidget extends State<SubjectListWidget> {
+  final Stream<List<Subject>> _streamBuilder = Data().store.box<Subject>().query().watch(triggerImmediately: true).map((query) => query.find());
   @override
   Widget build(BuildContext context) {
-    final stream = Data().store.box<Subject>().query().watch(triggerImmediately: true);
-
+  
     return Scaffold(
       appBar: AppBar(title: const Text('Subjects')),
       body: StreamBuilder<List<Subject>>(
-        stream: stream.map((query) => query.find()),
+        stream: _streamBuilder,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final subjects = snapshot.data!;

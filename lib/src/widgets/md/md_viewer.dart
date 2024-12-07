@@ -3,21 +3,23 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/gruvbox-dark.dart';
+import 'package:flutter_highlight/themes/vs.dart';
+import 'package:flutter_highlight/themes/atelier-dune-dark.dart';
 import '../../utils/split_markdown.dart';
 
-class MdPreview extends StatelessWidget {
-  final String markdownContent;
+class MdViewer extends StatelessWidget {
+  final String content;
   final Map<String, TextStyle> theme;
 
-  const MdPreview({
+  const MdViewer({
     Key? key,
-    required this.markdownContent,
-    this.theme = gruvboxDarkTheme, // Default to Gruvbox Dark
+    required this.content,
+    this.theme = atelierDuneDarkTheme, // Default to Gruvbox Dark
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final blocks = splitMarkdown(markdownContent);
+    final blocks = splitMarkdown(content);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,4 +44,3 @@ class MdPreview extends StatelessWidget {
     );
   }
 }
-

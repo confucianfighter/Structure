@@ -5,6 +5,8 @@ import '../../data_store.dart';
 class FlashCard {
   @Id()
   int id;
+  String type = 'essay_question';
+  String language = 'markdown';
   String question;
   String answer;
   int timesCorrect = 0;
