@@ -21,9 +21,9 @@ import 'package:highlight/languages/r.dart';
 import 'package:highlight/languages/perl.dart';
 import 'package:highlight/languages/scala.dart';
 import 'package:highlight/languages/markdown.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:highlight/highlight_core.dart';
 export 'package:highlight/highlight_core.dart';
+
 class LanguageItem {
   final Mode flutterCodeEditorType;
   final String markdownIdentifier;
@@ -35,21 +35,9 @@ class LanguageItem {
 }
 
 final Map<String, LanguageItem> languageMap = {
-  'dart': LanguageItem(
-    flutterCodeEditorType: dart,
-    markdownIdentifier: 'dart',
-  ),
-  'javascript': LanguageItem(
-    flutterCodeEditorType: javascript,
-    markdownIdentifier: 'javascript',
-  ),
-  'python': LanguageItem(
-    flutterCodeEditorType: python,
-    markdownIdentifier: 'python',
-  ),
-  'java': LanguageItem(
-    flutterCodeEditorType: java,
-    markdownIdentifier: 'java',
+  'bash': LanguageItem(
+    flutterCodeEditorType: shell,
+    markdownIdentifier: 'bash',
   ),
   'cpp': LanguageItem(
     flutterCodeEditorType: cpp,
@@ -59,64 +47,76 @@ final Map<String, LanguageItem> languageMap = {
     flutterCodeEditorType: cs,
     markdownIdentifier: 'csharp',
   ),
-  'php': LanguageItem(
-    flutterCodeEditorType: php,
-    markdownIdentifier: 'php',
+  'css': LanguageItem(
+    flutterCodeEditorType: css,
+    markdownIdentifier: 'css',
   ),
-  'swift': LanguageItem(
-    flutterCodeEditorType: swift,
-    markdownIdentifier: 'swift',
-  ),
-  'kotlin': LanguageItem(
-    flutterCodeEditorType: kotlin,
-    markdownIdentifier: 'kotlin',
-  ),
-  'ruby': LanguageItem(
-    flutterCodeEditorType: ruby,
-    markdownIdentifier: 'ruby',
+  'dart': LanguageItem(
+    flutterCodeEditorType: dart,
+    markdownIdentifier: 'dart',
   ),
   'go': LanguageItem(
     flutterCodeEditorType: go,
     markdownIdentifier: 'go',
   ),
-  'rust': LanguageItem(
-    flutterCodeEditorType: rust,
-    markdownIdentifier: 'rust',
+  'html': LanguageItem(
+    flutterCodeEditorType: xml,
+    markdownIdentifier: 'html',
+  ),
+  'java': LanguageItem(
+    flutterCodeEditorType: java,
+    markdownIdentifier: 'java',
+  ),
+  'javascript': LanguageItem(
+    flutterCodeEditorType: javascript,
+    markdownIdentifier: 'javascript',
+  ),
+  'kotlin': LanguageItem(
+    flutterCodeEditorType: kotlin,
+    markdownIdentifier: 'kotlin',
+  ),
+  'markdown': LanguageItem(
+    flutterCodeEditorType: markdown,
+    markdownIdentifier: 'markdown',
   ),
   'objectivec': LanguageItem(
     flutterCodeEditorType: objectivec,
     markdownIdentifier: 'objective-c',
   ),
-  'shell': LanguageItem(
-    flutterCodeEditorType: shell,
-    markdownIdentifier: 'bash',
+  'perl': LanguageItem(
+    flutterCodeEditorType: perl,
+    markdownIdentifier: 'perl',
   ),
-  'markup': LanguageItem(
-    flutterCodeEditorType: xml,
-    markdownIdentifier: 'markup',
+  'php': LanguageItem(
+    flutterCodeEditorType: php,
+    markdownIdentifier: 'php',
   ),
-  'css': LanguageItem(
-    flutterCodeEditorType: css,
-    markdownIdentifier: 'css',
-  ),
-  'sql': LanguageItem(
-    flutterCodeEditorType: sql,
-    markdownIdentifier: 'sql',
+  'python': LanguageItem(
+    flutterCodeEditorType: python,
+    markdownIdentifier: 'python',
   ),
   'r': LanguageItem(
     flutterCodeEditorType: r,
     markdownIdentifier: 'r',
   ),
-  'perl': LanguageItem(
-    flutterCodeEditorType: perl,
-    markdownIdentifier: 'perl',
+  'ruby': LanguageItem(
+    flutterCodeEditorType: ruby,
+    markdownIdentifier: 'ruby',
+  ),
+  'rust': LanguageItem(
+    flutterCodeEditorType: rust,
+    markdownIdentifier: 'rust',
   ),
   'scala': LanguageItem(
     flutterCodeEditorType: scala,
     markdownIdentifier: 'scala',
   ),
-  'markdown': LanguageItem(
-    flutterCodeEditorType: markdown,
-    markdownIdentifier: 'markdown',
+  'sql': LanguageItem(
+    flutterCodeEditorType: sql,
+    markdownIdentifier: 'sql',
+  ),
+  'swift': LanguageItem(
+    flutterCodeEditorType: swift,
+    markdownIdentifier: 'swift',
   ),
 };

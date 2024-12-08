@@ -34,8 +34,14 @@ class MyApp extends StatelessWidget {
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     ObjectBoxTimer().startCountdown(
         seconds: 30,
-        onTimerEnd: () =>
-            MyApp.navigatorKey.currentState?.pushNamed(MainMenu.routeName));
+        onTimerEnd: () {
+          // pop stack down to 1 item
+          while (MyApp.navigatorKey.currentState?.canPop() == true) {
+            MyApp.navigatorKey.currentState?.pop();
+          }
+          MyApp.navigatorKey.currentState?.pop();
+          MyApp.navigatorKey.currentState?.pushNamed(MainMenu.routeName);
+        });
     return ListenableBuilder(
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {

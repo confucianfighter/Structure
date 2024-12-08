@@ -42,18 +42,16 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
     _controller = TextEditingController(text: widget.initialValue ?? '');
     _focusNode = FocusNode();
 
-    // Handle key events directly on the focus node
     _focusNode.onKeyEvent = _handleKeyEvent;
 
     _filteredItems = widget.items;
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _focusText = _controller.text;
-        _openOverlay(showAll: true);
-        _selectAllTextIfUnchanged();
-      } else {
-        // If needed, close the overlay on focus loss:
-        // _closeOverlay();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _openOverlay(showAll: true);
+          _selectAllTextIfUnchanged();
+        });
       }
     });
   }
@@ -77,9 +75,11 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   void _filter(String input) {
+    if (_overlayEntry == null) return;
     setState(() {
       _filteredItems = widget.items
-          .where((item) => item.toLowerCase().contains(input.toLowerCase()))
+          .where(
+              (item) => item.toLowerCase().contains(input.toLowerCase().trim()))
           .toList();
       _highlightedIndex = _filteredItems.isEmpty ? -1 : 0;
     });
@@ -87,6 +87,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   void _showAll() {
+    if (_overlayEntry == null) return;
     setState(() {
       _filteredItems = widget.items;
       _highlightedIndex = _filteredItems.isEmpty ? -1 : 0;
@@ -95,10 +96,14 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   void _openOverlay({bool showAll = false}) {
-    if (_overlayEntry == null) {
-      _overlayEntry = _createOverlayEntry();
-      Overlay.of(context).insert(_overlayEntry!);
+    if (_overlayEntry != null) {
+      _closeOverlay();
     }
+    if (_targetKey.currentContext == null) return;
+
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry!);
+
     if (showAll) {
       _showAll();
     } else {
@@ -140,7 +145,11 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   OverlayEntry _createOverlayEntry() {
-    final renderBox = _targetKey.currentContext!.findRenderObject() as RenderBox;
+    if (_targetKey.currentContext == null) {
+      return OverlayEntry(builder: (_) => const SizedBox.shrink());
+    }
+    final renderBox =
+        _targetKey.currentContext!.findRenderObject() as RenderBox;
     final size = renderBox.size;
 
     final theme = Theme.of(context);
@@ -179,7 +188,9 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
                         child: Text(
                           _filteredItems[index],
                           style: TextStyle(
-                            color: isHighlighted ? highlightTextColor : defaultTextColor,
+                            color: isHighlighted
+                                ? highlightTextColor
+                                : defaultTextColor,
                           ),
                         ),
                       ),
@@ -206,13 +217,15 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         setState(() {
-          _highlightedIndex = (_highlightedIndex - 1 + _filteredItems.length) % _filteredItems.length;
+          _highlightedIndex = (_highlightedIndex - 1 + _filteredItems.length) %
+              _filteredItems.length;
         });
         _updateOverlay();
         _selectAllTextIfUnchanged();
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        if (_highlightedIndex >= 0 && _highlightedIndex < _filteredItems.length) {
+        if (_highlightedIndex >= 0 &&
+            _highlightedIndex < _filteredItems.length) {
           _selectItem(_filteredItems[_highlightedIndex]);
         }
         return KeyEventResult.handled;
@@ -243,13 +256,17 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
               if (_isOpen) {
                 _closeOverlay();
               } else {
+                // Ensure the TextField has focus and open the overlay
                 _focusNode.requestFocus();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _openOverlay(showAll: true);
+                });
               }
             },
           ),
         ),
         onChanged: (value) {
-          if (value != _focusText) {
+          if (value.isNotEmpty) {
             _filter(value);
           } else {
             _showAll();

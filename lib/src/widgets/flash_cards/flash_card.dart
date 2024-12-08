@@ -27,7 +27,7 @@ class FlashCardWidget extends StatefulWidget {
 
 class _FlashCardWidgetState extends State<FlashCardWidget> {
   final GlobalKey<CodeEditorWidgetState> _editorKey = GlobalKey();
-
+  var _userAnswer = '';
   void _submitAnswer() {
     final userAnswer = _editorKey.currentState?.getCode() ?? '';
     Navigator.pop(context);
@@ -84,6 +84,12 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                   key: _editorKey,
                   initialCode: '', // or prefill if needed
                   language: widget.flashCard.answerLanguage,
+                  onChanged: (answer) {
+                    _userAnswer = answer;
+                  },
+                  onLanguageChanged: null,
+                  languageSelectionTitle: 'Language',
+                  languageSelectionHint: 'Select the language for syntax highlighting',
                   // onLanguageChanged: (lang) { ... if needed }
                 ),
               ),

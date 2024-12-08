@@ -39,6 +39,7 @@ dependencies:
   window_manager: ^0.4.3
   flutter_code_editor: ^0.3.2
   dropdown_search: ^6.0.1
+  webview_flutter: ^4.10.0
   
 dev_dependencies:
   objectbox_generator: ^4.0.3
@@ -60,3 +61,4 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/images/
     - assets/writing_prompts.toml
+    - assets/markdown_guide.md

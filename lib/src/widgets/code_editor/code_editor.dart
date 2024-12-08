@@ -9,13 +9,18 @@ class CodeEditorWidget extends StatefulWidget {
   // You can pass in initial code or initial language if needed
   final String initialCode;
   final String language;
+  final String languageSelectionTitle;
+  final String languageSelectionHint;
   final Function(String)? onLanguageChanged; // callback if needed
-
+  final Function(String)? onChanged;
   const CodeEditorWidget({
     Key? key,
     this.initialCode = '',
-    this.language = 'dart',
-    this.onLanguageChanged,
+    this.language = 'rust',
+    required this.onChanged,
+    required this.onLanguageChanged,
+    required this.languageSelectionTitle,
+    required this.languageSelectionHint,
   }) : super(key: key);
 
   @override
@@ -79,8 +84,8 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
           items: _languages,
           initialValue: widget.language,
           onChanged: _onLanguageSelected,
-          labelText: 'Language',
-          hintText: 'syntax highlighting',
+          labelText: widget.languageSelectionTitle,
+          hintText: widget.languageSelectionHint,
         ),
 
         const SizedBox(height: 12.0),

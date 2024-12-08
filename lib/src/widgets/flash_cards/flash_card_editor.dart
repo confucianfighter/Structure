@@ -4,6 +4,7 @@ import '../md/md_editor.dart';
 import 'flash_card.dart';
 import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
+import '../code_editor/code_editor.dart';
 
 class FlashCardEditor extends StatefulWidget {
   final int flashCardId;
@@ -115,13 +116,20 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                   ),
                   const SizedBox(height: 8.0),
                   // MdEditor for Answer
-                  MdEditor(
-                    initialValue: flashCard.answer,
-                    labelText: 'Answer',
+                  CodeEditorWidget(
+                    initialCode: flashCard.answer,
+                    language: flashCard.answerLanguage,
                     onChanged: (value) {
                       flashCard.answer = value;
                       Data().store.box<FlashCard>().put(flashCard);
                     },
+                    onLanguageChanged: (language) {
+                      flashCard.answerLanguage = language;
+                      Data().store.box<FlashCard>().put(flashCard);
+                    },
+                    languageSelectionTitle: "Answer Language",
+                    languageSelectionHint:
+                        "This is so user answer is syntax highlighted properly",
                   ),
                   const Divider(height: 32.0),
                   Row(
