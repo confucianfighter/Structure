@@ -92,20 +92,18 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8.0),
-                  SearchableDropdown(
-                      onChanged: (language) {
-                        flashCard.answerLanguage = language;
-                        Data().store.box<FlashCard>().put(flashCard);
-                      },
-                      initialValue: flashCard.answerLanguage,
-                      items: languageMap.keys.toList()),
-                  // MdEditor for Question
+                  
                   const SizedBox(height: 8.0),
-                  MdEditor(
-                    initialValue: flashCard.question,
-                    labelText: 'Question',
+                  CodeEditorWidget(
+                    initialCode: flashCard.question,
+                    languageSelectionTitle: 'Question language',
+                    languageSelectionHint: 'Allows using html or markdown',
                     onChanged: (value) {
                       flashCard.question = value;
+                      Data().store.box<FlashCard>().put(flashCard);
+                    },
+                    onLanguageChanged: (language) {
+                      flashCard.questionLanguage = language;
                       Data().store.box<FlashCard>().put(flashCard);
                     },
                   ),

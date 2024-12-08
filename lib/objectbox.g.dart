@@ -168,7 +168,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 2020180581908519582),
       name: 'FlashCard',
-      lastPropertyId: const obx_int.IdUid(9, 8432674962636872497),
+      lastPropertyId: const obx_int.IdUid(11, 3317180567605302695),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -214,8 +214,13 @@ final _entities = <obx_int.ModelEntity>[
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 8432674962636872497),
-            name: 'language',
+            id: const obx_int.IdUid(10, 6366949616124486741),
+            name: 'answerLanguage',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 3317180567605302695),
+            name: 'questionLanguage',
             type: 9,
             flags: 0)
       ],
@@ -370,7 +375,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         1356691746063744145,
         7496608828734208995,
         3027987310927362070,
-        1084116758278597434
+        1084116758278597434,
+        8432674962636872497
       ],
       retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
@@ -571,8 +577,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final questionOffset = fbb.writeString(object.question);
           final answerOffset = fbb.writeString(object.answer);
           final typeOffset = fbb.writeString(object.type);
-          final languageOffset = fbb.writeString(object.answerLanguage);
-          fbb.startTable(10);
+          final answerLanguageOffset = fbb.writeString(object.answerLanguage);
+          final questionLanguageOffset =
+              fbb.writeString(object.questionLanguage);
+          fbb.startTable(12);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
           fbb.addOffset(2, answerOffset);
@@ -581,7 +589,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(5, object.userRating);
           fbb.addInt64(6, object.subject.targetId);
           fbb.addOffset(7, typeOffset);
-          fbb.addOffset(8, languageOffset);
+          fbb.addOffset(9, answerLanguageOffset);
+          fbb.addOffset(10, questionLanguageOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -605,7 +614,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..type = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 18, '')
             ..answerLanguage = const fb.StringReader(asciiOptimization: true)
-                .vTableGet(buffer, rootOffset, 20, '');
+                .vTableGet(buffer, rootOffset, 22, '')
+            ..questionLanguage = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 24, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
@@ -855,8 +866,12 @@ class FlashCard_ {
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[7]);
 
   /// See [FlashCard.answerLanguage].
-  static final language =
+  static final answerLanguage =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[8]);
+
+  /// See [FlashCard.questionLanguage].
+  static final questionLanguage =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[9]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.

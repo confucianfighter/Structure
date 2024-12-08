@@ -29,14 +29,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
   final GlobalKey<CodeEditorWidgetState> _editorKey = GlobalKey();
   var _userAnswer = '';
   void _submitAnswer() {
-    final userAnswer = _editorKey.currentState?.getCode() ?? '';
     Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ResultScreen(
           flashCard: widget.flashCard,
-          userAnswer: userAnswer,
+          userAnswer: _userAnswer,
           onAnswerSubmitted: widget.onAnswerSubmitted,
         ),
       ),
@@ -89,7 +88,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                   },
                   onLanguageChanged: null,
                   languageSelectionTitle: 'Language',
-                  languageSelectionHint: 'Select the language for syntax highlighting',
+                  languageSelectionHint:
+                      'Select the language for syntax highlighting',
                   // onLanguageChanged: (lang) { ... if needed }
                 ),
               ),
