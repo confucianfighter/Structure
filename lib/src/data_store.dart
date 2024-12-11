@@ -41,7 +41,7 @@ class Data {
     // Data().store.box<SequenceItem>().removeAll();
     // Data().store.box<FlashCardSequence>().removeAll();
     // Data().store.box<Sequence>().removeAll();
-    Data().store.box<FlashCard>().removeAll();
+    // Data().store.box<FlashCard>().removeAll();
     Subject.Init();
     await prepopulateWritingPrompts();
   }

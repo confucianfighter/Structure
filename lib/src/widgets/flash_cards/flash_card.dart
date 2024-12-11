@@ -82,7 +82,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                 child: CodeEditorWidget(
                   key: _editorKey,
                   initialCode: '', // or prefill if needed
-                  language: widget.flashCard.answerLanguage,
+                  language: widget.flashCard.correctAnswerDislpayLanguage,
                   onChanged: (answer) {
                     _userAnswer = answer;
                   },

@@ -168,7 +168,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 2020180581908519582),
       name: 'FlashCard',
-      lastPropertyId: const obx_int.IdUid(11, 3317180567605302695),
+      lastPropertyId: const obx_int.IdUid(14, 7577352344915177236),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -214,13 +214,18 @@ final _entities = <obx_int.ModelEntity>[
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 6366949616124486741),
-            name: 'answerLanguage',
+            id: const obx_int.IdUid(12, 6452266990829851838),
+            name: 'correctAnswerDislpayLanguage',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 3317180567605302695),
-            name: 'questionLanguage',
+            id: const obx_int.IdUid(13, 5722129757016257210),
+            name: 'questionDisplayLanguage',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(14, 7577352344915177236),
+            name: 'answerInputLanguage',
             type: 9,
             flags: 0)
       ],
@@ -376,7 +381,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         7496608828734208995,
         3027987310927362070,
         1084116758278597434,
-        8432674962636872497
+        8432674962636872497,
+        6366949616124486741,
+        3317180567605302695
       ],
       retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
@@ -577,10 +584,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final questionOffset = fbb.writeString(object.question);
           final answerOffset = fbb.writeString(object.answer);
           final typeOffset = fbb.writeString(object.type);
-          final answerLanguageOffset = fbb.writeString(object.answerLanguage);
-          final questionLanguageOffset =
-              fbb.writeString(object.questionLanguage);
-          fbb.startTable(12);
+          final correctAnswerDislpayLanguageOffset =
+              fbb.writeString(object.correctAnswerDislpayLanguage);
+          final questionDisplayLanguageOffset =
+              fbb.writeString(object.questionDisplayLanguage);
+          final answerInputLanguageOffset =
+              fbb.writeString(object.answerInputLanguage);
+          fbb.startTable(15);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
           fbb.addOffset(2, answerOffset);
@@ -589,8 +599,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(5, object.userRating);
           fbb.addInt64(6, object.subject.targetId);
           fbb.addOffset(7, typeOffset);
-          fbb.addOffset(9, answerLanguageOffset);
-          fbb.addOffset(10, questionLanguageOffset);
+          fbb.addOffset(11, correctAnswerDislpayLanguageOffset);
+          fbb.addOffset(12, questionDisplayLanguageOffset);
+          fbb.addOffset(13, answerInputLanguageOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -613,10 +624,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0)
             ..type = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 18, '')
-            ..answerLanguage = const fb.StringReader(asciiOptimization: true)
-                .vTableGet(buffer, rootOffset, 22, '')
-            ..questionLanguage = const fb.StringReader(asciiOptimization: true)
-                .vTableGet(buffer, rootOffset, 24, '');
+            ..correctAnswerDislpayLanguage =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGet(buffer, rootOffset, 26, '')
+            ..questionDisplayLanguage =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGet(buffer, rootOffset, 28, '')
+            ..answerInputLanguage =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGet(buffer, rootOffset, 30, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
@@ -865,13 +881,17 @@ class FlashCard_ {
   static final type =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[7]);
 
-  /// See [FlashCard.answerLanguage].
-  static final answerLanguage =
+  /// See [FlashCard.correctAnswerDislpayLanguage].
+  static final correctAnswerDislpayLanguage =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[8]);
 
-  /// See [FlashCard.questionLanguage].
-  static final questionLanguage =
+  /// See [FlashCard.questionDisplayLanguage].
+  static final questionDisplayLanguage =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[9]);
+
+  /// See [FlashCard.answerInputLanguage].
+  static final answerInputLanguage =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[10]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.

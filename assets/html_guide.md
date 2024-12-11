@@ -1,3 +1,13 @@
+## Super Quick Guide
+To insert code:
+```html
+<pre><code>
+fn some_code(){
+}
+</code></pre>
+```
+The pre tag just makes it so that line spaces, newlines, etc are preserved.
+
 # HTML Syntax Guide
 
 HTML (HyperText Markup Language) is the standard language for creating web pages.

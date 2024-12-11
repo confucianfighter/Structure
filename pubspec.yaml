@@ -63,3 +63,11 @@ flutter:
     - assets/images/
     - assets/writing_prompts.toml
     - assets/markdown_guide.md
+    - assets/html_guide.md
+    - assets/css/
+    - assets/css/bootstrap_sketchy.min.css
+    - assets/css/bootstrap_darkly.min.css
+    - assets/css/bootstrap_flatly.min.css
+    - assets/css/bootstrap_litera.min.css
+    - assets/css/bootstrap_neomorph.min.css
+    - assets/css/bootstrap_slate.min.css

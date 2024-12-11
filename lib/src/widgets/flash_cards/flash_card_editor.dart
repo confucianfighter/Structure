@@ -71,7 +71,6 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                 );
               },
             ),
-            // reset stats button
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
@@ -83,73 +82,101 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
           ]),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Edit Question:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8.0),
-                  
-                  const SizedBox(height: 8.0),
-                  CodeEditorWidget(
-                    initialCode: flashCard.question,
-                    languageSelectionTitle: 'Question language',
-                    languageSelectionHint: 'Allows using html or markdown',
-                    onChanged: (value) {
-                      flashCard.question = value;
-                      Data().store.box<FlashCard>().put(flashCard);
-                    },
-                    onLanguageChanged: (language) {
-                      flashCard.questionLanguage = language;
-                      Data().store.box<FlashCard>().put(flashCard);
-                    },
-                  ),
-                  const Divider(height: 32.0),
-                  const Text(
-                    'Edit Answer:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8.0),
-                  // MdEditor for Answer
-                  CodeEditorWidget(
-                    initialCode: flashCard.answer,
-                    language: flashCard.answerLanguage,
-                    onChanged: (value) {
-                      flashCard.answer = value;
-                      Data().store.box<FlashCard>().put(flashCard);
-                    },
-                    onLanguageChanged: (language) {
-                      flashCard.answerLanguage = language;
-                      Data().store.box<FlashCard>().put(flashCard);
-                    },
-                    languageSelectionTitle: "Answer Language",
-                    languageSelectionHint:
-                        "This is so user answer is syntax highlighted properly",
-                  ),
-                  const Divider(height: 32.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Data().store.box<FlashCard>().remove(flashCard.id);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Delete FlashCard'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                    height: 16.0), // Optional spacing between widgets
+                Expanded(
+                  flex: 1, // Half of the available space
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Data().store.box<FlashCard>().remove(flashCard.id);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Delete FlashCard'),
+                      const Text(
+                        'Edit Question:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Save'),
+                      const SizedBox(height: 8.0),
+                      Expanded(
+                        child: CodeEditorWidget(
+                          language: flashCard.questionDisplayLanguage,
+                          initialCode: flashCard.question,
+                          languageSelectionTitle: 'Question language',
+                          languageSelectionHint:
+                              'Allows using html or markdown',
+                          onChanged: (value) {
+                            flashCard.question = value;
+                            Data().store.box<FlashCard>().put(flashCard);
+                          },
+                          onLanguageChanged: (language) {
+                            flashCard.questionDisplayLanguage = language;
+                            Data().store.box<FlashCard>().put(flashCard);
+                          },
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const Divider(height: 16.0),
+                Expanded(
+                  flex: 1, // The other half of the available space
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Edit Answer:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8.0),
+                      SearchableDropdown(
+                          items: languageMap.keys.toList(),
+                          onChanged: (language) {
+                            flashCard.answerInputLanguage = language;
+                            Data().store.box<FlashCard>().put(flashCard);
+                          },
+                          initialValue: flashCard.answerInputLanguage,
+                          labelText: 'Answer Input',
+                          hintText:
+                              'Select the language for syntax highlighting of user input...'),
+                      const SizedBox(height: 8.0),
+                      Expanded(
+                        child: CodeEditorWidget(
+                          initialCode: flashCard.answer,
+                          language: flashCard.correctAnswerDislpayLanguage,
+                          onChanged: (value) {
+                            flashCard.answer = value;
+                            Data().store.box<FlashCard>().put(flashCard);
+                          },
+                          onLanguageChanged: (language) {
+                            flashCard.correctAnswerDislpayLanguage = language;
+                            Data().store.box<FlashCard>().put(flashCard);
+                          },
+                          languageSelectionTitle: "Answer Language",
+                          languageSelectionHint:
+                              "This is so user answer is syntax highlighted properly",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );

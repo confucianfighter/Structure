@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/monokai-sublime.dart';
-import 'package:highlight/languages/dart.dart'; // Default language
-import '../html_viewer/html_viewer.dart'; // Import webview_flutter
-import '../nuts_and_bolts/searchable_dropdown.dart'; // Custom dropdown implementation
+import 'package:highlight/languages/dart.dart';
+import '../html_viewer/html_viewer.dart';
+import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
 import '../md/md_viewer.dart';
+import '../md/md_viewer_page.dart';
 
 class CodeEditorWidget extends StatefulWidget {
   final String initialCode;
@@ -17,8 +19,8 @@ class CodeEditorWidget extends StatefulWidget {
 
   const CodeEditorWidget({
     Key? key,
-    this.initialCode = '',
-    this.language = 'rust',
+    required this.initialCode,
+    required this.language,
     required this.onChanged,
     required this.onLanguageChanged,
     required this.languageSelectionTitle,
@@ -33,15 +35,19 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
   late CodeController _codeController;
   late FocusNode _focusNode;
   late Mode _language;
+  late String _languageStr;
+  String? _theme = 'assets/css/bootstrap_darkly.min.css';
   String? _currentText;
   List<String> _languages = languageMap.keys.toList();
-
+  late List<String> _cssPaths = [];
   @override
-  void initState() {
+  initState() {
     super.initState();
     assert(languageMap.containsKey(widget.language));
+    _languageStr = widget.language;
     _language = languageMap[widget.language]?.flutterCodeEditorType ?? dart;
     _currentText = widget.initialCode;
+    _cssPaths = getCssFilenames();
     _codeController = CodeController(
       text: widget.initialCode,
       language: _language,
@@ -61,6 +67,7 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
 
   void _onLanguageSelected(String newLanguage) {
     setState(() {
+      _languageStr = newLanguage;
       _language = languageMap[newLanguage]?.flutterCodeEditorType ?? dart;
       widget.onLanguageChanged?.call(newLanguage);
     });
@@ -73,107 +80,150 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
     });
   }
 
-  Widget _buildEditorAndViewer(String language) {
-    final codeField = CodeTheme(
-      data: CodeThemeData(styles: monokaiSublimeTheme),
-      child: CodeField(
-        controller: _codeController,
-        focusNode: _focusNode,
-        gutterStyle: GutterStyle.none,
-        textStyle: const TextStyle(fontSize: 14.0, fontFamily: 'monospace'),
-        onChanged: (text) => _onTextChanged(text),
-      ),
-    );
-
-    if (language == 'markdown' || language == 'html') {
-      // The viewer may need scrolling if content is large.
-      // Instead of Expanded, we rely on natural sizing.
-      // If we do need scrolling, let's wrap the viewer in a SingleChildScrollView.
-      final viewer = (language == 'markdown')
-          ? MdViewer(content: _codeController.text)
-          : SizedBox(
-              height:
-                  300, // Provide some bounding height to avoid infinite growth
-              child: HTMLViewer(
-                key: ValueKey(_currentText),
-                htmlContent: _currentText ?? '',
-              ),
-            );
-
-      final guideButton = ElevatedButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            language == 'markdown' ? '/md-guide' : '/html-guide',
-          );
-        },
-        child: Text(language == 'markdown' ? 'Markdown Guide' : 'HTML Guide'),
-      );
-
-      // Notice: No Expanded here. Just a natural layout.
-      // If needed, you could wrap this entire Row in another scrollable or a sized container.
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Flexible on a Row affects width, which is safe since we have bounded width from LayoutBuilder
-          Flexible(
-            fit: FlexFit.loose,
-            child: codeField,
-          ),
-          const SizedBox(width: 16),
-          // Another Flexible for width distribution
-          Flexible(
-            fit: FlexFit.loose,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                guideButton,
-                // No Expanded here. If viewer content might overflow, make the viewer scrollable or give it a fixed height.
-                viewer,
-              ],
-            ),
-          ),
-        ],
-      );
-    } else {
-      // For other languages, just return the code field without expansions.
-      return codeField;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Add runtime checks for debugging:
-        if (constraints.maxHeight == double.infinity) {
-          debugPrint(
-            'Warning: Unbounded height detected. Consider wrapping CodeEditorWidget '
-            'in a widget that provides a bounded height.',
-          );
-        }
+        final isViewerEnabled =
+            widget.language == 'html' || widget.language == 'markdown';
+
+        final editor = SingleChildScrollView(
+            child: CodeTheme(
+          data: CodeThemeData(styles: monokaiSublimeTheme),
+          child: CodeField(
+            controller: _codeController,
+            focusNode: _focusNode,
+            gutterStyle: GutterStyle.none,
+            textStyle: const TextStyle(fontSize: 14.0, fontFamily: 'monospace'),
+            onChanged: _onTextChanged,
+          ),
+        ));
+
+        final viewer = isViewerEnabled
+            ? (widget.language == 'markdown'
+                ? SingleChildScrollView(
+                    child: MdViewer(content: _codeController.text))
+                : HTMLViewer(htmlContent: _codeController.text, style: _theme!))
+            : null;
 
         return Column(
-          // mainAxisSize.min tries to shrink-wrap the contents
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchableDropdown(
-              items: _languages,
-              initialValue: widget.language,
-              onChanged: (text) => _onLanguageSelected(text),
-              labelText: widget.languageSelectionTitle,
-              hintText: widget.languageSelectionHint,
+            // row containing language selection dropdown followed by a button that says "${_langauge} Quick Reference"
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: SearchableDropdown(
+                      items: _languages,
+                      initialValue: widget.language,
+                      onChanged: (language) => _onLanguageSelected(language),
+                      labelText: widget.languageSelectionTitle,
+                      hintText: widget.languageSelectionHint,
+                    )),
+                // add space between dropdown and button
+                const SizedBox(width: 8.0),
+                Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        var file_name =
+                            "${_languageStr.toLowerCase()}_guide.md";
+                        // check if file exists in rootBundle
+                        // if so set content to the file
+                        // if not set content to a default message
+                        var content =
+                            'No quick reference available for ${_languageStr}';
+                        if (await _checkGuideExists(_languageStr)) {
+                          content =
+                              await rootBundle.loadString('assets/$file_name');
+                        }
+
+                        // Open a dialog with the quick reference for the selected language
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MdViewerPage(
+                              content: content,
+                              title: '${_languageStr} Quick Reference',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('${_languageStr} Quick Reference'),
+                    ))
+              ],
             ),
             const SizedBox(height: 12.0),
-            // No Expanded or Flexible here since we might be in an unbounded height scenario.
-            // Just rely on natural sizing.
-            _buildEditorAndViewer(widget.language),
+            Expanded(
+              child: isViewerEnabled
+                  ? Row(
+                      children: [
+                        Flexible(
+                          flex: 1, // Half width for editor
+                          child: Column(
+                            children: [
+                              Expanded(child: editor),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                            width: 8), // Spacer between editor and viewer
+                        Flexible(
+                          flex: 1, // Half width for viewer
+                          child: Column(
+                            children: [
+                              SearchableDropdown(
+                                // dropdown for selecting css theme
+                                items: _cssPaths,
+                                initialValue: _theme,
+                                onChanged: (css) {
+                                  // set the theme to the selected css file
+                                  setState(() {
+                                    _theme = css;
+                                  });
+                                },
+                                labelText: 'Select a CSS theme',
+                                hintText: 'Select a CSS theme',
+                              ),
+                              Expanded(child: viewer!),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Expanded(child: editor), // Full width for editor
+                      ],
+                    ),
+            ),
           ],
         );
       },
     );
   }
+}
+
+Future<bool> _checkGuideExists(String language) async {
+  final assetPath = 'assets/${language}_guide.md';
+  try {
+    // Attempt to load the asset
+    await rootBundle.loadString(assetPath);
+    return true;
+  } catch (e) {
+    // If an exception occurs, the asset does not exist
+    return false;
+  }
+}
+
+List<String> getCssFilenames() {
+  // Hardcoded list of filenames (based on pubspec.yaml entries)
+  return [
+    'assets/css/bootstrap_sketchy.min.css',
+    'assets/css/bootstrap_darkly.min.css',
+    'assets/css/bootstrap_flatly.min.css',
+    'assets/css/bootstrap_litera.min.css',
+    'assets/css/bootstrap_neomorph.min.css',
+    'assets/css/bootstrap_slate.min.css',
+  ];
 }
