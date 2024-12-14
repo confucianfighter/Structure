@@ -8,10 +8,10 @@ class WritingPromptScreen extends StatefulWidget {
   final int index;
 
   const WritingPromptScreen({
-    Key? key,
+    super.key,
     required this.index,
     required this.promptList,
-  }) : super(key: key);
+  });
 
   @override
   _WritingPromptScreenState createState() => _WritingPromptScreenState();

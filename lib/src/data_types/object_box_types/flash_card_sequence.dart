@@ -1,7 +1,5 @@
-import 'dart:ffi';
 
 import '../../data_store.dart';
-import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class FlashCardSequence {

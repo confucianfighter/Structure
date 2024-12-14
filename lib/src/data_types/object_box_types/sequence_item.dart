@@ -1,5 +1,4 @@
 import 'package:objectbox/objectbox.dart';
-import 'sequence_type_enum.dart';
 
 @Entity()
 class Sequence {

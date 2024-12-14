@@ -8,11 +8,11 @@ class FlashCardPreview extends StatelessWidget {
   final VoidCallback onDelete;
 
   const FlashCardPreview({
-    Key? key,
+    super.key,
     required this.flashCard,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../../data_store.dart';
 
 @Entity()

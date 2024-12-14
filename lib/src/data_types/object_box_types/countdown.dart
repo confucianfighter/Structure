@@ -1,6 +1,4 @@
-import 'dart:async';
 import '../../data_store.dart';
-import 'package:flutter/material.dart';
 
 enum TimerID {
   main(id: 1);

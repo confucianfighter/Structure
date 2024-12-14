@@ -8,7 +8,7 @@ import 'sequence_card.dart';
 class SequenceEditor extends StatefulWidget {
   final int sequenceId;
 
-  const SequenceEditor({Key? key, required this.sequenceId}) : super(key: key);
+  const SequenceEditor({super.key, required this.sequenceId});
 
   @override
   _SequenceEditorState createState() => _SequenceEditorState();

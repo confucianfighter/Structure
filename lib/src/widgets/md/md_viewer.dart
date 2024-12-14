@@ -12,10 +12,10 @@ class MdViewer extends StatelessWidget {
   final Map<String, TextStyle> theme;
 
   const MdViewer({
-    Key? key,
+    super.key,
     required this.content,
     this.theme = atelierDuneDarkTheme, // Default to Gruvbox Dark
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

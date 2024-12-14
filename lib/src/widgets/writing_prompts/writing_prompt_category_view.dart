@@ -1,8 +1,5 @@
-import '../../data_types/object_box_types/category.dart';
 import '../../data_store.dart';
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
-import '../../../objectbox.g.dart';
 import 'writing_prompt_list_widget.dart';
 
 class CategoriesWidget extends StatelessWidget {

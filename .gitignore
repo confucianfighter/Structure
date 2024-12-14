@@ -28,3 +28,4 @@ build/
 *.pyc
 *.pyo
 *.swp
+highlight.js/

@@ -6,7 +6,7 @@ import 'flash_card_sequence_widget.dart';
 class SequenceItemWidget extends StatelessWidget {
   final SequenceItem sequenceItem;
 
-  const SequenceItemWidget({Key? key, required this.sequenceItem}) : super(key: key);
+  const SequenceItemWidget({super.key, required this.sequenceItem});
 
   @override
   Widget build(BuildContext context) {

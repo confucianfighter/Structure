@@ -6,9 +6,9 @@ class FlashCardSequenceItemWidget extends StatefulWidget {
   final int sequenceItemId;
 
   const FlashCardSequenceItemWidget({
-    Key? key,
+    super.key,
     required this.sequenceItemId,
-  }) : super(key: key);
+  });
 
   @override
   _FlashCardSequenceItemWidgetState createState() =>

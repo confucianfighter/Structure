@@ -5,7 +5,7 @@ import 'sequence_card.dart';
 class SequenceListWidget extends StatelessWidget {
   static const String route = '/sequences';
 
-  SequenceListWidget({Key? key}) : super(key: key);
+  const SequenceListWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

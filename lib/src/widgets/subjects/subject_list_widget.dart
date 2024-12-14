@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../data_store.dart';
 import 'subject_card.dart';
 import 'subject_editor.dart';
-import '../flash_cards/flash_card_list_widget.dart';
 class SubjectListWidget extends StatefulWidget {
   const SubjectListWidget({super.key});
   static const route = '/subjects';

@@ -5,12 +5,13 @@ import 'flash_card.dart';
 import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
 import '../code_editor/code_editor.dart';
+import '../html_viewer/html_viewer.dart';
+import 'package:Structure/gen/assets.gen.dart';
 
 class FlashCardEditor extends StatefulWidget {
   final int flashCardId;
 
-  const FlashCardEditor({Key? key, required this.flashCardId})
-      : super(key: key);
+  const FlashCardEditor({super.key, required this.flashCardId});
 
   @override
   _FlashCardEditorState createState() => _FlashCardEditorState();
@@ -115,12 +116,12 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                       ),
                       const SizedBox(height: 8.0),
                       Expanded(
-                        child: CodeEditorWidget(
+                        child: HTMLViewer(
+                          showEditButton: true,
+                          cssPath: Assets.css.bootstrap.bootstrapSlateMin,
+                          highlightJsCssPath: Assets.css.highlight.agate,
                           language: flashCard.questionDisplayLanguage,
-                          initialCode: flashCard.question,
-                          languageSelectionTitle: 'Question language',
-                          languageSelectionHint:
-                              'Allows using html or markdown',
+                          initialText: flashCard.question,
                           onChanged: (value) {
                             flashCard.question = value;
                             Data().store.box<FlashCard>().put(flashCard);
@@ -157,9 +158,12 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                               'Select the language for syntax highlighting of user input...'),
                       const SizedBox(height: 8.0),
                       Expanded(
-                        child: CodeEditorWidget(
-                          initialCode: flashCard.answer,
+                        child: HTMLViewer(
+                          showEditButton: true,
+                          initialText: flashCard.answer,
                           language: flashCard.correctAnswerDislpayLanguage,
+                          cssPath: Assets.css.bootstrap.bootstrapSlateMin,
+                          highlightJsCssPath: Assets.css.highlight.agate,
                           onChanged: (value) {
                             flashCard.answer = value;
                             Data().store.box<FlashCard>().put(flashCard);
@@ -168,9 +172,6 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                             flashCard.correctAnswerDislpayLanguage = language;
                             Data().store.box<FlashCard>().put(flashCard);
                           },
-                          languageSelectionTitle: "Answer Language",
-                          languageSelectionHint:
-                              "This is so user answer is syntax highlighted properly",
                         ),
                       ),
                     ],

@@ -52,7 +52,7 @@ class _ObjectBoxCountdownWidgetState extends State<ObjectBoxCountdownWidget> {
           }
           String message = remainingSeconds == null
               ? 'No timer active'
-              : 'Remaining Time: ${remainingSeconds} seconds';
+              : 'Remaining Time: $remainingSeconds seconds';
           return Center(
             child: Text(
               message,

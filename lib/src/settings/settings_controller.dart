@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:Structure/src/data_store.dart';
 import 'settings_service.dart';
 
 /// A class that many Widgets can interact with to read user settings, update
@@ -46,5 +46,21 @@ class SettingsController with ChangeNotifier {
     // Persist the changes to a local database or the internet using the
     // SettingService.
     await _settingsService.updateThemeMode(newThemeMode);
+  }
+
+  Future<void> updateHomeFolderPath(String newHomeFolderPath) async {
+    final settings = Data()
+        .store
+        .box<Settings>()
+        .query()
+        .order(Settings_.dateModifiedMillis, flags: Order.descending)
+        .build()
+        .findFirst();
+    final newSettings = Settings(
+      themeMode: settings?.themeMode ?? 'dark',
+      homeFolderPath: newHomeFolderPath,
+      dateModifiedMillis: DateTime.now().millisecondsSinceEpoch,
+    );
+    Data().store.box<Settings>().put(newSettings);
   }
 }

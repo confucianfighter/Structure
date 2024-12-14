@@ -1,9 +1,5 @@
 import '../../data_store.dart';
-import 'package:toml/toml.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
-import '../../utils/error_handling.dart';
-import 'dart:collection';
 
 @Entity()
 class Category {

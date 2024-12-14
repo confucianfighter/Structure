@@ -1,5 +1,3 @@
-import 'package:objectbox/objectbox.dart';
-import 'writing_prompt.dart';
 import '../../data_store.dart';
 @Entity()
 class WritingPromptAnswer {

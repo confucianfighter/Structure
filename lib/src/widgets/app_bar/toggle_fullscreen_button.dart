@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ToggleFullScreenButton extends StatefulWidget {
-  const ToggleFullScreenButton({Key? key}) : super(key: key);
+  const ToggleFullScreenButton({super.key});
 
   @override
   _ToggleFullScreenButtonState createState() => _ToggleFullScreenButtonState();

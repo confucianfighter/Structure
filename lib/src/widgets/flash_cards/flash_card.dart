@@ -15,11 +15,11 @@ class FlashCardWidget extends StatefulWidget {
   final Function(FlashCardResult) onAnswerSubmitted;
 
   const FlashCardWidget({
-    Key? key,
+    super.key,
     required this.flashCard,
     required this.testMode,
     required this.onAnswerSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   _FlashCardWidgetState createState() => _FlashCardWidgetState();
@@ -81,16 +81,13 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
               Expanded(
                 child: CodeEditorWidget(
                   key: _editorKey,
-                  initialCode: '', // or prefill if needed
+                  initialText: '', // or prefill if needed
                   language: widget.flashCard.correctAnswerDislpayLanguage,
                   onChanged: (answer) {
                     _userAnswer = answer;
                   },
                   onLanguageChanged: null,
-                  languageSelectionTitle: 'Language',
-                  languageSelectionHint:
-                      'Select the language for syntax highlighting',
-                  // onLanguageChanged: (lang) { ... if needed }
+                   // onLanguageChanged: (lang) { ... if needed }
                 ),
               ),
 

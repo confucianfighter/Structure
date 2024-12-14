@@ -2,7 +2,6 @@ export 'package:objectbox/objectbox.dart';
 export 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 import '../objectbox.g.dart'; // Adjust this import as needed for your project structure.
 import 'data_types/object_box_types/writing_prompt.dart';
-import 'data_types/object_box_types/category.dart';
 export '../objectbox.g.dart';
 export 'data_types/object_box_types/category.dart';
 export 'data_types/object_box_types/writing_prompt.dart';
@@ -13,10 +12,11 @@ export 'data_types/object_box_types/flash_card.dart';
 export 'data_types/object_box_types/subject.dart';
 export 'data_types/object_box_types/sequence_type_enum.dart';
 export 'data_types/object_box_types/flash_card_sequence.dart';
-import 'data_types/object_box_types/sequence_item.dart';
-import 'data_types/object_box_types/flash_card_sequence.dart';
 import 'data_types/object_box_types/subject.dart';
 export 'data_types/object_box_types/countdown.dart';
+import 'data_types/object_box_types/settings_history.dart';
+export 'data_types/object_box_types/settings_history.dart';
+export 'package:objectbox/objectbox.dart';
 import 'data_types/object_box_types/flash_card.dart';
 // singleton class to manage the ObjectBox store
 class Data {
@@ -41,7 +41,7 @@ class Data {
     // Data().store.box<SequenceItem>().removeAll();
     // Data().store.box<FlashCardSequence>().removeAll();
     // Data().store.box<Sequence>().removeAll();
-    // Data().store.box<FlashCard>().removeAll();
+    Data().store.box<FlashCard>().removeAll();
     Subject.Init();
     await prepopulateWritingPrompts();
   }

@@ -9,7 +9,7 @@ enum SequenceType {
 
 SequenceType? sequenceTypeFromString(String name) {
   return SequenceType.values.firstWhere(
-    (sequence_type) => sequence_type.name == name,
+    (sequenceType) => sequenceType.name == name,
    // Optional: returns null if no match is found
   );
 }

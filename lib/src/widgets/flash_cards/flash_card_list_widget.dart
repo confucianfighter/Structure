@@ -83,6 +83,9 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
             question: 'New Question',
             answer: 'New Answer',
           );
+          newFlashCard.questionDisplayLanguage = 'html';
+          newFlashCard.correctAnswerDislpayLanguage = 'html';
+          newFlashCard.answerInputLanguage = 'html';
           newFlashCard.subject.target = widget.subject;
           Data().store.box<FlashCard>().put(newFlashCard);
         },

@@ -9,13 +9,13 @@ class SearchableDropdown extends StatefulWidget {
   final String hintText;
 
   const SearchableDropdown({
-    Key? key,
+    super.key,
     required this.items,
     this.initialValue,
     this.onChanged,
     this.labelText = 'Select an item',
     this.hintText = 'Type to search...',
-  }) : super(key: key);
+  });
 
   @override
   State<SearchableDropdown> createState() => _SearchableDropdownState();

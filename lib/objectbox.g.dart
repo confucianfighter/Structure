@@ -19,6 +19,7 @@ import 'src/data_types/object_box_types/countdown.dart';
 import 'src/data_types/object_box_types/flash_card.dart';
 import 'src/data_types/object_box_types/flash_card_sequence.dart';
 import 'src/data_types/object_box_types/sequence_item.dart';
+import 'src/data_types/object_box_types/settings_history.dart';
 import 'src/data_types/object_box_types/subject.dart';
 import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'src/data_types/object_box_types/writing_prompt_answer.dart';
@@ -322,6 +323,35 @@ final _entities = <obx_int.ModelEntity>[
             relationTarget: 'Subject')
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(11, 8013161053207222681),
+      name: 'Settings',
+      lastPropertyId: const obx_int.IdUid(21, 909367758894680461),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 864882406465104960),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 7255906348802409266),
+            name: 'homeFolderPath',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(20, 3774784758974627001),
+            name: 'dateModifiedMillis',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(21, 909367758894680461),
+            name: 'themeMode',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -360,7 +390,7 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(10, 4887035928040764209),
+      lastEntityId: const obx_int.IdUid(11, 8013161053207222681),
       lastIndexId: const obx_int.IdUid(11, 1402608994932849385),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
@@ -383,7 +413,24 @@ obx_int.ModelDefinition getObjectBoxModel() {
         1084116758278597434,
         8432674962636872497,
         6366949616124486741,
-        3317180567605302695
+        3317180567605302695,
+        4126367219710616192,
+        857922949848606743,
+        5574657817854327551,
+        2304440124233517939,
+        7976795001761005833,
+        151704239174738462,
+        1766377132456155317,
+        8808180137222848022,
+        1561444098036662810,
+        2260483556127198990,
+        3801786133852438321,
+        8507350014714338622,
+        52257679742996983,
+        869723703728349571,
+        7703499737194522303,
+        1815411826820182851,
+        2544648642677927683
       ],
       retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
@@ -752,6 +799,43 @@ obx_int.ModelDefinition getObjectBoxModel() {
               number_of_cards: number_of_cardsParam);
           object.subject.attach(store);
           return object;
+        }),
+    Settings: obx_int.EntityDefinition<Settings>(
+        model: _entities[9],
+        toOneRelations: (Settings object) => [],
+        toManyRelations: (Settings object) => {},
+        getId: (Settings object) => object.id,
+        setId: (Settings object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Settings object, fb.Builder fbb) {
+          final homeFolderPathOffset = fbb.writeString(object.homeFolderPath);
+          final themeModeOffset = fbb.writeString(object.themeMode);
+          fbb.startTable(22);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, homeFolderPathOffset);
+          fbb.addInt64(19, object.dateModifiedMillis);
+          fbb.addOffset(20, themeModeOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final homeFolderPathParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, '');
+          final dateModifiedMillisParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 42, 0);
+          final themeModeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 44, '');
+          final object = Settings(
+              homeFolderPath: homeFolderPathParam,
+              dateModifiedMillis: dateModifiedMillisParam,
+              themeMode: themeModeParam)
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+          return object;
         })
   };
 
@@ -949,4 +1033,23 @@ class FlashCardSequence_ {
   /// See [FlashCardSequence.subject].
   static final subject = obx.QueryRelationToOne<FlashCardSequence, Subject>(
       _entities[8].properties[2]);
+}
+
+/// [Settings] entity fields to define ObjectBox queries.
+class Settings_ {
+  /// See [Settings.id].
+  static final id =
+      obx.QueryIntegerProperty<Settings>(_entities[9].properties[0]);
+
+  /// See [Settings.homeFolderPath].
+  static final homeFolderPath =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[1]);
+
+  /// See [Settings.dateModifiedMillis].
+  static final dateModifiedMillis =
+      obx.QueryIntegerProperty<Settings>(_entities[9].properties[2]);
+
+  /// See [Settings.themeMode].
+  static final themeMode =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[3]);
 }

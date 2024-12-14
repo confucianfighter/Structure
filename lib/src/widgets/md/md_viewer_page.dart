@@ -6,11 +6,11 @@ class MdViewerPage extends StatelessWidget {
   final String title;
 
   const MdViewerPage({
-    Key? key,
+    super.key,
     required this.content,
     required this.title,
     // Default to Gruvbox Dark
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'sequence_editor.dart';
 class SequenceCard extends StatelessWidget {
   final Sequence sequence;
   final VoidCallback onEdit;
-  SequenceCard({required this.sequence, required this.onEdit});
+  const SequenceCard({super.key, required this.sequence, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {

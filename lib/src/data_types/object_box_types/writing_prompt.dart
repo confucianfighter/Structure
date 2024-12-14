@@ -1,8 +1,6 @@
-import 'writing_prompt_answer.dart';
 import 'package:flutter/services.dart';
 import 'package:toml/toml.dart';
 import '../../data_store.dart';
-import 'dart:developer';
 
 @Entity()
 class WritingPrompt {

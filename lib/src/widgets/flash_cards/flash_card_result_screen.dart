@@ -9,11 +9,11 @@ class ResultScreen extends StatefulWidget {
   final Function(FlashCardResult) onAnswerSubmitted;
 
   const ResultScreen({
-    Key? key,
+    super.key,
     required this.flashCard,
     required this.userAnswer,
     required this.onAnswerSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   _ResultScreenState createState() => _ResultScreenState();
