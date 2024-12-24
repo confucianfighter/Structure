@@ -33,6 +33,8 @@ dependencies:
   webview_flutter: ^4.10.0
   webview_windows: ^0.4.0
   flutter_gen: ^5.8.0
+  visibility_detector: ^0.4.0+2
+
 dev_dependencies:
   objectbox_generator: ^4.0.3
   build_runner: ^2.4.13
@@ -47,6 +49,7 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
+  - assets/js/youtube_player.js
   - assets/categories.toml
   - assets/html_guide.md
   - assets/markdown_guide.md

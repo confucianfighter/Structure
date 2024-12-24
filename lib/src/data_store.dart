@@ -18,6 +18,7 @@ import 'data_types/object_box_types/settings_history.dart';
 export 'data_types/object_box_types/settings_history.dart';
 export 'package:objectbox/objectbox.dart';
 import 'data_types/object_box_types/flash_card.dart';
+export 'data_types/object_box_types/category.dart';
 // singleton class to manage the ObjectBox store
 class Data {
   static final Data _data = Data._internal();
@@ -41,7 +42,7 @@ class Data {
     // Data().store.box<SequenceItem>().removeAll();
     // Data().store.box<FlashCardSequence>().removeAll();
     // Data().store.box<Sequence>().removeAll();
-    Data().store.box<FlashCard>().removeAll();
+    // Data().store.box<FlashCard>().removeAll();
     Subject.Init();
     await prepopulateWritingPrompts();
   }

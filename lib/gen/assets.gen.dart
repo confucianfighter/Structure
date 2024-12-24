@@ -36,6 +36,16 @@ class $AssetsImagesGen {
   List<AssetGenImage> get values => [flutterLogo];
 }
 
+class $AssetsJsGen {
+  const $AssetsJsGen();
+
+  /// File path: assets/js/youtube_player.js
+  String get youtubePlayer => 'assets/js/youtube_player.js';
+
+  /// List of all assets
+  List<String> get values => [youtubePlayer];
+}
+
 class $AssetsCssBootstrapGen {
   const $AssetsCssBootstrapGen();
 
@@ -1219,6 +1229,7 @@ class Assets {
   static const $AssetsCssGen css = $AssetsCssGen();
   static const String htmlGuide = 'assets/html_guide.md';
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsJsGen js = $AssetsJsGen();
   static const String markdownGuide = 'assets/markdown_guide.md';
   static const String writingPrompts = 'assets/writing_prompts.toml';
 
