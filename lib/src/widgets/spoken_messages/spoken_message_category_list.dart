@@ -1,20 +1,19 @@
 import '../../data_store.dart';
 import 'package:flutter/material.dart';
-import 'writing_prompt_list_widget.dart';
+import 'spoken_message_list_widget.dart';
 
-class CategoriesWidget extends StatelessWidget {
-  const CategoriesWidget({super.key});
-  static const String routeName = '/writing_prompt_categories';
+class SpokenMessageCategoriesWidget extends StatelessWidget {
+  const SpokenMessageCategoriesWidget({super.key});
+  static const String routeName = '/spoken_message_categories';
   @override
   Widget build(BuildContext context) {
-    print("building writing prompt category view.");
-    late var queryBuilder = Data().store.box<Category>().query();
-
+    late var queryBuilder = Data().store.box<SpokenMessageCategory>().query();
+    print("building spoken message category list.");
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Writing Prompt Categories'),
+        title: const Text('Spoken Message Categories'),
       ),
-      body: StreamBuilder<List<Category>>(
+      body: StreamBuilder<List<SpokenMessageCategory>>(
         stream: queryBuilder
             .watch(triggerImmediately: true)
             .map((query) => query.find()),
@@ -40,7 +39,7 @@ class CategoriesWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              WritingPromptListWidget(category: null),
+                              SpokenMessageListWidget(category: null),
                         ),
                       );
                     },
@@ -58,18 +57,18 @@ class CategoriesWidget extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.white54),
                       onPressed: () async {
-                        String newCategory = categoryName;
+                        String newSpokenMessageCategory = categoryName;
                         TextEditingController controller =
                             TextEditingController(text: categoryName);
                         showDialog(
                           context: context,
                           builder: (dialogueContext) {
                             return AlertDialog(
-                              title: const Text('Rename Category'),
+                              title: const Text('Rename SpokenMessageCategory'),
                               content: TextField(
                                 controller: controller,
                                 onChanged: (value) {
-                                  newCategory = value;
+                                  newSpokenMessageCategory = value;
                                 },
                                 decoration: const InputDecoration(
                                     hintText: 'Enter new category name'),
@@ -84,11 +83,11 @@ class CategoriesWidget extends StatelessWidget {
                                 TextButton(
                                   child: const Text('Save'),
                                   onPressed: () {
-                                    if (newCategory.isNotEmpty) {
-                                      category.name = newCategory;
+                                    if (newSpokenMessageCategory.isNotEmpty) {
+                                      category.name = newSpokenMessageCategory;
                                       Data()
                                           .store
-                                          .box<Category>()
+                                          .box<SpokenMessageCategory>()
                                           .put(category);
                                     }
                                     Navigator.of(context).pop();
@@ -128,8 +127,8 @@ class CategoriesWidget extends StatelessWidget {
                           },
                         );
                         if (confirmDelete == true) {
-                          if (category != Category.getDefault()) {
-                            Data().store.box<Category>().remove(category.id);
+                          if (category != SpokenMessageCategory.getDefault()) {
+                            Data().store.box<SpokenMessageCategory>().remove(category.id);
                           }
                         }
                       },
@@ -142,7 +141,7 @@ class CategoriesWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            WritingPromptListWidget(category: category),
+                            SpokenMessageListWidget(category: category),
                       ),
                     );
                   },
@@ -153,24 +152,24 @@ class CategoriesWidget extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddCategoryDialog(context),
-        tooltip: 'Add Category',
+        onPressed: () => _showAddSpokenMessageCategoryDialog(context),
+        tooltip: 'Add SpokenMessageCategory',
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddCategoryDialog(BuildContext context) {
-    String newCategory = '';
+  void _showAddSpokenMessageCategoryDialog(BuildContext context) {
+    String newSpokenMessageCategory = '';
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add New Category'),
+          title: const Text('Add New SpokenMessageCategory'),
           content: TextField(
             onChanged: (value) {
-              newCategory = value;
+              newSpokenMessageCategory = value;
             },
             decoration: const InputDecoration(hintText: 'Enter category name'),
           ),
@@ -184,8 +183,8 @@ class CategoriesWidget extends StatelessWidget {
             TextButton(
               child: const Text('Add'),
               onPressed: () {
-                if (newCategory.isNotEmpty) {
-                  Category.AddIfNotExists(newCategory);
+                if (newSpokenMessageCategory.isNotEmpty) {
+                  SpokenMessageCategory.AddIfNotExists(newSpokenMessageCategory);
                 }
                 Navigator.of(context).pop();
               },

@@ -44,10 +44,9 @@ class _WritingPromptScreenState extends State<WritingPromptScreen> {
 
     // Update last answered time
     setState(() {
-      if(_currentAnswer != null){
+      if (_currentAnswer != null) {
         newAnswer.id = _currentAnswer!.id;
-      }
-      else{
+      } else {
         newAnswer.id = Data().store.box<WritingPromptAnswer>().put(newAnswer);
         _currentPrompt.addAnswer(newAnswer);
       }

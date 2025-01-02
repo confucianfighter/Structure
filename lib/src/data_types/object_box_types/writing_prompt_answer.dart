@@ -1,4 +1,5 @@
 import '../../data_store.dart';
+
 @Entity()
 class WritingPromptAnswer {
   @Id() // Automatically generated ID for ObjectBox
@@ -9,7 +10,7 @@ class WritingPromptAnswer {
   DateTime dateAnswered;
 
   ToOne<WritingPrompt> writingPrompt = ToOne<WritingPrompt>();
-  
+
   WritingPromptAnswer({
     required this.answer,
     required this.dateAnswered,

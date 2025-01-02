@@ -39,11 +39,14 @@ class $AssetsImagesGen {
 class $AssetsJsGen {
   const $AssetsJsGen();
 
+  /// File path: assets/js/highlight.min.js
+  String get highlightMin => 'assets/js/highlight.min.js';
+
   /// File path: assets/js/youtube_player.js
   String get youtubePlayer => 'assets/js/youtube_player.js';
 
   /// List of all assets
-  List<String> get values => [youtubePlayer];
+  List<String> get values => [highlightMin, youtubePlayer];
 }
 
 class $AssetsCssBootstrapGen {

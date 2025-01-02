@@ -116,7 +116,7 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
                         showEditButton: false,
                         onLanguageChanged: null,
                         onChanged: null,
-                        initialText: _codeController.text,
+                        initialText: _currentText ?? "",
                         cssPath: _cssPath!,
                         highlightJsCssPath: _highlightJsCssPath!,
                       ))

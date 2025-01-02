@@ -11,7 +11,7 @@ import '../../data_store.dart';
 import '../sequences/sequence_list.dart';
 import '../subjects/subject_list_widget.dart';
 import '../app_bar/toggle_fullscreen_button.dart';
-
+import '../spoken_messages/spoken_message_category_list.dart';
 
 /// Displays a list of SampleItems.
 class MainMenu extends StatelessWidget {
@@ -34,8 +34,11 @@ class MainMenu extends StatelessWidget {
           route: SequenceListWidget.route,
           icon: Icons.timeline,
           title: 'Sequences'),
-      
-      
+      MenuItem(
+          id: 4,
+          route: SpokenMessageCategoriesWidget.routeName,
+          icon: Icons.audiotrack,
+          title: 'SpokenMessages')
     ],
   });
 

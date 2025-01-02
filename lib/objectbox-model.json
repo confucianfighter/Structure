@@ -328,10 +328,77 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:2084968273887987538",
+      "lastPropertyId": "6:3879553902245350804",
+      "name": "SpokenMessage",
+      "properties": [
+        {
+          "id": "1:1834274863727384631",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6056145954348888243",
+          "name": "text",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "12:8672730454093678419"
+        },
+        {
+          "id": "3:3997274036495739192",
+          "name": "audioFilePath",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "13:4885641807156364558"
+        },
+        {
+          "id": "4:1413956326681586186",
+          "name": "lastEdited",
+          "type": 10
+        },
+        {
+          "id": "5:4594596014634950522",
+          "name": "lastTimeUsed",
+          "type": 10
+        },
+        {
+          "id": "6:3879553902245350804",
+          "name": "categoryId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "14:7078071130441519314",
+          "relationTarget": "SpokenMessageCategory"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "13:9195616989878741009",
+      "lastPropertyId": "2:272802014450438586",
+      "name": "SpokenMessageCategory",
+      "properties": [
+        {
+          "id": "1:5496164166723507336",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:272802014450438586",
+          "name": "name",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "15:7701589329274657698"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "11:8013161053207222681",
-  "lastIndexId": "11:1402608994932849385",
+  "lastEntityId": "13:9195616989878741009",
+  "lastIndexId": "15:7701589329274657698",
   "lastRelationId": "1:2382961371279645997",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

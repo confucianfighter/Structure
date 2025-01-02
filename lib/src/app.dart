@@ -8,6 +8,7 @@ import 'widgets/writing_prompts/writing_prompt_category_view.dart';
 import 'systems/object_box_timer.dart';
 import 'widgets/sequences/sequence_list.dart';
 import 'widgets/subjects/subject_list_widget.dart';
+import 'widgets/spoken_messages/spoken_message_category_list.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -99,7 +100,11 @@ class MyApp extends StatelessWidget {
                   case SequenceListWidget.route:
                     return SequenceListWidget();
                   case CategoriesWidget.routeName:
+                    print("routing to writing prompt categories.");
                     return const CategoriesWidget();
+                  case SpokenMessageCategoriesWidget.routeName:
+                    print("spoken messages route");
+                    return const SpokenMessageCategoriesWidget();
                   case MainMenu.routeName:
                   // fall through to the default case
                   default:

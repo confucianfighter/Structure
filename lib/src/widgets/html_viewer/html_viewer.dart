@@ -46,11 +46,11 @@ class _HTMLViewerState extends State<HTMLViewer> with WidgetsBindingObserver {
     //WidgetsBinding.instance?.addObserver(this);
   }
 
-  Future<String> loadCssContent(String assetPath) async {
+  Future<String> loadAssetFileAsString(String assetPath) async {
     try {
       return await rootBundle.loadString(assetPath);
     } catch (e) {
-      print("Error loading CSS file: $e");
+      print("Error loading file $assetPath:  $e");
       return ""; // Return empty string if the asset cannot be loaded
     }
   }
@@ -58,7 +58,9 @@ class _HTMLViewerState extends State<HTMLViewer> with WidgetsBindingObserver {
   Future<void> _checkWebView2Installation() async {
     try {
       await _controller.initialize();
-
+      _controller.onLoadError.listen((status) {
+        print(status);
+      });
       // Handle window close event
       //onWindowClose();
 
@@ -95,11 +97,18 @@ class _HTMLViewerState extends State<HTMLViewer> with WidgetsBindingObserver {
 
   Future<void> _updateWebView(String htmlContent, String cssAssetPath) async {
     // Load the CSS content
-    var cssContent = await loadCssContent(cssAssetPath); // Your main CSS
-    var highlightJsCssContent = await loadCssContent(
+
+    var cssContent = await loadAssetFileAsString(cssAssetPath); // Your main CSS
+    var highlightJsCssContent = await loadAssetFileAsString(
         widget._highlightJsCssPath); // Highlight.js theme CSS
     var customJs = await rootBundle
         .loadString('assets/js/youtube_player.js'); // Load the custom.js file
+    final hljsScript =
+        await loadAssetFileAsString('assets/js/highlight.min.js');
+    await _controller.executeScript(hljsScript);
+    //print('hljsScript = $hljsScript');
+    // this outputs the correct script.
+
     // throw an error if string is empty
     if (cssContent.isEmpty) {
       throw Exception('CSS content is empty');
@@ -120,8 +129,9 @@ document.write(`<!DOCTYPE html>
     $highlightJsCssContent
     $cssContent
   </style>
-
+  
   <script>
+    
     // Define globals before DOMContentLoaded
     window.players = [];
     window.stopAllVideos = function() {
@@ -301,8 +311,7 @@ var player = new YT.Player(playerId, {
       document.head.appendChild(ytScript);
     });
   </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  
 </head>
 <body>
   $htmlContent

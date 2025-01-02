@@ -20,6 +20,8 @@ import 'src/data_types/object_box_types/flash_card.dart';
 import 'src/data_types/object_box_types/flash_card_sequence.dart';
 import 'src/data_types/object_box_types/sequence_item.dart';
 import 'src/data_types/object_box_types/settings_history.dart';
+import 'src/data_types/object_box_types/spoken_message.dart';
+import 'src/data_types/object_box_types/spoken_message_category.dart';
 import 'src/data_types/object_box_types/subject.dart';
 import 'src/data_types/object_box_types/writing_prompt.dart';
 import 'src/data_types/object_box_types/writing_prompt_answer.dart';
@@ -352,6 +354,69 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(12, 2084968273887987538),
+      name: 'SpokenMessage',
+      lastPropertyId: const obx_int.IdUid(6, 3879553902245350804),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 1834274863727384631),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 6056145954348888243),
+            name: 'text',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(12, 8672730454093678419)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 3997274036495739192),
+            name: 'audioFilePath',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(13, 4885641807156364558)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 1413956326681586186),
+            name: 'lastEdited',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 4594596014634950522),
+            name: 'lastTimeUsed',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 3879553902245350804),
+            name: 'categoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(14, 7078071130441519314),
+            relationTarget: 'SpokenMessageCategory')
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(13, 9195616989878741009),
+      name: 'SpokenMessageCategory',
+      lastPropertyId: const obx_int.IdUid(2, 272802014450438586),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5496164166723507336),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 272802014450438586),
+            name: 'name',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(15, 7701589329274657698))
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -390,8 +455,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(11, 8013161053207222681),
-      lastIndexId: const obx_int.IdUid(11, 1402608994932849385),
+      lastEntityId: const obx_int.IdUid(13, 9195616989878741009),
+      lastIndexId: const obx_int.IdUid(15, 7701589329274657698),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [4113595854453584037],
@@ -836,6 +901,86 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
           return object;
+        }),
+    SpokenMessage: obx_int.EntityDefinition<SpokenMessage>(
+        model: _entities[10],
+        toOneRelations: (SpokenMessage object) => [object.category],
+        toManyRelations: (SpokenMessage object) => {},
+        getId: (SpokenMessage object) => object.id,
+        setId: (SpokenMessage object, int id) {
+          object.id = id;
+        },
+        objectToFB: (SpokenMessage object, fb.Builder fbb) {
+          final textOffset =
+              object.text == null ? null : fbb.writeString(object.text!);
+          final audioFilePathOffset = object.audioFilePath == null
+              ? null
+              : fbb.writeString(object.audioFilePath!);
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, textOffset);
+          fbb.addOffset(2, audioFilePathOffset);
+          fbb.addInt64(3, object.lastEdited?.millisecondsSinceEpoch);
+          fbb.addInt64(4, object.lastTimeUsed?.millisecondsSinceEpoch);
+          fbb.addInt64(5, object.category.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final lastEditedValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
+          final lastTimeUsedValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+          final textParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final lastEditedParam = lastEditedValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(lastEditedValue);
+          final lastTimeUsedParam = lastTimeUsedValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(lastTimeUsedValue);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final object = SpokenMessage(
+              text: textParam,
+              lastEdited: lastEditedParam,
+              lastTimeUsed: lastTimeUsedParam,
+              id: idParam)
+            ..audioFilePath = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 8);
+          object.category.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          object.category.attach(store);
+          return object;
+        }),
+    SpokenMessageCategory: obx_int.EntityDefinition<SpokenMessageCategory>(
+        model: _entities[11],
+        toOneRelations: (SpokenMessageCategory object) => [],
+        toManyRelations: (SpokenMessageCategory object) => {},
+        getId: (SpokenMessageCategory object) => object.id,
+        setId: (SpokenMessageCategory object, int id) {
+          object.id = id;
+        },
+        objectToFB: (SpokenMessageCategory object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final object = SpokenMessageCategory(id: idParam, name: nameParam);
+
+          return object;
         })
   };
 
@@ -1052,4 +1197,43 @@ class Settings_ {
   /// See [Settings.themeMode].
   static final themeMode =
       obx.QueryStringProperty<Settings>(_entities[9].properties[3]);
+}
+
+/// [SpokenMessage] entity fields to define ObjectBox queries.
+class SpokenMessage_ {
+  /// See [SpokenMessage.id].
+  static final id =
+      obx.QueryIntegerProperty<SpokenMessage>(_entities[10].properties[0]);
+
+  /// See [SpokenMessage.text].
+  static final text =
+      obx.QueryStringProperty<SpokenMessage>(_entities[10].properties[1]);
+
+  /// See [SpokenMessage.audioFilePath].
+  static final audioFilePath =
+      obx.QueryStringProperty<SpokenMessage>(_entities[10].properties[2]);
+
+  /// See [SpokenMessage.lastEdited].
+  static final lastEdited =
+      obx.QueryDateProperty<SpokenMessage>(_entities[10].properties[3]);
+
+  /// See [SpokenMessage.lastTimeUsed].
+  static final lastTimeUsed =
+      obx.QueryDateProperty<SpokenMessage>(_entities[10].properties[4]);
+
+  /// See [SpokenMessage.category].
+  static final category =
+      obx.QueryRelationToOne<SpokenMessage, SpokenMessageCategory>(
+          _entities[10].properties[5]);
+}
+
+/// [SpokenMessageCategory] entity fields to define ObjectBox queries.
+class SpokenMessageCategory_ {
+  /// See [SpokenMessageCategory.id].
+  static final id = obx.QueryIntegerProperty<SpokenMessageCategory>(
+      _entities[11].properties[0]);
+
+  /// See [SpokenMessageCategory.name].
+  static final name = obx.QueryStringProperty<SpokenMessageCategory>(
+      _entities[11].properties[1]);
 }
