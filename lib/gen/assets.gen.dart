@@ -1228,6 +1228,7 @@ class $AssetsCssHighlightBase16Gen {
 class Assets {
   Assets._();
 
+  static const String aEnv = '.env';
   static const String categories = 'assets/categories.toml';
   static const $AssetsCssGen css = $AssetsCssGen();
   static const String htmlGuide = 'assets/html_guide.md';
@@ -1238,7 +1239,7 @@ class Assets {
 
   /// List of all assets
   static List<String> get values =>
-      [categories, htmlGuide, markdownGuide, writingPrompts];
+      [aEnv, categories, htmlGuide, markdownGuide, writingPrompts];
 }
 
 class AssetGenImage {

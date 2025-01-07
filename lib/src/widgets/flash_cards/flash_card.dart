@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
-import 'package:flutter_highlight/themes/monokai-sublime.dart';
-import 'package:highlight/languages/dart.dart';
 
 import '../../data_store.dart';
-import '../md/md_viewer.dart';
 import 'flash_card_result_screen.dart';
 import 'flash_card_result.dart';
-import '../code_editor/code_editor.dart'; // Import the new widget
+import '../code_editor/code_editor.dart';
+import '../html_viewer/html_viewer.dart';
+import 'package:Structure/gen/assets.gen.dart'; // Import the new widget
 
 class FlashCardWidget extends StatefulWidget {
   final FlashCard flashCard;
@@ -62,14 +60,22 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.1,
+            horizontal: screenWidth * 0.15,
             vertical: 16.0,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MdViewer(content: widget.flashCard.question),
+              HTMLViewer(
+                  initialText: widget.flashCard.question,
+                  cssPath: Assets.css.bootstrap.bootstrapSlateMin,
+                  highlightJsCssPath:
+                      Assets.css.highlight.agate, // Add this line
+                  onLanguageChanged: null,
+                  showEditButton: false,
+                  onChanged: null,
+                  language: 'html'),
               const SizedBox(height: 24.0),
               const Text(
                 'Your Answer:',
@@ -87,7 +93,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                     _userAnswer = answer;
                   },
                   onLanguageChanged: null,
-                   // onLanguageChanged: (lang) { ... if needed }
+                  // onLanguageChanged: (lang) { ... if needed }
                 ),
               ),
 

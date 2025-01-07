@@ -9,10 +9,17 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'src/data_types/quiz_question.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dart_openai/dart_openai.dart';
+import 'package:media_kit/media_kit.dart';
 // Generated file
 
 void main() async {
+  await dotenv.load(fileName: '.env');
+  final apiKey = dotenv.env['OPENAI_API_KEY'];
+  MediaKit.ensureInitialized();
+  print('OPENAI_API_KEY is $apiKey');
+  OpenAI.apiKey = apiKey!;
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();

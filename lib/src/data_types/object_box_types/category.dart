@@ -55,16 +55,6 @@ class Category {
         .query(Category_.name.equals(name))
         .build()
         .findFirst();
-    if (category == null) {
-      Data().store.box<Category>().put(Category(id: 0, name: name));
-      category = Data()
-              .store
-              .box<Category>()
-              .query(Category_.name.equals(name))
-              .build()
-              .findFirst() ??
-          category;
-    }
     return category;
   }
 

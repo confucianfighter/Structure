@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../data_store.dart';
-import '../md/md_editor.dart';
 import 'flash_card.dart';
 import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
-import '../code_editor/code_editor.dart';
 import '../html_viewer/html_viewer.dart';
 import 'package:Structure/gen/assets.gen.dart';
+import '../code_editor/code_editor.dart';
 
 class FlashCardEditor extends StatefulWidget {
   final int flashCardId;
@@ -158,20 +157,21 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                               'Select the language for syntax highlighting of user input...'),
                       const SizedBox(height: 8.0),
                       Expanded(
-                        child: HTMLViewer(
-                          showEditButton: true,
+                        child: CodeEditorWidget(
                           initialText: flashCard.answer,
                           language: flashCard.correctAnswerDislpayLanguage,
-                          cssPath: Assets.css.bootstrap.bootstrapSlateMin,
-                          highlightJsCssPath: Assets.css.highlight.agate,
                           onChanged: (value) {
-                            flashCard.answer = value;
-                            Data().store.box<FlashCard>().put(flashCard);
+                            setState(() {
+                              flashCard.answer = value;
+                              Data().store.box<FlashCard>().put(flashCard);
+                            });
                           },
                           onLanguageChanged: (language) {
                             flashCard.correctAnswerDislpayLanguage = language;
                             Data().store.box<FlashCard>().put(flashCard);
                           },
+                          isFullScreen: false,
+                          
                         ),
                       ),
                     ],

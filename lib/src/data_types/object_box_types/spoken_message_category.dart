@@ -7,6 +7,7 @@ class SpokenMessageCategory {
   int id = 0;
   @Unique()
   String name = 'Uncategorized';
+  String message_prefix = "";
   // allow for an empty constructor
   SpokenMessageCategory({required this.id, required this.name});
 
@@ -28,7 +29,9 @@ class SpokenMessageCategory {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SpokenMessageCategory && runtimeType == other.runtimeType && id == other.id;
+      other is SpokenMessageCategory &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -49,21 +52,22 @@ class SpokenMessageCategory {
   }
 
   static Future<SpokenMessageCategory?> AddIfNotExists(String name) async {
-    SpokenMessageCategory? category = Data()
+    SpokenMessageCategory? category;
+    category = Data()
         .store
         .box<SpokenMessageCategory>()
         .query(SpokenMessageCategory_.name.equals(name))
         .build()
         .findFirst();
     if (category == null) {
-      Data().store.box<SpokenMessageCategory>().put(SpokenMessageCategory(id: 0, name: name));
+      category = SpokenMessageCategory(id: 0, name: name);
+      Data().store.box<SpokenMessageCategory>().put(category);
       category = Data()
-              .store
-              .box<SpokenMessageCategory>()
-              .query(SpokenMessageCategory_.name.equals(name))
-              .build()
-              .findFirst() ??
-          category;
+          .store
+          .box<SpokenMessageCategory>()
+          .query(SpokenMessageCategory_.name.equals(name))
+          .build()
+          .findFirst();
     }
     return category;
   }
@@ -82,7 +86,10 @@ class SpokenMessageCategory {
       return true;
     } else {
       existingSpokenMessageCategory.name = category.name;
-      Data().store.box<SpokenMessageCategory>().put(existingSpokenMessageCategory);
+      Data()
+          .store
+          .box<SpokenMessageCategory>()
+          .put(existingSpokenMessageCategory);
       return true;
     }
   }

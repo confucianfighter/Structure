@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import '../../data_store.dart';
 import 'sequence_card.dart';
 class SequenceListWidget extends StatelessWidget {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'flash_card.dart';
 import '../../data_store.dart';
 import '../md/md_viewer.dart';
 import 'flash_card_result.dart';

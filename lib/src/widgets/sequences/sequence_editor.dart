@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import '../../data_store.dart';
 import 'sequence_item_widget.dart';
-import '../../data_store.dart';
-import 'sequence_card.dart';
 
 class SequenceEditor extends StatefulWidget {
   final int sequenceId;

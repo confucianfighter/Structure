@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'settings_controller.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:Structure/src/data_store.dart';
 
 /// Displays the various settings that can be customized by the user.

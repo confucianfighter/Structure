@@ -119,4 +119,8 @@ final Map<String, LanguageItem> languageMap = {
     flutterCodeEditorType: swift,
     markdownIdentifier: 'swift',
   ),
+  'plainText': LanguageItem(
+    flutterCodeEditorType: cs,
+    markdownIdentifier: 'plainText',
+  ),
 };

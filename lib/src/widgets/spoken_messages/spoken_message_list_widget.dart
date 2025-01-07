@@ -43,15 +43,30 @@ class SpokenMessageListWidget extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<SpokenMessage> messages = snapshot.data!;
-            return ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                return SpokenMessageCard(
-                  message: message,
-                );
-              },
-            );
+            return Column(children: [
+              TextFormField(
+                  initialValue: category?.message_prefix,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    labelText: "Message to prepend to each message in this category",
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    category!.message_prefix = value;
+                    Data().store.box<SpokenMessageCategory>().put(category!);
+                  },
+                ),
+              ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final message = messages[index];
+                  return SpokenMessageCard(
+                    message: message,
+                  );
+                },
+              )
+            ]);
           } else if (snapshot.hasError) {
             return Center(child: Text('Error loading prompts'));
           } else {
@@ -61,11 +76,14 @@ class SpokenMessageListWidget extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          final gain = Settings.get()?.openai_tts_gain ?? 2;
           // Add a new blank writing prompt
           final newPrompt = SpokenMessage(
-            text: "",
-            lastEdited: DateTime.now(),
-          );
+              text: "",
+              lastEdited: DateTime.now(),
+              speed: 0.75,
+              voice: 'nova',
+              gain: gain);
           newPrompt.category.target = category;
           Data().store.box<SpokenMessage>().put(newPrompt);
         },

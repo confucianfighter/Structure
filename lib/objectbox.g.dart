@@ -329,7 +329,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(11, 8013161053207222681),
       name: 'Settings',
-      lastPropertyId: const obx_int.IdUid(21, 909367758894680461),
+      lastPropertyId: const obx_int.IdUid(24, 7663497536443771573),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -351,6 +351,21 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(21, 909367758894680461),
             name: 'themeMode',
             type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(22, 2306390036233425434),
+            name: 'openai_tts_gain',
+            type: 8,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(23, 6162968021176892675),
+            name: 'cssStylePath',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(24, 7663497536443771573),
+            name: 'codeStylePath',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -358,7 +373,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(12, 2084968273887987538),
       name: 'SpokenMessage',
-      lastPropertyId: const obx_int.IdUid(6, 3879553902245350804),
+      lastPropertyId: const obx_int.IdUid(9, 6059700306309498624),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -394,14 +409,29 @@ final _entities = <obx_int.ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const obx_int.IdUid(14, 7078071130441519314),
-            relationTarget: 'SpokenMessageCategory')
+            relationTarget: 'SpokenMessageCategory'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 5942028616569058601),
+            name: 'speed',
+            type: 8,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 4557480749669223627),
+            name: 'voice',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 6059700306309498624),
+            name: 'gain',
+            type: 8,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
       id: const obx_int.IdUid(13, 9195616989878741009),
       name: 'SpokenMessageCategory',
-      lastPropertyId: const obx_int.IdUid(2, 272802014450438586),
+      lastPropertyId: const obx_int.IdUid(3, 4189744956463434323),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -414,7 +444,12 @@ final _entities = <obx_int.ModelEntity>[
             name: 'name',
             type: 9,
             flags: 2080,
-            indexId: const obx_int.IdUid(15, 7701589329274657698))
+            indexId: const obx_int.IdUid(15, 7701589329274657698)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4189744956463434323),
+            name: 'message_prefix',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -726,8 +761,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 6, '');
           final answerParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 8, '');
+          final answerInputLanguageParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 30, '');
           final object = FlashCard(
-              id: idParam, question: questionParam, answer: answerParam)
+              id: idParam,
+              question: questionParam,
+              answer: answerParam,
+              answerInputLanguage: answerInputLanguageParam)
             ..timesCorrect =
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)
             ..timesIncorrect =
@@ -741,10 +782,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
                     .vTableGet(buffer, rootOffset, 26, '')
             ..questionDisplayLanguage =
                 const fb.StringReader(asciiOptimization: true)
-                    .vTableGet(buffer, rootOffset, 28, '')
-            ..answerInputLanguage =
-                const fb.StringReader(asciiOptimization: true)
-                    .vTableGet(buffer, rootOffset, 30, '');
+                    .vTableGet(buffer, rootOffset, 28, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
@@ -876,11 +914,20 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectToFB: (Settings object, fb.Builder fbb) {
           final homeFolderPathOffset = fbb.writeString(object.homeFolderPath);
           final themeModeOffset = fbb.writeString(object.themeMode);
-          fbb.startTable(22);
+          final cssStylePathOffset = object.cssStylePath == null
+              ? null
+              : fbb.writeString(object.cssStylePath!);
+          final codeStylePathOffset = object.codeStylePath == null
+              ? null
+              : fbb.writeString(object.codeStylePath!);
+          fbb.startTable(25);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, homeFolderPathOffset);
           fbb.addInt64(19, object.dateModifiedMillis);
           fbb.addOffset(20, themeModeOffset);
+          fbb.addFloat64(21, object.openai_tts_gain);
+          fbb.addOffset(22, cssStylePathOffset);
+          fbb.addOffset(23, codeStylePathOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -898,7 +945,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
               homeFolderPath: homeFolderPathParam,
               dateModifiedMillis: dateModifiedMillisParam,
               themeMode: themeModeParam)
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
+            ..openai_tts_gain =
+                const fb.Float64Reader().vTableGet(buffer, rootOffset, 46, 0)
+            ..cssStylePath = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 48)
+            ..codeStylePath = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 50);
 
           return object;
         }),
@@ -916,13 +969,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final audioFilePathOffset = object.audioFilePath == null
               ? null
               : fbb.writeString(object.audioFilePath!);
-          fbb.startTable(7);
+          final voiceOffset = fbb.writeString(object.voice);
+          fbb.startTable(10);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, textOffset);
           fbb.addOffset(2, audioFilePathOffset);
           fbb.addInt64(3, object.lastEdited?.millisecondsSinceEpoch);
           fbb.addInt64(4, object.lastTimeUsed?.millisecondsSinceEpoch);
           fbb.addInt64(5, object.category.targetId);
+          fbb.addFloat64(6, object.speed);
+          fbb.addOffset(7, voiceOffset);
+          fbb.addFloat64(8, object.gain);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -938,6 +995,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final lastEditedParam = lastEditedValue == null
               ? null
               : DateTime.fromMillisecondsSinceEpoch(lastEditedValue);
+          final speedParam =
+              const fb.Float64Reader().vTableGet(buffer, rootOffset, 16, 0);
+          final voiceParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 18, '');
+          final gainParam =
+              const fb.Float64Reader().vTableGet(buffer, rootOffset, 20, 0);
           final lastTimeUsedParam = lastTimeUsedValue == null
               ? null
               : DateTime.fromMillisecondsSinceEpoch(lastTimeUsedValue);
@@ -946,6 +1009,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final object = SpokenMessage(
               text: textParam,
               lastEdited: lastEditedParam,
+              speed: speedParam,
+              voice: voiceParam,
+              gain: gainParam,
               lastTimeUsed: lastTimeUsedParam,
               id: idParam)
             ..audioFilePath = const fb.StringReader(asciiOptimization: true)
@@ -965,9 +1031,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (SpokenMessageCategory object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
+          final message_prefixOffset = fbb.writeString(object.message_prefix);
+          fbb.startTable(4);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, message_prefixOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -978,7 +1046,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final nameParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
-          final object = SpokenMessageCategory(id: idParam, name: nameParam);
+          final object = SpokenMessageCategory(id: idParam, name: nameParam)
+            ..message_prefix = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 8, '');
 
           return object;
         })
@@ -1197,6 +1267,18 @@ class Settings_ {
   /// See [Settings.themeMode].
   static final themeMode =
       obx.QueryStringProperty<Settings>(_entities[9].properties[3]);
+
+  /// See [Settings.openai_tts_gain].
+  static final openai_tts_gain =
+      obx.QueryDoubleProperty<Settings>(_entities[9].properties[4]);
+
+  /// See [Settings.cssStylePath].
+  static final cssStylePath =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[5]);
+
+  /// See [Settings.codeStylePath].
+  static final codeStylePath =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[6]);
 }
 
 /// [SpokenMessage] entity fields to define ObjectBox queries.
@@ -1225,6 +1307,18 @@ class SpokenMessage_ {
   static final category =
       obx.QueryRelationToOne<SpokenMessage, SpokenMessageCategory>(
           _entities[10].properties[5]);
+
+  /// See [SpokenMessage.speed].
+  static final speed =
+      obx.QueryDoubleProperty<SpokenMessage>(_entities[10].properties[6]);
+
+  /// See [SpokenMessage.voice].
+  static final voice =
+      obx.QueryStringProperty<SpokenMessage>(_entities[10].properties[7]);
+
+  /// See [SpokenMessage.gain].
+  static final gain =
+      obx.QueryDoubleProperty<SpokenMessage>(_entities[10].properties[8]);
 }
 
 /// [SpokenMessageCategory] entity fields to define ObjectBox queries.
@@ -1236,4 +1330,8 @@ class SpokenMessageCategory_ {
   /// See [SpokenMessageCategory.name].
   static final name = obx.QueryStringProperty<SpokenMessageCategory>(
       _entities[11].properties[1]);
+
+  /// See [SpokenMessageCategory.message_prefix].
+  static final message_prefix = obx.QueryStringProperty<SpokenMessageCategory>(
+      _entities[11].properties[2]);
 }

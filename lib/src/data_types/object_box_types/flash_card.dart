@@ -5,8 +5,8 @@ class FlashCard {
   @Id()
   int id;
   String type = 'essay_question';
-  String correctAnswerDislpayLanguage = 'markdown';
-  String questionDisplayLanguage = 'markdown';
+  String correctAnswerDislpayLanguage = 'html';
+  String questionDisplayLanguage = 'html';
   String answerInputLanguage = 'plainText';
   String question;
   String answer;
@@ -19,5 +19,6 @@ class FlashCard {
     required this.id,
     required this.question,
     required this.answer,
+    required this.answerInputLanguage,
   });
 }

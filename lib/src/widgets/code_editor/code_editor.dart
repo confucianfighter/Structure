@@ -8,9 +8,9 @@ import '../nuts_and_bolts/searchable_dropdown.dart';
 import '../../data_types/code_editor/language_option.dart';
 import '../md/md_viewer.dart';
 import '../md/md_viewer_page.dart';
-import '../../assets_map.dart';
 import 'package:Structure/src/assets.dart';
 import 'package:Structure/gen/assets.gen.dart' as ASSETS;
+import 'package:Structure/src/data_store.dart';
 
 class CodeEditorWidget extends StatefulWidget {
   final String initialText;
@@ -19,13 +19,15 @@ class CodeEditorWidget extends StatefulWidget {
   final String languageSelectionHint = 'Select a language';
   final Function(String)? onLanguageChanged;
   final Function(String)? onChanged;
+  final bool isFullScreen;
 
-  CodeEditorWidget({
+  const CodeEditorWidget({
     super.key,
     required this.initialText,
     required this.language,
     required this.onChanged,
     required this.onLanguageChanged,
+    this.isFullScreen = true,
   });
 
   @override
@@ -71,6 +73,8 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
     setState(() {
       _languageStr = newLanguage;
       _language = languageMap[newLanguage]?.flutterCodeEditorType ?? dart;
+      _codeController.language = _language;
+
       widget.onLanguageChanged?.call(newLanguage);
     });
   }
@@ -84,162 +88,179 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Code Editor'),
-        ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final isViewerEnabled =
-                widget.language == 'html' || widget.language == 'markdown';
+    final editorContent = LayoutBuilder(
+      builder: (context, constraints) {
+        final isViewerEnabled =
+            _languageStr == 'html' || _languageStr == 'markdown';
 
-            final editor = SingleChildScrollView(
-                child: CodeTheme(
-              data: CodeThemeData(styles: monokaiSublimeTheme),
-              child: CodeField(
-                controller: _codeController,
-                focusNode: _focusNode,
-                gutterStyle: GutterStyle.none,
-                textStyle:
-                    const TextStyle(fontSize: 14.0, fontFamily: 'monospace'),
-                onChanged: _onTextChanged,
-              ),
-            ));
-
-            final viewer = isViewerEnabled
-                ? (widget.language == 'markdown'
-                    ? SingleChildScrollView(
-                        child: MdViewer(content: _codeController.text))
-                    : HTMLViewer(
-                        //already editing.
-                        language: widget.language,
-                        showEditButton: false,
-                        onLanguageChanged: null,
-                        onChanged: null,
-                        initialText: _currentText ?? "",
-                        cssPath: _cssPath!,
-                        highlightJsCssPath: _highlightJsCssPath!,
-                      ))
-                : null;
-
-            return Column(
-              children: [
-                // row containing language selection dropdown followed by a button that says "${_langauge} Quick Reference"
-                Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: SearchableDropdown(
-                          items: _languages,
-                          initialValue: widget.language,
-                          onChanged: (language) =>
-                              _onLanguageSelected(language),
-                          labelText: widget.languageSelectionTitle,
-                          hintText: widget.languageSelectionHint,
-                        )),
-                    // add space between dropdown and button
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            var fileName =
-                                "${_languageStr.toLowerCase()}_guide.md";
-                            // check if file exists in rootBundle
-                            // if so set content to the file
-                            // if not set content to a default message
-                            var content =
-                                'No quick reference available for $_languageStr';
-                            if (await _checkGuideExists(_languageStr)) {
-                              content = await rootBundle
-                                  .loadString('assets/$fileName');
-                            }
-
-                            // Open a dialog with the quick reference for the selected language
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MdViewerPage(
-                                  content: content,
-                                  title: '$_languageStr Quick Reference',
-                                ),
-                              ),
-                            );
-                          },
-                          child: Text('$_languageStr Quick Reference'),
-                        ))
-                  ],
-                ),
-                const SizedBox(height: 12.0),
-                Expanded(
-                  child: isViewerEnabled
-                      ? Row(
-                          children: [
-                            Flexible(
-                              flex: 1, // Half width for editor
-                              child: Column(
-                                children: [
-                                  Expanded(child: editor),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                                width: 8), // Spacer between editor and viewer
-                            Flexible(
-                              flex: 1, // Half width for viewer
-                              child: Column(
-                                children: [
-                                  Row(children: [
-                                    Expanded(
-                                        flex: 1,
-                                        child: SearchableDropdown(
-                                          // dropdown for selecting css theme
-                                          items: _cssPaths,
-                                          initialValue: _cssPath,
-                                          onChanged: (css) {
-                                            // set the theme to the selected css file
-                                            setState(() {
-                                              _cssPath = css;
-                                            });
-                                          },
-                                          labelText: 'Select a CSS theme',
-                                          hintText: 'Select a CSS theme',
-                                        )),
-                                    Expanded(
-                                        flex: 1,
-                                        child: SearchableDropdown(
-                                          // dropdown for selecting css theme
-                                          items: Assets()
-                                              .getFilePaths('css/highlight'),
-                                          initialValue: _cssPath,
-                                          onChanged: (css) {
-                                            // set the theme to the selected css file
-                                            setState(() {
-                                              _highlightJsCssPath = css;
-                                            });
-                                          },
-                                          labelText:
-                                              'Select a syntax highlighting theme',
-                                          hintText:
-                                              'Select a syntax highlighting theme',
-                                        ))
-                                  ]),
-                                  Expanded(child: viewer!),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Expanded(child: editor), // Full width for editor
-                          ],
-                        ),
-                ),
-              ],
-            );
-          },
+        final editor = SingleChildScrollView(
+            child: CodeTheme(
+          data: CodeThemeData(styles: monokaiSublimeTheme),
+          child: CodeField(
+            controller: _codeController,
+            focusNode: _focusNode,
+            gutterStyle: GutterStyle.none,
+            textStyle: const TextStyle(fontSize: 14.0, fontFamily: 'monospace'),
+            onChanged: _onTextChanged,
+          ),
         ));
+
+        final viewer = isViewerEnabled
+            ? (widget.language == 'markdown'
+                ? SingleChildScrollView(
+                    child: MdViewer(content: _codeController.text))
+                : HTMLViewer(
+                    //already editing.
+                    language: widget.language,
+                    showEditButton: false,
+                    onLanguageChanged: null,
+                    onChanged: null,
+                    initialText: _currentText ?? "",
+                    cssPath: _cssPath!,
+                    highlightJsCssPath: _highlightJsCssPath!,
+                  ))
+            : null;
+
+        return Column(
+          children: [
+            // row containing language selection dropdown followed by a button that says "${_langauge} Quick Reference"
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: SearchableDropdown(
+                      items: _languages,
+                      initialValue: widget.language,
+                      onChanged: (language) => _onLanguageSelected(language),
+                      labelText: widget.languageSelectionTitle,
+                      hintText: widget.languageSelectionHint,
+                    )),
+                // add space between dropdown and button
+                const SizedBox(width: 8.0),
+                Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        var fileName = "${_languageStr.toLowerCase()}_guide.md";
+                        // check if file exists in rootBundle
+                        // if so set content to the file
+                        // if not set content to a default message
+                        var content =
+                            'No quick reference available for $_languageStr';
+                        if (await _checkGuideExists(_languageStr)) {
+                          content =
+                              await rootBundle.loadString('assets/$fileName');
+                        }
+
+                        // Open a dialog with the quick reference for the selected language
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MdViewerPage(
+                              content: content,
+                              title: '$_languageStr Quick Reference',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('$_languageStr Quick Reference'),
+                    ))
+              ],
+            ),
+            const SizedBox(height: 12.0),
+            Expanded(
+              child: isViewerEnabled
+                  ? Row(
+                      children: [
+                        Flexible(
+                          flex: 1, // Half width for editor
+                          child: Column(
+                            children: [
+                              Expanded(child: editor),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                            width: 8), // Spacer between editor and viewer
+                        Flexible(
+                          flex: 1, // Half width for viewer
+                          child: Column(
+                            children: [
+                              Row(children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: SearchableDropdown(
+                                      // dropdown for selecting css theme
+                                      items: _cssPaths,
+                                      initialValue:
+                                          Settings.get()?.cssStylePath,
+                                      onChanged: (css) {
+                                        // set the theme to the selected css file
+                                        setState(() {
+                                          Settings? settings = Settings.get();
+                                          settings?.cssStylePath = css;
+                                          if (settings != null) {
+                                            Data()
+                                                .store
+                                                .box<Settings>()
+                                                .put(settings);
+                                          }
+                                          _cssPath = css;
+                                        });
+                                      },
+                                      labelText: 'Select a CSS theme',
+                                      hintText: 'Select a CSS theme',
+                                    )),
+                                Expanded(
+                                    flex: 1,
+                                    child: SearchableDropdown(
+                                      // dropdown for selecting css theme
+                                      items: Assets()
+                                          .getFilePaths('css/highlight'),
+                                      initialValue:
+                                          Settings.get()?.codeStylePath,
+                                      onChanged: (css) {
+                                        // set the theme to the selected css file
+                                        setState(() {
+                                          _highlightJsCssPath = css;
+                                          Settings? settings = Settings.get();
+                                          if (settings != null) {
+                                            settings.codeStylePath = css;
+                                            Settings.set(settings);
+                                          }
+                                        });
+                                      },
+                                      labelText:
+                                          'Select a syntax highlighting theme',
+                                      hintText:
+                                          'Select a syntax highlighting theme',
+                                    ))
+                              ]),
+                              Expanded(child: viewer!),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Expanded(child: editor), // Full width for editor
+                      ],
+                    ),
+            ),
+          ],
+        );
+      },
+    );
+
+    return widget.isFullScreen
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text('Code Editor'),
+            ),
+            body: editorContent,
+          )
+        : editorContent;
   }
 }
 

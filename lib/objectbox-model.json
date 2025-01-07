@@ -302,7 +302,7 @@
     },
     {
       "id": "11:8013161053207222681",
-      "lastPropertyId": "21:909367758894680461",
+      "lastPropertyId": "24:7663497536443771573",
       "name": "Settings",
       "properties": [
         {
@@ -325,13 +325,28 @@
           "id": "21:909367758894680461",
           "name": "themeMode",
           "type": 9
+        },
+        {
+          "id": "22:2306390036233425434",
+          "name": "openai_tts_gain",
+          "type": 8
+        },
+        {
+          "id": "23:6162968021176892675",
+          "name": "cssStylePath",
+          "type": 9
+        },
+        {
+          "id": "24:7663497536443771573",
+          "name": "codeStylePath",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "12:2084968273887987538",
-      "lastPropertyId": "6:3879553902245350804",
+      "lastPropertyId": "9:6059700306309498624",
       "name": "SpokenMessage",
       "properties": [
         {
@@ -371,13 +386,28 @@
           "flags": 520,
           "indexId": "14:7078071130441519314",
           "relationTarget": "SpokenMessageCategory"
+        },
+        {
+          "id": "7:5942028616569058601",
+          "name": "speed",
+          "type": 8
+        },
+        {
+          "id": "8:4557480749669223627",
+          "name": "voice",
+          "type": 9
+        },
+        {
+          "id": "9:6059700306309498624",
+          "name": "gain",
+          "type": 8
         }
       ],
       "relations": []
     },
     {
       "id": "13:9195616989878741009",
-      "lastPropertyId": "2:272802014450438586",
+      "lastPropertyId": "3:4189744956463434323",
       "name": "SpokenMessageCategory",
       "properties": [
         {
@@ -392,6 +422,11 @@
           "type": 9,
           "flags": 2080,
           "indexId": "15:7701589329274657698"
+        },
+        {
+          "id": "3:4189744956463434323",
+          "name": "message_prefix",
+          "type": 9
         }
       ],
       "relations": []

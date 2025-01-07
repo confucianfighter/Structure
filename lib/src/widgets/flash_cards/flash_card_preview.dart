@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../data_store.dart';
-import '../md/md_viewer.dart';
 
 class FlashCardPreview extends StatelessWidget {
   final FlashCard flashCard;
@@ -27,10 +26,6 @@ class FlashCardPreview extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'FlashCard Preview',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 Row(
                   children: [
                     IconButton(
@@ -54,16 +49,19 @@ class FlashCardPreview extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: SingleChildScrollView(
-                child: MdViewer(
-                  content: flashCard.question,
-                ),
+                child: Text(flashCard.question),
               ),
             ),
             const SizedBox(height: 8.0),
             // FlashCard Stats
-            Text('Correct: ${flashCard.timesCorrect}'),
-            Text('Incorrect: ${flashCard.timesIncorrect}'),
-            Text('Rating: ${flashCard.userRating}'),
+            Row(children: [
+              SizedBox(width: 20),
+              Text('Correct: ${flashCard.timesCorrect}'),
+              SizedBox(width: 20),
+              Text('Incorrect: ${flashCard.timesIncorrect}'),
+              SizedBox(width: 20),
+              Text('Rating: ${flashCard.userRating}')
+            ]),
           ],
         ),
       ),

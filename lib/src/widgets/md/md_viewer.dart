@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/github.dart';
-import 'package:flutter_highlight/themes/gruvbox-dark.dart';
-import 'package:flutter_highlight/themes/vs.dart';
 import 'package:flutter_highlight/themes/atelier-dune-dark.dart';
 import '../../utils/split_markdown.dart';
 

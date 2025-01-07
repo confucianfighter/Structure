@@ -9,7 +9,6 @@ import 'systems/object_box_timer.dart';
 import 'widgets/sequences/sequence_list.dart';
 import 'widgets/subjects/subject_list_widget.dart';
 import 'widgets/spoken_messages/spoken_message_category_list.dart';
-
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   // constructor. const means it creates a compile-time constant, which implies that settingsController is also constat.
@@ -29,12 +28,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     // Glue the SettingsController to the MaterialApp.
     //
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     ObjectBoxTimer().startCountdown(
-        seconds: 30,
+        seconds: 30000,
         onTimerEnd: () {
           // pop stack down to 1 item
           while (MyApp.navigatorKey.currentState?.canPop() == true) {

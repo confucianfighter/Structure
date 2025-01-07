@@ -14,14 +14,10 @@ export 'data_types/object_box_types/sequence_type_enum.dart';
 export 'data_types/object_box_types/flash_card_sequence.dart';
 import 'data_types/object_box_types/subject.dart';
 export 'data_types/object_box_types/countdown.dart';
-import 'data_types/object_box_types/settings_history.dart';
 export 'data_types/object_box_types/settings_history.dart';
 export 'package:objectbox/objectbox.dart';
-import 'data_types/object_box_types/flash_card.dart';
 export 'data_types/object_box_types/category.dart';
-import 'data_types/object_box_types/spoken_message_category.dart';
 export 'data_types/object_box_types/spoken_message_category.dart';
-import 'data_types/object_box_types/spoken_message.dart';
 export 'data_types/object_box_types/spoken_message.dart';
 // singleton class to manage the ObjectBox store
 class Data {

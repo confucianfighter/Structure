@@ -128,6 +128,18 @@ document.write(`<!DOCTYPE html>
     /* Injected Highlight.js theme CSS */
     $highlightJsCssContent
     $cssContent
+     /* Center child elements horizontally */
+        .parent {
+            text-align: center;
+        }
+        /* Center this block element */
+        .centered-block {
+            display: inline-block;
+            text-align: left; /* Keep text left-aligned */
+            width: 800px; /* Optional: set a width */
+            /*border: 1px solid #000;*/ /* Optional: visual aid */
+            padding: 10px; /* Optional: spacing within the block */
+        }
   </style>
   
   <script>
@@ -314,7 +326,11 @@ var player = new YT.Player(playerId, {
   
 </head>
 <body>
+<div class="parent">  
+  <div class="centered-block">
   $htmlContent
+  </div>
+</div>
 </body>
 </html>
 `);
@@ -355,7 +371,7 @@ document.close();
 
   void stopVideos() {
     if (_isWebViewInitialized) {
-      _controller?.executeScript('''
+      _controller.executeScript('''
         if(typeof window.stopAllVideos === 'function') {
           window.stopAllVideos();
         }

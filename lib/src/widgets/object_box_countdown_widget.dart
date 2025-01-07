@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../data_types/object_box_types/countdown.dart';
-import '../../objectbox.g.dart';
 import 'dart:async';
 import '../data_store.dart';
 
