@@ -19,7 +19,7 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
   List<FlashCard> _flashCards = [];
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-
+  String _rawResponse = '';
   @override
   void initState() {
     super.initState();
@@ -54,7 +54,11 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
       // Fetch existing flashcards
       // Generate new flashcards
       final newFlashcards =
-          await _flashcardAssistant.generateFlashcards(value, _flashCards);
+          await _flashcardAssistant.generateFlashcards(value, _flashCards, (String content) async {
+            setState(() {
+              _rawResponse += content;
+            });
+          });
 
       // Add new flashcards to the data store
       setState(() {
@@ -92,32 +96,53 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
           if (_isAssistantOpen)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: RawKeyboardListener(
-                      focusNode: _focusNode,
-                      onKey: (event) {
-                        if (event.isControlPressed &&
-                            event.logicalKey == LogicalKeyboardKey.enter) {
-                          _submitAssistantRequest();
-                        }
-                      },
-                      child: TextFormField(
-                        controller: _textController,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter your message for the assistant',
-                          hintText:
-                              'Describe the cards you would like to generate...',
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RawKeyboardListener(
+                          focusNode: _focusNode,
+                          onKey: (event) {
+                            if (event.isControlPressed &&
+                                event.logicalKey == LogicalKeyboardKey.enter) {
+                              _submitAssistantRequest();
+                            }
+                          },
+                          child: TextFormField(
+                            controller: _textController,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Enter your message for the assistant',
+                              hintText:
+                                  'Describe the cards you would like to generate...',
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: _submitAssistantRequest,
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: _submitAssistantRequest,
+                  const SizedBox(height: 8.0),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: 150.0, // Set a maximum height for the container
+                    ),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        'Raw response: $_rawResponse',
+                        style: const TextStyle(color: Colors.blueGrey),
+                      ),
+                    ),
                   ),
                 ],
               ),

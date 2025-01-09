@@ -67,7 +67,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HTMLViewer(
+              Expanded(
+                child: HTMLViewer(
                   initialText: widget.flashCard.question,
                   cssPath: Assets.css.bootstrap.bootstrapSlateMin,
                   highlightJsCssPath:
@@ -76,6 +77,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                   showEditButton: false,
                   onChanged: null,
                   language: 'html'),
+              ),
               const SizedBox(height: 24.0),
               const Text(
                 'Your Answer:',
@@ -88,7 +90,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                 child: CodeEditorWidget(
                   key: _editorKey,
                   initialText: '', // or prefill if needed
-                  language: widget.flashCard.correctAnswerDislpayLanguage,
+                  language: widget.flashCard.answerInputLanguage,
                   onChanged: (answer) {
                     _userAnswer = answer;
                   },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/monokai-sublime.dart';
+import 'package:flutter_highlight/themes/agate.dart';
 import 'package:highlight/languages/dart.dart';
 import '../html_viewer/html_viewer.dart';
 import '../nuts_and_bolts/searchable_dropdown.dart';
@@ -95,7 +96,7 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
 
         final editor = SingleChildScrollView(
             child: CodeTheme(
-          data: CodeThemeData(styles: monokaiSublimeTheme),
+          data: CodeThemeData(styles: agateTheme),
           child: CodeField(
             controller: _codeController,
             focusNode: _focusNode,
