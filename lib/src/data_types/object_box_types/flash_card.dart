@@ -10,10 +10,12 @@ class FlashCard {
   String answerInputLanguage = 'plainText';
   String question;
   String answer;
+  String hint = '';
   int timesCorrect = 0;
   int timesIncorrect = 0;
   int userRating = 0;
   ToOne<Subject> subject = ToOne<Subject>();
+  ToOne<ChatHistory> chatHistory = ToOne<ChatHistory>();
 
   FlashCard({
     required this.id,

@@ -26,7 +26,7 @@ class FlashcardAssistant {
       {
         "role": "user",
         "content":
-            "Create a list of flashcards based on the following message: $userMessage. Each flashcard should have a question, an answer, and an answer code language (that way we can do syntax highlighting for them when they answer the question). The question will be displayed using html. Use <h2> for the question and <x> some code </x> when you want to include code in the question. The following languages are available for user response syntax highlighting: ${languageMap.keys.join(', ')}. Unless the user has said otherwise, return at most 7 flashcards. Avoid duplicating the following questions: ${existingQuestions.join(', ')}. And while the question is to be in html, the answer should be in either plain text or the code language, no markup. If there needs to be code and explanation, use code comments for explanation."
+            "Create a list of flashcards based on the following message: $userMessage. Each flashcard should have a question, an answer, a clever hint,and an answer code language (that way we can do syntax highlighting for them when they answer the question). The question and answer will be displayed using html. Use <h2> for the question and <x> some code </x> when you want to include code. I'm processing <x> as a special tag for code. The following languages are available for user response syntax highlighting: ${languageMap.keys.join(', ')}. Unless the user has said otherwise, return at most 7 flashcards. Avoid duplicating the following questions: ${existingQuestions.join(', ')}. And while the question is to be in html, the answer should be in either plain text or the code language, no markup. If there needs to be code and explanation, use code comments for explanation."
       }
     ];
 
@@ -45,12 +45,13 @@ class FlashcardAssistant {
                 "properties": {
                   "question": {"type": "string"},
                   "answer": {"type": "string"},
+                  "hint": {"type": "string"},
                   "language": {
                     "type": "string",
                     "enum": languageMap.keys.toList()
                   }
                 },
-                "required": ["question", "answer", "language"],
+                "required": ["question", "answer", "hint", "language"],
                 "additionalProperties": false,
               },
             },

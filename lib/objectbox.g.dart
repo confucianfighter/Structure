@@ -15,6 +15,8 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'src/data_types/object_box_types/category.dart';
+import 'src/data_types/object_box_types/chat_history.dart';
+import 'src/data_types/object_box_types/chat_message.dart';
 import 'src/data_types/object_box_types/countdown.dart';
 import 'src/data_types/object_box_types/flash_card.dart';
 import 'src/data_types/object_box_types/flash_card_sequence.dart';
@@ -171,7 +173,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 2020180581908519582),
       name: 'FlashCard',
-      lastPropertyId: const obx_int.IdUid(14, 7577352344915177236),
+      lastPropertyId: const obx_int.IdUid(17, 537573080717479844),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -230,7 +232,19 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(14, 7577352344915177236),
             name: 'answerInputLanguage',
             type: 9,
-            flags: 0)
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(15, 452080182493718223),
+            name: 'hint',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(17, 537573080717479844),
+            name: 'chatHistoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(17, 1775482827660519570),
+            relationTarget: 'ChatHistory')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -452,6 +466,59 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(14, 8198919691873096377),
+      name: 'ChatHistory',
+      lastPropertyId: const obx_int.IdUid(1, 8640836888002326028),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8640836888002326028),
+            name: 'id',
+            type: 6,
+            flags: 1)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[
+        obx_int.ModelBacklink(
+            name: 'messages', srcEntity: 'ChatMessage', srcField: '')
+      ]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(15, 8885578874415051876),
+      name: 'ChatMessage',
+      lastPropertyId: const obx_int.IdUid(5, 8983738279262490827),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 4934606785013039928),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 3125870950310741075),
+            name: 'role',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 3530588648540991239),
+            name: 'content',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 6533673515128848537),
+            name: 'embedding',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 8983738279262490827),
+            name: 'chatHistoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(16, 5357683070213496569),
+            relationTarget: 'ChatHistory')
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -490,8 +557,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(13, 9195616989878741009),
-      lastIndexId: const obx_int.IdUid(15, 7701589329274657698),
+      lastEntityId: const obx_int.IdUid(15, 8885578874415051876),
+      lastIndexId: const obx_int.IdUid(17, 1775482827660519570),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [4113595854453584037],
@@ -530,7 +597,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         869723703728349571,
         7703499737194522303,
         1815411826820182851,
-        2544648642677927683
+        2544648642677927683,
+        1296696299745741625
       ],
       retiredRelationUids: const [2382961371279645997],
       modelVersion: 5,
@@ -721,7 +789,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         }),
     FlashCard: obx_int.EntityDefinition<FlashCard>(
         model: _entities[5],
-        toOneRelations: (FlashCard object) => [object.subject],
+        toOneRelations: (FlashCard object) =>
+            [object.subject, object.chatHistory],
         toManyRelations: (FlashCard object) => {},
         getId: (FlashCard object) => object.id,
         setId: (FlashCard object, int id) {
@@ -737,7 +806,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               fbb.writeString(object.questionDisplayLanguage);
           final answerInputLanguageOffset =
               fbb.writeString(object.answerInputLanguage);
-          fbb.startTable(15);
+          final hintOffset = fbb.writeString(object.hint);
+          fbb.startTable(18);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
           fbb.addOffset(2, answerOffset);
@@ -749,6 +819,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addOffset(11, correctAnswerDislpayLanguageOffset);
           fbb.addOffset(12, questionDisplayLanguageOffset);
           fbb.addOffset(13, answerInputLanguageOffset);
+          fbb.addOffset(14, hintOffset);
+          fbb.addInt64(16, object.chatHistory.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -782,10 +854,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
                     .vTableGet(buffer, rootOffset, 26, '')
             ..questionDisplayLanguage =
                 const fb.StringReader(asciiOptimization: true)
-                    .vTableGet(buffer, rootOffset, 28, '');
+                    .vTableGet(buffer, rootOffset, 28, '')
+            ..hint = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 32, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
+          object.chatHistory.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 36, 0);
+          object.chatHistory.attach(store);
           return object;
         }),
     SequenceItem: obx_int.EntityDefinition<SequenceItem>(
@@ -1051,6 +1128,81 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 .vTableGet(buffer, rootOffset, 8, '');
 
           return object;
+        }),
+    ChatHistory: obx_int.EntityDefinition<ChatHistory>(
+        model: _entities[12],
+        toOneRelations: (ChatHistory object) => [],
+        toManyRelations: (ChatHistory object) => {
+              obx_int.RelInfo<ChatMessage>.toOneBacklink(5, object.id,
+                      (ChatMessage srcObject) => srcObject.chatHistory):
+                  object.messages
+            },
+        getId: (ChatHistory object) => object.id,
+        setId: (ChatHistory object, int id) {
+          object.id = id;
+        },
+        objectToFB: (ChatHistory object, fb.Builder fbb) {
+          fbb.startTable(2);
+          fbb.addInt64(0, object.id);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final object = ChatHistory(id: idParam);
+          obx_int.InternalToManyAccess.setRelInfo<ChatHistory>(
+              object.messages,
+              store,
+              obx_int.RelInfo<ChatMessage>.toOneBacklink(5, object.id,
+                  (ChatMessage srcObject) => srcObject.chatHistory));
+          return object;
+        }),
+    ChatMessage: obx_int.EntityDefinition<ChatMessage>(
+        model: _entities[13],
+        toOneRelations: (ChatMessage object) => [object.chatHistory],
+        toManyRelations: (ChatMessage object) => {},
+        getId: (ChatMessage object) => object.id,
+        setId: (ChatMessage object, int id) {
+          object.id = id;
+        },
+        objectToFB: (ChatMessage object, fb.Builder fbb) {
+          final roleOffset = fbb.writeString(object.role);
+          final contentOffset = fbb.writeString(object.content);
+          final embeddingOffset = object.embedding == null
+              ? null
+              : fbb.writeString(object.embedding!);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, roleOffset);
+          fbb.addOffset(2, contentOffset);
+          fbb.addOffset(3, embeddingOffset);
+          fbb.addInt64(4, object.chatHistory.targetId);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final roleParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final contentParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final embeddingParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final object = ChatMessage(
+              id: idParam,
+              role: roleParam,
+              content: contentParam,
+              embedding: embeddingParam);
+          object.chatHistory.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          object.chatHistory.attach(store);
+          return object;
         })
   };
 
@@ -1191,6 +1343,14 @@ class FlashCard_ {
   /// See [FlashCard.answerInputLanguage].
   static final answerInputLanguage =
       obx.QueryStringProperty<FlashCard>(_entities[5].properties[10]);
+
+  /// See [FlashCard.hint].
+  static final hint =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[11]);
+
+  /// See [FlashCard.chatHistory].
+  static final chatHistory = obx.QueryRelationToOne<FlashCard, ChatHistory>(
+      _entities[5].properties[12]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.
@@ -1334,4 +1494,38 @@ class SpokenMessageCategory_ {
   /// See [SpokenMessageCategory.message_prefix].
   static final message_prefix = obx.QueryStringProperty<SpokenMessageCategory>(
       _entities[11].properties[2]);
+}
+
+/// [ChatHistory] entity fields to define ObjectBox queries.
+class ChatHistory_ {
+  /// See [ChatHistory.id].
+  static final id =
+      obx.QueryIntegerProperty<ChatHistory>(_entities[12].properties[0]);
+
+  /// see [ChatHistory.messages]
+  static final messages = obx.QueryBacklinkToMany<ChatMessage, ChatHistory>(
+      ChatMessage_.chatHistory);
+}
+
+/// [ChatMessage] entity fields to define ObjectBox queries.
+class ChatMessage_ {
+  /// See [ChatMessage.id].
+  static final id =
+      obx.QueryIntegerProperty<ChatMessage>(_entities[13].properties[0]);
+
+  /// See [ChatMessage.role].
+  static final role =
+      obx.QueryStringProperty<ChatMessage>(_entities[13].properties[1]);
+
+  /// See [ChatMessage.content].
+  static final content =
+      obx.QueryStringProperty<ChatMessage>(_entities[13].properties[2]);
+
+  /// See [ChatMessage.embedding].
+  static final embedding =
+      obx.QueryStringProperty<ChatMessage>(_entities[13].properties[3]);
+
+  /// See [ChatMessage.chatHistory].
+  static final chatHistory = obx.QueryRelationToOne<ChatMessage, ChatHistory>(
+      _entities[13].properties[4]);
 }

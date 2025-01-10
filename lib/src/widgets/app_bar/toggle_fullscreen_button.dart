@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
-
+import 'package:Structure/src/utils/WindowControl.dart';
 class ToggleFullScreenButton extends StatefulWidget {
   const ToggleFullScreenButton({super.key});
 
@@ -8,28 +7,28 @@ class ToggleFullScreenButton extends StatefulWidget {
   _ToggleFullScreenButtonState createState() => _ToggleFullScreenButtonState();
 }
 
-class _ToggleFullScreenButtonState extends State<ToggleFullScreenButton> with WindowListener {
+class _ToggleFullScreenButtonState extends State<ToggleFullScreenButton>  {
   bool isFullScreen = false;
 
   @override
   void initState() {
     super.initState();
-    windowManager.addListener(this);
     _getFullScreenStatus();
   }
 
-  Future<void> _getFullScreenStatus() async {
-    bool fullScreen = await windowManager.isFullScreen();
+  Future<bool> _getFullScreenStatus() async {
+    bool fullScreen = await WindowControl().isFullScreen();
     setState(() {
       isFullScreen = fullScreen;
     });
+    return fullScreen;
   }
 
   Future<void> _toggleFullScreen() async {
-    if (isFullScreen) {
-      await windowManager.setFullScreen(false);
+    if (!isFullScreen) {
+      await WindowControl().setFullscreen();
     } else {
-      await windowManager.setFullScreen(true);
+      await WindowControl().exitFullscreen();
     }
     _getFullScreenStatus();
   }
@@ -50,7 +49,6 @@ class _ToggleFullScreenButtonState extends State<ToggleFullScreenButton> with Wi
 
   @override
   void dispose() {
-    windowManager.removeListener(this);
     super.dispose();
   }
 

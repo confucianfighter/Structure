@@ -1,0 +1,15 @@
+C:\structure\WindowControlCLI\bin\Debug\net9.0\WindowControlCLI.exe
+C:\structure\WindowControlCLI\bin\Debug\net9.0\WindowControlCLI.deps.json
+C:\structure\WindowControlCLI\bin\Debug\net9.0\WindowControlCLI.runtimeconfig.json
+C:\structure\WindowControlCLI\bin\Debug\net9.0\WindowControlCLI.dll
+C:\structure\WindowControlCLI\bin\Debug\net9.0\WindowControlCLI.pdb
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.GeneratedMSBuildEditorConfig.editorconfig
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.AssemblyInfoInputs.cache
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.AssemblyInfo.cs
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.csproj.CoreCompileInputs.cache
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.sourcelink.json
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.dll
+C:\structure\WindowControlCLI\obj\Debug\net9.0\refint\WindowControlCLI.dll
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.pdb
+C:\structure\WindowControlCLI\obj\Debug\net9.0\WindowControlCLI.genruntimeconfig.cache
+C:\structure\WindowControlCLI\obj\Debug\net9.0\ref\WindowControlCLI.dll

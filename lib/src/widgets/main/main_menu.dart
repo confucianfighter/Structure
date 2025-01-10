@@ -12,7 +12,7 @@ import '../sequences/sequence_list.dart';
 import '../subjects/subject_list_widget.dart';
 import '../app_bar/toggle_fullscreen_button.dart';
 import '../spoken_messages/spoken_message_category_list.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:Structure/src/utils/WindowControl.dart';
 
 /// Displays a list of SampleItems.
 class MainMenu extends StatelessWidget {
@@ -49,7 +49,7 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    windowManager.setFullScreen(true);
+    WindowControl().setFullscreen();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Main Menu'),

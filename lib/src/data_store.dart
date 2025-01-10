@@ -19,6 +19,8 @@ export 'package:objectbox/objectbox.dart';
 export 'data_types/object_box_types/category.dart';
 export 'data_types/object_box_types/spoken_message_category.dart';
 export 'data_types/object_box_types/spoken_message.dart';
+export 'data_types/object_box_types/chat_history.dart';
+export 'data_types/object_box_types/chat_message.dart';
 // singleton class to manage the ObjectBox store
 class Data {
   static final Data _data = Data._internal();
