@@ -1,5 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 import 'chat_history.dart';
+import 'package:Structure/src/data_store.dart';
 @Entity()
 class ChatMessage {
   @Id()
@@ -16,4 +17,7 @@ class ChatMessage {
     required this.content,
     this.embedding,
   });
+  void save(){
+    Data().store.box<ChatMessage>().put(this);
+  }
 }

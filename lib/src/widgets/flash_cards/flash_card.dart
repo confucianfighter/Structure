@@ -28,7 +28,17 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
   final GlobalKey<CodeEditorWidgetState> _editorKey = GlobalKey();
   var _userAnswer = '';
   final bool _showHint = false;
+  FlashCard _flashCard = FlashCard(id: 0, question: '', answer: '', answerInputLanguage: '');
   bool _showChat = false;
+  @override
+  void initState() {
+    super.initState();
+    _flashCard = widget.flashCard;
+    if(_flashCard.chatHistory.target == null){
+      _flashCard.chatHistory.target = ChatHistory(id: 0);
+      _flashCard.chatHistory.target?.save();
+    }
+  }
 
   void _submitAnswer() {
     Navigator.pop(context);
@@ -36,7 +46,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => ResultScreen(
-          flashCard: widget.flashCard,
+          flashCard: _flashCard,
           userAnswer: _userAnswer,
           onAnswerSubmitted: widget.onAnswerSubmitted,
         ),
@@ -76,8 +86,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                     Expanded(
                       child: HTMLViewer(
                         initialText: _showHint
-                            ? widget.flashCard.answer
-                            : widget.flashCard.question,
+                            ? _flashCard.answer
+                            : _flashCard.question,
                         cssPath: Assets.css.bootstrap.bootstrapSlateMin,
                         highlightJsCssPath: Assets.css.highlight.agate,
                         onLanguageChanged: null,
@@ -97,7 +107,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                       child: CodeEditorWidget(
                         key: _editorKey,
                         initialText: '',
-                        language: widget.flashCard.answerInputLanguage,
+                        language: _flashCard.answerInputLanguage,
                         onChanged: (answer) {
                           _userAnswer = answer;
                         },
@@ -142,12 +152,12 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                 SizedBox(
                   width: screenWidth * 0.3,
                   child: ChatWidget(
-                    chatHistory: widget.flashCard.chatHistory.target ??
+                    chatHistory: _flashCard.chatHistory.target ??
                         ChatHistory(id: 0),
                     isPage: false,
                     getContext: () async {                      
-                          final subjectName = widget.flashCard.subject.target?.name ?? 'unknown subject';                          
-                          final message ='You are a very clever tutor. The current subject is $subjectName, the current flashcard being reviewed is ${widget.flashCard.question}';
+                          final subjectName = _flashCard.subject.target?.name ?? 'unknown subject';                          
+                          final message ='You are a very clever tutor. The current subject is $subjectName, the current flashcard being reviewed is ${_flashCard.question}';
                       return message;
                     },
                   ),

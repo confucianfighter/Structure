@@ -101,8 +101,8 @@ class _HTMLViewerState extends State<HTMLViewer> with WidgetsBindingObserver {
     var cssContent = await loadAssetFileAsString(cssAssetPath); // Your main CSS
     var highlightJsCssContent = await loadAssetFileAsString(
         widget._highlightJsCssPath); // Highlight.js theme CSS
-    var customJs = await rootBundle
-        .loadString('assets/js/youtube_player.js'); // Load the custom.js file
+    // var customJs = await rootBundle
+    //     .loadString('assets/js/youtube_player.js'); // Load the custom.js file
     final hljsScript =
         await loadAssetFileAsString('assets/js/highlight.min.js');
     await _controller.executeScript(hljsScript);
@@ -316,11 +316,11 @@ var player = new YT.Player(playerId, {
       }
 
       // Dynamically load the YouTube IFrame API
-      var ytScript = document.createElement("script");
+      /*var ytScript = document.createElement("script");
       ytScript.src = "https://www.youtube.com/iframe_api";
       ytScript.async = true;
       ytScript.defer = true;
-      document.head.appendChild(ytScript);
+      document.head.appendChild(ytScript);*/
     });
   </script>
   

@@ -11,10 +11,10 @@ class ChatWidget extends StatefulWidget {
 
   const ChatWidget({
     super.key,
-    required this.chatHistory,
+    required ChatHistory chatHistory,
     this.isPage = false,
     this.getContext,
-  });
+  }) : chatHistory = chatHistory;
 
   @override
   _ChatWidgetState createState() => _ChatWidgetState();
@@ -22,10 +22,15 @@ class ChatWidget extends StatefulWidget {
 
 class _ChatWidgetState extends State<ChatWidget> {
   final ChatAssistant _chatAssistant = ChatAssistant();
+  late ChatHistory _chatHistory;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatHistory = widget.chatHistory;
+  }
 
   void _sendMessage(String userMessage) async {
-    final context = widget.getContext != null ? widget.getContext!() : '';
-
     final userChatMessage = ChatMessage(
       id: 0,
       role: 'user',
@@ -33,8 +38,8 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
 
     setState(() {
-      widget.chatHistory.addMessage(userChatMessage);
-      widget.chatHistory.save();
+      _chatHistory.addMessage(userChatMessage);
+      _chatHistory.save();
     });
 
     // Create a single assistant message
@@ -45,19 +50,22 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
 
     setState(() {
-      widget.chatHistory.addMessage(assistantMessage);
-      widget.chatHistory.save();
+      _chatHistory.addMessage(assistantMessage);
+      _chatHistory.save();
     });
 
     // Pass the entire message history and context to the assistant
     await _chatAssistant.sendMessage(
-      widget.chatHistory.messages.toList(),
+      _chatHistory.messages.toList(),
       widget.getContext != null ? await widget.getContext!() : '',
       (chunk) async {
         setState(() {
-          // Append new content to the existing assistant message
-          assistantMessage.content += chunk;
-          widget.chatHistory.save();
+          // Append new content to the most recent message in the chat history
+          if (_chatHistory.messages.last.role == 'assistant') {
+            _chatHistory.messages.last.content += chunk;
+            _chatHistory.messages.last.save();
+            _chatHistory.save();
+          }
         });
       },
       (error) async {
@@ -67,8 +75,8 @@ class _ChatWidgetState extends State<ChatWidget> {
           content: error,
         );
         setState(() {
-          widget.chatHistory.addMessage(errorMessage);
-          widget.chatHistory.save();
+          _chatHistory.addMessage(errorMessage);
+          _chatHistory.save();
         });
       },
     );
@@ -77,15 +85,15 @@ class _ChatWidgetState extends State<ChatWidget> {
   @override
   Widget build(BuildContext context) {
     final chatContent = ListView.builder(
-      itemCount: widget.chatHistory.messages.length,
+      itemCount: _chatHistory.messages.length,
       itemBuilder: (context, index) {
-        final message = widget.chatHistory.messages[index];
+        final message = _chatHistory.messages[index];
         return ChatBubble(
           message: message,
           onDelete: () {
             setState(() {
-              widget.chatHistory.removeMessage(message);
-              widget.chatHistory.save();
+              _chatHistory.removeMessage(message);
+              _chatHistory.save();
             });
           },
         );
@@ -102,8 +110,8 @@ class _ChatWidgetState extends State<ChatWidget> {
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     setState(() {
-                      widget.chatHistory.messages.clear();
-                      widget.chatHistory.save();
+                      _chatHistory.messages.clear();
+                      _chatHistory.save();
                     });
                   },
                 ),
@@ -111,8 +119,8 @@ class _ChatWidgetState extends State<ChatWidget> {
             ),
             body: Column(
               children: [
-                Expanded(child: chatContent),
                 _buildInputArea(),
+                Expanded(child: chatContent),
               ],
             ),
             backgroundColor: Color(0xFF1B1B1B),
@@ -121,8 +129,8 @@ class _ChatWidgetState extends State<ChatWidget> {
             color: Color(0xFF1B1B1B),
             child: Column(
               children: [
-                Expanded(child: chatContent),
                 _buildInputArea(),
+                Expanded(child: chatContent),
               ],
             ),
           );
