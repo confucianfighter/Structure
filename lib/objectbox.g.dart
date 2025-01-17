@@ -173,7 +173,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 2020180581908519582),
       name: 'FlashCard',
-      lastPropertyId: const obx_int.IdUid(17, 537573080717479844),
+      lastPropertyId: const obx_int.IdUid(19, 3770844550917202134),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -244,7 +244,17 @@ final _entities = <obx_int.ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const obx_int.IdUid(17, 1775482827660519570),
-            relationTarget: 'ChatHistory')
+            relationTarget: 'ChatHistory'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(18, 7623924826722180665),
+            name: 'grades',
+            type: 27,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(19, 3770844550917202134),
+            name: 'analysis',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -807,7 +817,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final answerInputLanguageOffset =
               fbb.writeString(object.answerInputLanguage);
           final hintOffset = fbb.writeString(object.hint);
-          fbb.startTable(18);
+          final gradesOffset = fbb.writeListInt64(object.grades);
+          final analysisOffset = fbb.writeString(object.analysis);
+          fbb.startTable(20);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, questionOffset);
           fbb.addOffset(2, answerOffset);
@@ -821,6 +833,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addOffset(13, answerInputLanguageOffset);
           fbb.addOffset(14, hintOffset);
           fbb.addInt64(16, object.chatHistory.targetId);
+          fbb.addOffset(17, gradesOffset);
+          fbb.addOffset(18, analysisOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -836,11 +850,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final answerInputLanguageParam =
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 30, '');
+          final hintParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 32, '');
           final object = FlashCard(
               id: idParam,
               question: questionParam,
               answer: answerParam,
-              answerInputLanguage: answerInputLanguageParam)
+              answerInputLanguage: answerInputLanguageParam,
+              hint: hintParam)
             ..timesCorrect =
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)
             ..timesIncorrect =
@@ -855,8 +872,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..questionDisplayLanguage =
                 const fb.StringReader(asciiOptimization: true)
                     .vTableGet(buffer, rootOffset, 28, '')
-            ..hint = const fb.StringReader(asciiOptimization: true)
-                .vTableGet(buffer, rootOffset, 32, '');
+            ..grades = const fb.ListReader<int>(fb.Int64Reader(), lazy: false)
+                .vTableGet(buffer, rootOffset, 38, [])
+            ..analysis = const fb.StringReader(asciiOptimization: true)
+                .vTableGet(buffer, rootOffset, 40, '');
           object.subject.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
           object.subject.attach(store);
@@ -1351,6 +1370,14 @@ class FlashCard_ {
   /// See [FlashCard.chatHistory].
   static final chatHistory = obx.QueryRelationToOne<FlashCard, ChatHistory>(
       _entities[5].properties[12]);
+
+  /// See [FlashCard.grades].
+  static final grades =
+      obx.QueryIntegerVectorProperty<FlashCard>(_entities[5].properties[13]);
+
+  /// See [FlashCard.analysis].
+  static final analysis =
+      obx.QueryStringProperty<FlashCard>(_entities[5].properties[14]);
 }
 
 /// [SequenceItem] entity fields to define ObjectBox queries.

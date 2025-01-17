@@ -1,7 +1,7 @@
 import '../../data_store.dart';
-
+import 'i_table.dart';
 @Entity()
-class FlashCard {
+class FlashCard extends ITable<FlashCard> {
   @Id()
   int id;
   String type = 'essay_question';
@@ -14,6 +14,8 @@ class FlashCard {
   int timesCorrect = 0;
   int timesIncorrect = 0;
   int userRating = 0;
+  List<int> grades = [];
+  String analysis = '';
   ToOne<Subject> subject = ToOne<Subject>();
   ToOne<ChatHistory> chatHistory = ToOne<ChatHistory>();
 
@@ -22,5 +24,6 @@ class FlashCard {
     required this.question,
     required this.answer,
     required this.answerInputLanguage,
+    this.hint = '',
   });
 }

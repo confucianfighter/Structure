@@ -23,6 +23,7 @@ class ChatWidget extends StatefulWidget {
 class _ChatWidgetState extends State<ChatWidget> {
   final ChatAssistant _chatAssistant = ChatAssistant();
   late ChatHistory _chatHistory;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -40,6 +41,11 @@ class _ChatWidgetState extends State<ChatWidget> {
     setState(() {
       _chatHistory.addMessage(userChatMessage);
       _chatHistory.save();
+    });
+
+    // Scroll the user message to the top
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToTop();
     });
 
     // Create a single assistant message
@@ -67,6 +73,11 @@ class _ChatWidgetState extends State<ChatWidget> {
             _chatHistory.save();
           }
         });
+
+        // Scroll to the bottom of the reply if it gets too long
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottomIfNeeded();
+        });
       },
       (error) async {
         final errorMessage = ChatMessage(
@@ -82,9 +93,34 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
   }
 
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void _scrollToBottomIfNeeded() {
+    if (_scrollController.hasClients) {
+      final maxScrollExtent = _scrollController.position.maxScrollExtent;
+      final currentScrollPosition = _scrollController.position.pixels;
+      if (currentScrollPosition < maxScrollExtent) {
+        _scrollController.animateTo(
+          maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatContent = ListView.builder(
+      controller: _scrollController,
       itemCount: _chatHistory.messages.length,
       itemBuilder: (context, index) {
         final message = _chatHistory.messages[index];

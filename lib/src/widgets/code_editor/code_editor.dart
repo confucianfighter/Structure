@@ -20,6 +20,7 @@ class CodeEditorWidget extends StatefulWidget {
   final Function(String)? onLanguageChanged;
   final Function(String)? onChanged;
   final bool isFullScreen;
+  final bool allowLanguageChange; // if false, the language selection dropdown will be hidden and the language will be fixed to the language passed in the constructor
 
   const CodeEditorWidget({
     super.key,
@@ -28,6 +29,7 @@ class CodeEditorWidget extends StatefulWidget {
     required this.onChanged,
     required this.onLanguageChanged,
     this.isFullScreen = true,
+    this.allowLanguageChange = true,
   });
 
   @override
@@ -123,6 +125,7 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
 
         return Column(
           children: [
+            if (widget.allowLanguageChange)
             // row containing language selection dropdown followed by a button that says "${_langauge} Quick Reference"
             Row(
               children: [
@@ -137,6 +140,7 @@ class CodeEditorWidgetState extends State<CodeEditorWidget> {
                     )),
                 // add space between dropdown and button
                 const SizedBox(width: 8.0),
+                if (_languageStr == 'html'  || _languageStr == 'markdown')
                 Expanded(
                     flex: 1,
                     child: ElevatedButton(

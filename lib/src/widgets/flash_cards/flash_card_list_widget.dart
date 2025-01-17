@@ -3,7 +3,10 @@ import 'package:flutter/services.dart';
 import '../../data_store.dart';
 import 'flash_card_preview.dart';
 import 'flash_card_editor.dart';
-import '../../utils/flashcard_assistant.dart';
+import '../../utils/v1_chat_completions.dart';
+import '../../utils/response_schemas/schemas.dart';
+import 'package:Structure/src/data_types/code_editor/language_option.dart';
+import 'package:Structure/src/utils/flash_card_stack_manager.dart';
 
 class FlashCardListWidget extends StatefulWidget {
   const FlashCardListWidget({super.key, required this.subject});
@@ -13,16 +16,22 @@ class FlashCardListWidget extends StatefulWidget {
 }
 
 class _FlashCardListWidget extends State<FlashCardListWidget> {
+  bool _selectRandomCards = false;
+  int _randomCardCount = 5;
   late Stream<List<FlashCard>> _streamBuilder;
-  bool _isAssistantOpen = false;
-  final FlashcardAssistant _flashcardAssistant = FlashcardAssistant();
+  bool _isAssistantOpen = true;
+  final V1ChatCompletions _flashcardAssistant = V1ChatCompletions();
   List<FlashCard> _flashCards = [];
   final TextEditingController _textController = TextEditingController();
+  final TextEditingController _intInputController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   String _rawResponse = '';
+  int _gradeThreshold = 80;
+
   @override
   void initState() {
     super.initState();
+
     _streamBuilder = (widget.subject.name == 'All')
         ? Data()
             .store
@@ -54,30 +63,77 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
       // Fetch existing flashcards
       // Generate new flashcards
       final newFlashcards =
-          await _flashcardAssistant.generateFlashcards(value, _flashCards, (String content) async {
-            setState(() {
-              _rawResponse += content;
-            });
+          await _flashcardAssistant.sendMessage<List<FlashCard>>(
+        userMessage: value,
+        getContext: () async {
+          final existingCards = _flashCards
+              .map((fc) =>
+                  "Question:${fc.question}, Times correct: ${fc.timesCorrect}, Times incorrect: ${fc.timesIncorrect}")
+              .toList()
+              .join(', ');
+          return """You are a clever and helpful tutor on all manner of subjects. 
+          Your relationship with the user is like Aristotle to Alexander the great. 
+          Create a list of flashcards based on what your beloved student has asked. 
+          Each flashcard should have a question, an answer, a clever hint, and an answer code language (that way we can do syntax highlighting for them when they answer the question). 
+          The question and answer will be displayed using html. 
+          Use <h2> for the question and <x> some code </x> when you want to include code. 
+          I'm processing <x> as a special tag for code and using auto syntax highlighting. 
+          The following languages are available for user response syntax highlighting: ${languageMap.keys.join(', ')}. 
+          Unless the user has said otherwise, return at most 7 flashcards. 
+          Avoid duplicating the following questions: 
+          ${existingCards}. 
+          And while the question is to be in html, the answer should be in either plain text or the code language, no markup. 
+          If there needs to be code and explanation, use code comments for explanation.
+          The current subject is ${widget.subject.name} having to do with ${widget.subject.description}""";
+        },
+        onChunkReceived: (content) async {
+          setState(() {
+            _rawResponse += content;
           });
-
-      // Add new flashcards to the data store
-      setState(() {
-        for (var flashcard in newFlashcards) {
-          flashcard.subject.target = widget.subject;
-          Data().store.box<FlashCard>().put(flashcard);
-        }
-      });
-
-      // Clear the text field
-      _textController.clear();
+        },
+        onError: (error) async {
+          print(error);
+          await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: Text(error),
+            ),
+          );
+        },
+        responseSchema: GeneratedFlashcardsSchema(),
+      );
+      if (newFlashcards != null) {
+        // clear the raw response
+        setState(() {
+          //_rawResponse = '';
+        });
+        // Add new flashcards to the data store
+        setState(() {
+          _rawResponse =
+              "Successfully decoded ${newFlashcards.length} flashcards.\n$_rawResponse";
+          for (var flashcard in newFlashcards) {
+            flashcard.subject.target = widget.subject;
+            Data().store.box<FlashCard>().put(flashcard);
+          }
+        });
+      } else {
+        setState(() {
+          _rawResponse = "Flashcards were null.\n $_rawResponse";
+        });
+      }
     }
+
+    // Clear the text field
+    _textController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final subjectName = widget.subject.name;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlashCards'),
+        title: Text('$subjectName FlashCards'),
         actions: [
           IconButton(
             icon: _isAssistantOpen
@@ -114,9 +170,9 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                             maxLines: 5,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Enter your message for the assistant',
+                              labelText: 'FlashCard Assistant',
                               hintText:
-                                  'Describe the cards you would like to generate...',
+                                  'Describe the cards you would like to generate. Existing cards in this subject and your track record with them will be taken into consideration.',
                             ),
                           ),
                         ),
@@ -128,25 +184,99 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                     ],
                   ),
                   const SizedBox(height: 8.0),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: 150.0, // Set a maximum height for the container
-                    ),
-                    child: SingleChildScrollView(
-                      child: Text(
-                        'Raw response: $_rawResponse',
-                        style: const TextStyle(color: Colors.blueGrey),
+                  if (_rawResponse.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight:
+                            150.0, // Set a maximum height for the container
+                      ),
+                      child: SingleChildScrollView(
+                        child: Text(
+                          'Raw response: $_rawResponse',
+                          style: const TextStyle(color: Colors.blueGrey),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // instantiate a flash card stack manager
+                final flashCardStackManager = FlashCardStackManager(
+                  subject: widget.subject,
+                  numberOfRandomCards: _randomCardCount,
+                  gradeThreshold: 80,
+                  navigator: Navigator.of(context),
+                  onFinished: () {
+                    
+                  },
+                );
+                flashCardStackManager.play();
+              },
+              icon: Icon(Icons.play_arrow),
+              label: Text('Start Study Session'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Checkbox(
+                value: _selectRandomCards,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _selectRandomCards = value ?? false;
+                  });
+                },
+              ),
+              const Text('Select random cards'),
+            ],
+          ),
+          if (_selectRandomCards)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Number of random cards to select',
+                    ),
+                    initialValue: _randomCardCount.toString(),
+                    onChanged: (value) {
+                      setState(() {
+                        _randomCardCount = int.tryParse(value) ?? 5;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Grade Threshold',
+                    ),
+                    initialValue: _gradeThreshold.toString(),
+                    onChanged: (value) {
+                      setState(() {
+                        _gradeThreshold = int.tryParse(value) ?? 80;
+                      });
+                    },
+                  )
+                ],
+              ),
+            ),
+          const SizedBox(height: 8.0),
           Expanded(
             child: StreamBuilder<List<FlashCard>>(
               stream: _streamBuilder,

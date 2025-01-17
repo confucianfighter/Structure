@@ -1,5 +1,3 @@
-import 'package:objectbox/objectbox.dart';
-import 'chat_history.dart';
 import 'package:Structure/src/data_store.dart';
 @Entity()
 class ChatMessage {

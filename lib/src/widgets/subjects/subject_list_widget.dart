@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import '../../data_store.dart';
 import 'subject_card.dart';
 import 'subject_editor.dart';
+
 class SubjectListWidget extends StatefulWidget {
   const SubjectListWidget({super.key});
   static const route = '/subjects';
-  @override _SubjectListWidget createState() => _SubjectListWidget();
+  @override
+  _SubjectListWidget createState() => _SubjectListWidget();
 }
+
 class _SubjectListWidget extends State<SubjectListWidget> {
-  final Stream<List<Subject>> _streamBuilder = Data().store.box<Subject>().query().watch(triggerImmediately: true).map((query) => query.find());
+  final Stream<List<Subject>> _streamBuilder = Data()
+      .store
+      .box<Subject>()
+      .query()
+      .watch(triggerImmediately: true)
+      .map((query) => query.find());
+
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       appBar: AppBar(title: const Text('Subjects')),
       body: StreamBuilder<List<Subject>>(
@@ -37,7 +45,8 @@ class _SubjectListWidget extends State<SubjectListWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SubjectEditor(subjectId: subject.id),
+                        builder: (context) =>
+                            SubjectEditor(subjectId: subject.id),
                       ),
                     );
                   },
@@ -56,17 +65,63 @@ class _SubjectListWidget extends State<SubjectListWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final newSubject = Subject(
-            id: 0,
-            name: 'New Subject',
-            description: '',
-            color: '#FFFFFF',
-          );
-          Data().store.box<Subject>().put(newSubject);
+          final subjectName = await _promptForSubjectName(context);
+          if (subjectName != null && subjectName.isNotEmpty) {
+            final newSubject = Subject(
+              id: 0,
+              name: subjectName,
+              description: '',
+              color: '#FFFFFF',
+            );
+
+            try {
+              Data().store.box<Subject>().put(newSubject);
+            } catch (e) {
+              if (e.toString().toLowerCase().contains('unique')) {
+                print('Duplication error: $e');
+              } else {
+                rethrow;
+              }
+            }
+          }
         },
         tooltip: 'Add Subject',
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<String?> _promptForSubjectName(BuildContext context) async {
+    String? subjectName;
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Subject Name'),
+          content: TextField(
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Subject Name'),
+            onChanged: (value) {
+              subjectName = value;
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(subjectName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return subjectName;
   }
 }

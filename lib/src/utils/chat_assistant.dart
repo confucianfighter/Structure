@@ -26,7 +26,7 @@ class ChatAssistant {
                 "role": msg.role,
                 "content": msg.content,
               })
-          .toList(),
+          ,
     ];
 
     final requestBody = jsonEncode({

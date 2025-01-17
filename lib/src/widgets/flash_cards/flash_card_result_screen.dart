@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../data_store.dart';
 import '../md/md_viewer.dart';
 import 'flash_card_result.dart';
+import '../common/star_rating_widget.dart';
+
 class ResultScreen extends StatefulWidget {
   final FlashCard flashCard;
   final String userAnswer;
@@ -108,19 +110,9 @@ class _ResultScreenState extends State<ResultScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8.0),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(5, (index) {
-                    return IconButton(
-                      icon: Icon(
-                        Icons.star,
-                        color: index < _rating ? Colors.amber : Colors.grey,
-                      ),
-                      onPressed: () {
-                        _setRating(index + 1);
-                      },
-                    );
-                  }),
+                StarRatingWidget(
+                  rating: _rating,
+                  onRatingChanged: _setRating,
                 ),
               ],
             ),

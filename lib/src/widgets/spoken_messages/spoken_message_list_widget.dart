@@ -43,13 +43,15 @@ class SpokenMessageListWidget extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<SpokenMessage> messages = snapshot.data!;
-            return Column(children: [
-              TextFormField(
+            return Column(
+              children: [
+                TextFormField(
                   initialValue: category?.message_prefix,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                    labelText: "Message to prepend to each message in this category",
+                    labelText:
+                        "Message to prepend to each message in this category",
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (value) {
@@ -57,16 +59,19 @@ class SpokenMessageListWidget extends StatelessWidget {
                     Data().store.box<SpokenMessageCategory>().put(category!);
                   },
                 ),
-              ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final message = messages[index];
-                  return SpokenMessageCard(
-                    message: message,
-                  );
-                },
-              )
-            ]);
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final message = messages[index];
+                      return SpokenMessageCard(
+                        message: message,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error loading prompts'));
           } else {

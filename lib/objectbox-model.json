@@ -140,7 +140,7 @@
     },
     {
       "id": "7:2020180581908519582",
-      "lastPropertyId": "17:537573080717479844",
+      "lastPropertyId": "19:3770844550917202134",
       "name": "FlashCard",
       "properties": [
         {
@@ -214,6 +214,16 @@
           "flags": 520,
           "indexId": "17:1775482827660519570",
           "relationTarget": "ChatHistory"
+        },
+        {
+          "id": "18:7623924826722180665",
+          "name": "grades",
+          "type": 27
+        },
+        {
+          "id": "19:3770844550917202134",
+          "name": "analysis",
+          "type": 9
         }
       ],
       "relations": []

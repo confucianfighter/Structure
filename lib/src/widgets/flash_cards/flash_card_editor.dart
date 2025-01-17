@@ -66,6 +66,9 @@ class _FlashCardEditorState extends State<FlashCardEditor> {
                       onAnswerSubmitted: (isCorrect) {
                         Data().store.box<FlashCard>().put(flashCard);
                       },
+                      onBack: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
                 );
