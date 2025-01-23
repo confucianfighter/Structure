@@ -10,6 +10,7 @@ import 'package:Structure/gen/assets.gen.dart';
 import '../../utils/v1_chat_completions.dart';
 import '../../utils/response_schemas/graded_flashcard.dart';
 import '../common/star_rating_widget.dart';
+
 class FlashCardWidget extends StatefulWidget {
   final FlashCard flashCard;
   final bool testMode;
@@ -30,14 +31,15 @@ class FlashCardWidget extends StatefulWidget {
 class _FlashCardWidgetState extends State<FlashCardWidget> {
   final GlobalKey<CodeEditorWidgetState> _editorKey = GlobalKey();
   var _userAnswer = '';
-  final bool _showHint = false;
-  bool _showChat = false;
+  bool _showHint = false;
+  bool _showAnswer = false;
   bool _showResult = false;
   String _analysis = '';
   String _rawGradeResponse = '';
   GradedFlashcard? _gradedFlashcard;
   FlashCard _flashCard =
       FlashCard(id: 0, question: '', answer: '', answerInputLanguage: '');
+  bool _showChat = false;
 
   @override
   void initState() {
@@ -52,7 +54,6 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
   void _submitAnswer() async {
     setState(() {
       _showResult = true;
-      _showChat = true;
     });
     final v1ChatCompletions = V1ChatCompletions();
     final gradedFlashcardResponse = GradedFlashcardResponse();
@@ -88,6 +89,27 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
 
   void _onAnswerSubmitted() {
     widget.onAnswerSubmitted(FlashCardResult.correct);
+  }
+
+  void _toggleHint() {
+    setState(() {
+      _showHint = !_showHint;
+      _showAnswer = false;
+    });
+  }
+
+  void _toggleAnswer() {
+    setState(() {
+      _showAnswer = !_showAnswer;
+      _showHint = false;
+    });
+  }
+
+  void _backToAnswerField() {
+    setState(() {
+      _showHint = false;
+      _showAnswer = false;
+    });
   }
 
   @override
@@ -150,16 +172,67 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                     ),
                     const SizedBox(height: 12.0),
                     Expanded(
-                      child: CodeEditorWidget(
-                        key: _editorKey,
-                        initialText: '',
-                        language: _flashCard.answerInputLanguage,
-                        onChanged: (answer) {
-                          _userAnswer = answer;
-                        },
-                        onLanguageChanged: null,
-                        isFullScreen: false,
-                        allowLanguageChange: false,
+                      child: Stack(
+                        children: [
+                          CodeEditorWidget(
+                            key: _editorKey,
+                            initialText: '',
+                            language: _flashCard.answerInputLanguage,
+                            onChanged: (answer) {
+                              _userAnswer = answer;
+                            },
+                            onLanguageChanged: null,
+                            isFullScreen: false,
+                            allowLanguageChange: false,
+                          ),
+                          if (!_showHint && !_showAnswer)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: _toggleHint,
+                                    child: const Text('Show Hint'),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  ElevatedButton(
+                                    onPressed: _toggleAnswer,
+                                    child: const Text('Show Answer'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (_showHint || _showAnswer)
+                            Positioned.fill(
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          _showHint
+                                              ? 'Hint: ${_flashCard.hint}'
+                                              : 'Answer: ${_flashCard.answer}',
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton(
+                                        onPressed: _backToAnswerField,
+                                        child: const Text('Back'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24.0),
@@ -181,8 +254,9 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                             ),
                           if (_showResult) const SizedBox(width: 16.0),
                           ElevatedButton(
-                            onPressed:
-                                _showResult ? _onAnswerSubmitted : _submitAnswer,
+                            onPressed: _showResult
+                                ? _onAnswerSubmitted
+                                : _submitAnswer,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0,
@@ -284,7 +358,6 @@ class GradedResponseWidget extends StatelessWidget {
         const SizedBox(height: 10),
         Text('Grade History: ${gradeHistory.join(', ')}'),
         const SizedBox(height: 10),
-
         StarRatingWidget(
           rating: flashCard.userRating,
           onRatingChanged: (newRating) {

@@ -297,7 +297,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(9, 3518682031366318632),
       name: 'Subject',
-      lastPropertyId: const obx_int.IdUid(4, 6046915051004450969),
+      lastPropertyId: const obx_int.IdUid(5, 7570901225383966342),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -320,7 +320,14 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(4, 6046915051004450969),
             name: 'color',
             type: 9,
-            flags: 0)
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 7570901225383966342),
+            name: 'chatHistoryId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(18, 1777908341807462603),
+            relationTarget: 'ChatHistory')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
@@ -568,7 +575,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
       lastEntityId: const obx_int.IdUid(15, 8885578874415051876),
-      lastIndexId: const obx_int.IdUid(17, 1775482827660519570),
+      lastIndexId: const obx_int.IdUid(18, 1777908341807462603),
       lastRelationId: const obx_int.IdUid(1, 2382961371279645997),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [4113595854453584037],
@@ -928,7 +935,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         }),
     Subject: obx_int.EntityDefinition<Subject>(
         model: _entities[7],
-        toOneRelations: (Subject object) => [],
+        toOneRelations: (Subject object) => [object.chatHistory],
         toManyRelations: (Subject object) => {},
         getId: (Subject object) => object.id,
         setId: (Subject object, int id) {
@@ -938,11 +945,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final nameOffset = fbb.writeString(object.name);
           final descriptionOffset = fbb.writeString(object.description);
           final colorOffset = fbb.writeString(object.color);
-          fbb.startTable(5);
+          fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, descriptionOffset);
           fbb.addOffset(3, colorOffset);
+          fbb.addInt64(4, object.chatHistory.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -963,7 +971,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               name: nameParam,
               description: descriptionParam,
               color: colorParam);
-
+          object.chatHistory.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          object.chatHistory.attach(store);
           return object;
         }),
     FlashCardSequence: obx_int.EntityDefinition<FlashCardSequence>(
@@ -1420,6 +1430,10 @@ class Subject_ {
   /// See [Subject.color].
   static final color =
       obx.QueryStringProperty<Subject>(_entities[7].properties[3]);
+
+  /// See [Subject.chatHistory].
+  static final chatHistory =
+      obx.QueryRelationToOne<Subject, ChatHistory>(_entities[7].properties[4]);
 }
 
 /// [FlashCardSequence] entity fields to define ObjectBox queries.

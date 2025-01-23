@@ -7,6 +7,7 @@ import '../../utils/v1_chat_completions.dart';
 import '../../utils/response_schemas/schemas.dart';
 import 'package:Structure/src/data_types/code_editor/language_option.dart';
 import 'package:Structure/src/utils/flash_card_stack_manager.dart';
+import '../../data_types/object_box_types/subject.dart';
 
 class FlashCardListWidget extends StatefulWidget {
   const FlashCardListWidget({super.key, required this.subject});
@@ -16,7 +17,7 @@ class FlashCardListWidget extends StatefulWidget {
 }
 
 class _FlashCardListWidget extends State<FlashCardListWidget> {
-  bool _selectRandomCards = false;
+  bool _selectRandomCards = true;
   int _randomCardCount = 5;
   late Stream<List<FlashCard>> _streamBuilder;
   bool _isAssistantOpen = true;
@@ -27,6 +28,8 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
   final FocusNode _focusNode = FocusNode();
   String _rawResponse = '';
   int _gradeThreshold = 80;
+  bool _isMultiSelectMode = false;
+  Set<int> _selectedCardIds = {};
 
   @override
   void initState() {
@@ -55,6 +58,33 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                 .watch(triggerImmediately: true)
                 .map((query) => query.find())
                 .asBroadcastStream();
+  }
+
+  void _toggleMultiSelectMode() {
+    setState(() {
+      _isMultiSelectMode = !_isMultiSelectMode;
+      if (!_isMultiSelectMode) {
+        _selectedCardIds.clear();
+      }
+    });
+  }
+
+  void _toggleCardSelection(int cardId) {
+    setState(() {
+      if (_selectedCardIds.contains(cardId)) {
+        _selectedCardIds.remove(cardId);
+      } else {
+        _selectedCardIds.add(cardId);
+      }
+    });
+  }
+
+  void _applySubjectToSelectedCards(Subject subject) {
+    for (var cardId in _selectedCardIds) {
+      final card = _flashCards.firstWhere((card) => card.id == cardId);
+      card.subject.target = subject;
+      Data().store.box<FlashCard>().put(card);
+    }
   }
 
   void _submitAssistantRequest() async {
@@ -215,9 +245,7 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                   numberOfRandomCards: _randomCardCount,
                   gradeThreshold: 80,
                   navigator: Navigator.of(context),
-                  onFinished: () {
-                    
-                  },
+                  onFinished: () {},
                 );
                 flashCardStackManager.play();
               },
@@ -288,20 +316,34 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                     itemCount: _flashCards.length,
                     itemBuilder: (context, index) {
                       final flashCard = _flashCards[index];
-                      return FlashCardPreview(
-                        flashCard: flashCard,
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  FlashCardEditor(flashCardId: flashCard.id),
-                            ),
-                          );
-                        },
-                        onDelete: () async {
-                          Data().store.box<FlashCard>().remove(flashCard.id);
-                        },
+                      return GestureDetector(
+                        onLongPress: _toggleMultiSelectMode,
+                        child: FlashCardPreview(
+                          flashCard: flashCard,
+                          isSelected: _selectedCardIds.contains(flashCard.id),
+                          isMultiSelectMode: _isMultiSelectMode,
+                          onEdit: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    FlashCardEditor(flashCardId: flashCard.id),
+                              ),
+                            );
+                          },
+                          onDelete: () async {
+                            Data().store.box<FlashCard>().remove(flashCard.id);
+                          },
+                          onSelect: () => _toggleCardSelection(flashCard.id),
+                          onSubjectChanged: (subject) {
+                            if (_isMultiSelectMode) {
+                              _applySubjectToSelectedCards(subject);
+                            } else {
+                              flashCard.subject.target = subject;
+                              Data().store.box<FlashCard>().put(flashCard);
+                            }
+                          },
+                        ),
                       );
                     },
                   );

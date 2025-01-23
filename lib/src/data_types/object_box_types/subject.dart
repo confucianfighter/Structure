@@ -1,13 +1,15 @@
 import '../../data_store.dart';
+import 'i_table.dart';
 
 @Entity()
-class Subject {
+class Subject extends ITable<Subject> {
   @Id()
   int id;
   @Unique()
   String name;
   String description;
   String color = '#FFFFFF';
+  ToOne<ChatHistory> chatHistory = ToOne<ChatHistory>();
   Subject({
     required this.id,
     required this.name,
@@ -62,5 +64,10 @@ class Subject {
             name: 'Orphaned',
             description: 'Orphaned subjects',
             color: '#FFFFFF');
+  }
+
+  @override
+  int getId() {
+    return id;
   }
 }

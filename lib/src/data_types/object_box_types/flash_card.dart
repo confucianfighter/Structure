@@ -1,5 +1,6 @@
 import '../../data_store.dart';
 import 'i_table.dart';
+
 @Entity()
 class FlashCard extends ITable<FlashCard> {
   @Id()
@@ -26,4 +27,8 @@ class FlashCard extends ITable<FlashCard> {
     required this.answerInputLanguage,
     this.hint = '',
   });
+  @override
+  int getId() {
+    return id;
+  }
 }

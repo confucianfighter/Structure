@@ -267,7 +267,7 @@
     },
     {
       "id": "9:3518682031366318632",
-      "lastPropertyId": "4:6046915051004450969",
+      "lastPropertyId": "5:7570901225383966342",
       "name": "Subject",
       "properties": [
         {
@@ -292,6 +292,14 @@
           "id": "4:6046915051004450969",
           "name": "color",
           "type": 9
+        },
+        {
+          "id": "5:7570901225383966342",
+          "name": "chatHistoryId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "18:1777908341807462603",
+          "relationTarget": "ChatHistory"
         }
       ],
       "relations": []
@@ -507,7 +515,7 @@
     }
   ],
   "lastEntityId": "15:8885578874415051876",
-  "lastIndexId": "17:1775482827660519570",
+  "lastIndexId": "18:1777908341807462603",
   "lastRelationId": "1:2382961371279645997",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
