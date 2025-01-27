@@ -8,20 +8,24 @@ import '../html_viewer/html_viewer.dart';
 import '../chat/chat.dart';
 import 'package:Structure/gen/assets.gen.dart';
 import '../../utils/v1_chat_completions.dart';
-import '../../utils/response_schemas/graded_flashcard.dart';
+import '../../utils/assistant_actions/graded_flashcard.dart';
 import '../common/star_rating_widget.dart';
+import '../../utils/assistant_actions/assistant_actions.dart';
+import 'package:Structure/src/utils/flash_card_stack_manager.dart';
 
 class FlashCardWidget extends StatefulWidget {
   final FlashCard flashCard;
   final bool testMode;
   final Function(FlashCardResult) onAnswerSubmitted;
   final Function()? onBack;
+  final FlashCardStackManager? manager;
   const FlashCardWidget({
     super.key,
     required this.flashCard,
     required this.testMode,
     required this.onAnswerSubmitted,
     this.onBack,
+    this.manager,
   });
 
   @override
@@ -61,9 +65,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
     _gradedFlashcard = await v1ChatCompletions.sendMessage<GradedFlashcard>(
       userMessage: _userAnswer,
       getContext: () async =>
-          'Question: ${_flashCard.question}\nCorrect Answer: ${_flashCard.answer}\nUser Answer: $_userAnswer',
-      systemPrompt:
-          'You are a friendly, clever tutor. Grade the response from 0 to 100% with a brief reasoning. An answer under 50% is incorrect. Use HTML, and emojis.',
+          'flashCardId: ${_flashCard.id}, Question: ${_flashCard.question}\nCorrect Answer: ${_flashCard.answer}\nUser Answer: $_userAnswer',
       onChunkReceived: (chunk) async {
         setState(() {
           _rawGradeResponse += chunk;
@@ -74,17 +76,15 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
           }
         });
       },
-      responseSchema: gradedFlashcardResponse,
+      assistantAction: gradedFlashcardResponse,
       onError: (error) async {
         setState(() {
           _analysis += error.toString();
         });
       },
+      api: Settings.getPreferredGradingAPI() ?? ChatCompletionAPI.OpenAI,
     );
-    if (_gradedFlashcard != null) {
-      _flashCard.grades.add(_gradedFlashcard!.grade);
-      await _flashCard.save();
-    }
+    setState((){});
   }
 
   void _onAnswerSubmitted() {
@@ -174,17 +174,18 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                     Expanded(
                       child: Stack(
                         children: [
-                          CodeEditorWidget(
-                            key: _editorKey,
-                            initialText: '',
-                            language: _flashCard.answerInputLanguage,
-                            onChanged: (answer) {
-                              _userAnswer = answer;
-                            },
-                            onLanguageChanged: null,
-                            isFullScreen: false,
-                            allowLanguageChange: false,
-                          ),
+                          if (!_showHint && !_showAnswer)
+                            CodeEditorWidget(
+                              key: _editorKey,
+                              initialText: '',
+                              language: _flashCard.answerInputLanguage,
+                              onChanged: (answer) {
+                                _userAnswer = answer;
+                              },
+                              onLanguageChanged: null,
+                              isFullScreen: false,
+                              allowLanguageChange: false,
+                            ),
                           if (!_showHint && !_showAnswer)
                             Positioned(
                               top: 0,
@@ -293,6 +294,40 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                           'You are a very clever tutor. The current subject is $subjectName, the current flashcard being reviewed is ${_flashCard.question}\n\n$userAnswer\n$correctAnswer\n$userAnswerAnalysis';
                       return message;
                     },
+                    assistantActions: [
+                      FlashcardAssistant(
+                        subject: _flashCard.subject.target ??
+                            Subject(
+                                id: 0,
+                                name: 'unknown subject',
+                                description: 'unknown subject',
+                                color: 'transparent'),
+                        shortcutKey: 'f',
+                        buttonText: 'Generate Flashcards',
+                        onResultGenerated: (flashcards) {
+                          widget.manager?.AddCards(flashcards);
+                        },
+                        
+                      ),
+                      GeneratedSurrealDBQueryResponse(
+                        shortcutKey: 'g',
+                        buttonText: 'Generate SurrealDB Query',
+                        onResultGenerated: (result) {
+                          // got the query response. Now I should remove the last assistant message and replace it with a chat bubble
+                          // that allows me to run the query.
+                          final chatHistory = _flashCard.chatHistory.target;
+                          final lastMessage = chatHistory?.messages.last;
+                          chatHistory?.messages.removeLast();
+                          // add a separate bubble for explanation to keep it simple.
+                          chatHistory?.messages.add(ChatMessage(id: 0, role: 'assistant', content: result.explanation, chatBubbleType: 'explanation'));
+                          chatHistory?.messages.add(ChatMessage(id: 0, role: 'assistant', content: result.query, chatBubbleType: 'query'));
+                          setState(() {
+                            chatHistory?.save();
+                          }); 
+                        }
+                        //
+                      ),
+                    ],
                   ),
                 ),
               IconButton(
@@ -324,13 +359,13 @@ class GradedResponseWidget extends StatelessWidget {
   final FlashCard flashCard;
 
   const GradedResponseWidget({
-    Key? key,
+    super.key,
     required this.analysis,
     required this.grade,
     required this.gradeHistory,
     required this.onRatingChanged,
     required this.flashCard,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -352,7 +387,7 @@ class GradedResponseWidget extends StatelessWidget {
             );
           }),
         ),
-        Text('Grade: ${grade}%'),
+        Text('Grade: $grade%'),
         const SizedBox(height: 10),
         Text('Average Grade: $averageGrade%'),
         const SizedBox(height: 10),

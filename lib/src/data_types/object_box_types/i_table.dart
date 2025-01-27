@@ -2,11 +2,11 @@ import '../../data_store.dart';
 
 abstract class ITable<T> {
   Future<void> save() async {
-    await Data().store.box<T>().put(this as T);
+    Data().store.box<T>().put(this as T);
   }
 
   Future<void> delete() async {
-    await Data().store.box<T>().remove(getId());
+    Data().store.box<T>().remove(getId());
   }
 
   Future<T?> refresh() async {

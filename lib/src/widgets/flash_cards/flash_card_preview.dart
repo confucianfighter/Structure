@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../data_store.dart';
-import '../../data_types/object_box_types/subject.dart';
 
 class FlashCardPreview extends StatelessWidget {
   final FlashCard flashCard;

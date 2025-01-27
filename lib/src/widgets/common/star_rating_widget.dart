@@ -6,11 +6,11 @@ class StarRatingWidget extends StatelessWidget {
   final int maxRating;
 
   const StarRatingWidget({
-    Key? key,
+    super.key,
     required this.rating,
     required this.onRatingChanged,
     this.maxRating = 5,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

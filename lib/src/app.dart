@@ -9,6 +9,7 @@ import 'systems/object_box_timer.dart';
 import 'widgets/sequences/sequence_list.dart';
 import 'widgets/subjects/subject_list_widget.dart';
 import 'widgets/spoken_messages/spoken_message_category_list.dart';
+import 'widgets/SurrealDB/surreal_db_widget.dart';
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   // constructor. const means it creates a compile-time constant, which implies that settingsController is also constat.
@@ -104,6 +105,8 @@ class MyApp extends StatelessWidget {
                   case SpokenMessageCategoriesWidget.routeName:
                     print("spoken messages route");
                     return const SpokenMessageCategoriesWidget();
+                  case SurrealDBWidget.routeName:
+                    return SurrealDBWidget();
                   case MainMenu.routeName:
                   // fall through to the default case
                   default:

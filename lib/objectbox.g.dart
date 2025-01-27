@@ -360,7 +360,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(11, 8013161053207222681),
       name: 'Settings',
-      lastPropertyId: const obx_int.IdUid(24, 7663497536443771573),
+      lastPropertyId: const obx_int.IdUid(27, 450433203742204873),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -396,6 +396,21 @@ final _entities = <obx_int.ModelEntity>[
         obx_int.ModelProperty(
             id: const obx_int.IdUid(24, 7663497536443771573),
             name: 'codeStylePath',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(25, 4681368462293155184),
+            name: 'preferredChatCompletionAPI',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(26, 5569708925516342847),
+            name: 'preferredGradingAPI',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(27, 450433203742204873),
+            name: 'preferredFlashcardGenerationAPI',
             type: 9,
             flags: 0)
       ],
@@ -504,7 +519,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(15, 8885578874415051876),
       name: 'ChatMessage',
-      lastPropertyId: const obx_int.IdUid(5, 8983738279262490827),
+      lastPropertyId: const obx_int.IdUid(6, 3920690311555253376),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -533,7 +548,12 @@ final _entities = <obx_int.ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const obx_int.IdUid(16, 5357683070213496569),
-            relationTarget: 'ChatHistory')
+            relationTarget: 'ChatHistory'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 3920690311555253376),
+            name: 'chatBubbleType',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -1026,7 +1046,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final codeStylePathOffset = object.codeStylePath == null
               ? null
               : fbb.writeString(object.codeStylePath!);
-          fbb.startTable(25);
+          final preferredChatCompletionAPIOffset =
+              object.preferredChatCompletionAPI == null
+                  ? null
+                  : fbb.writeString(object.preferredChatCompletionAPI!);
+          final preferredGradingAPIOffset = object.preferredGradingAPI == null
+              ? null
+              : fbb.writeString(object.preferredGradingAPI!);
+          final preferredFlashcardGenerationAPIOffset =
+              object.preferredFlashcardGenerationAPI == null
+                  ? null
+                  : fbb.writeString(object.preferredFlashcardGenerationAPI!);
+          fbb.startTable(28);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, homeFolderPathOffset);
           fbb.addInt64(19, object.dateModifiedMillis);
@@ -1034,6 +1065,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addFloat64(21, object.openai_tts_gain);
           fbb.addOffset(22, cssStylePathOffset);
           fbb.addOffset(23, codeStylePathOffset);
+          fbb.addOffset(24, preferredChatCompletionAPIOffset);
+          fbb.addOffset(25, preferredGradingAPIOffset);
+          fbb.addOffset(26, preferredFlashcardGenerationAPIOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1057,7 +1091,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
             ..cssStylePath = const fb.StringReader(asciiOptimization: true)
                 .vTableGetNullable(buffer, rootOffset, 48)
             ..codeStylePath = const fb.StringReader(asciiOptimization: true)
-                .vTableGetNullable(buffer, rootOffset, 50);
+                .vTableGetNullable(buffer, rootOffset, 50)
+            ..preferredChatCompletionAPI =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGetNullable(buffer, rootOffset, 52)
+            ..preferredGradingAPI =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGetNullable(buffer, rootOffset, 54)
+            ..preferredFlashcardGenerationAPI =
+                const fb.StringReader(asciiOptimization: true)
+                    .vTableGetNullable(buffer, rootOffset, 56);
 
           return object;
         }),
@@ -1203,12 +1246,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final embeddingOffset = object.embedding == null
               ? null
               : fbb.writeString(object.embedding!);
-          fbb.startTable(6);
+          final chatBubbleTypeOffset = object.chatBubbleType == null
+              ? null
+              : fbb.writeString(object.chatBubbleType!);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, roleOffset);
           fbb.addOffset(2, contentOffset);
           fbb.addOffset(3, embeddingOffset);
           fbb.addInt64(4, object.chatHistory.targetId);
+          fbb.addOffset(5, chatBubbleTypeOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1223,11 +1270,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 8, '');
           final embeddingParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 10);
+          final chatBubbleTypeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 14);
           final object = ChatMessage(
               id: idParam,
               role: roleParam,
               content: contentParam,
-              embedding: embeddingParam);
+              embedding: embeddingParam,
+              chatBubbleType: chatBubbleTypeParam);
           object.chatHistory.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           object.chatHistory.attach(store);
@@ -1480,6 +1531,18 @@ class Settings_ {
   /// See [Settings.codeStylePath].
   static final codeStylePath =
       obx.QueryStringProperty<Settings>(_entities[9].properties[6]);
+
+  /// See [Settings.preferredChatCompletionAPI].
+  static final preferredChatCompletionAPI =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[7]);
+
+  /// See [Settings.preferredGradingAPI].
+  static final preferredGradingAPI =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[8]);
+
+  /// See [Settings.preferredFlashcardGenerationAPI].
+  static final preferredFlashcardGenerationAPI =
+      obx.QueryStringProperty<Settings>(_entities[9].properties[9]);
 }
 
 /// [SpokenMessage] entity fields to define ObjectBox queries.
@@ -1569,4 +1632,8 @@ class ChatMessage_ {
   /// See [ChatMessage.chatHistory].
   static final chatHistory = obx.QueryRelationToOne<ChatMessage, ChatHistory>(
       _entities[13].properties[4]);
+
+  /// See [ChatMessage.chatBubbleType].
+  static final chatBubbleType =
+      obx.QueryStringProperty<ChatMessage>(_entities[13].properties[5]);
 }

@@ -70,4 +70,7 @@ class Subject extends ITable<Subject> {
   int getId() {
     return id;
   }
+  List<FlashCard>? getFlashcards() {
+    return Data().store.box<FlashCard>().query(FlashCard_.subject.equals(id)).build().find();
+  }
 }

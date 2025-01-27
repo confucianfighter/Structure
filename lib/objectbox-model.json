@@ -333,7 +333,7 @@
     },
     {
       "id": "11:8013161053207222681",
-      "lastPropertyId": "24:7663497536443771573",
+      "lastPropertyId": "27:450433203742204873",
       "name": "Settings",
       "properties": [
         {
@@ -370,6 +370,21 @@
         {
           "id": "24:7663497536443771573",
           "name": "codeStylePath",
+          "type": 9
+        },
+        {
+          "id": "25:4681368462293155184",
+          "name": "preferredChatCompletionAPI",
+          "type": 9
+        },
+        {
+          "id": "26:5569708925516342847",
+          "name": "preferredGradingAPI",
+          "type": 9
+        },
+        {
+          "id": "27:450433203742204873",
+          "name": "preferredFlashcardGenerationAPI",
           "type": 9
         }
       ],
@@ -478,7 +493,7 @@
     },
     {
       "id": "15:8885578874415051876",
-      "lastPropertyId": "5:8983738279262490827",
+      "lastPropertyId": "6:3920690311555253376",
       "name": "ChatMessage",
       "properties": [
         {
@@ -509,6 +524,11 @@
           "flags": 520,
           "indexId": "16:5357683070213496569",
           "relationTarget": "ChatHistory"
+        },
+        {
+          "id": "6:3920690311555253376",
+          "name": "chatBubbleType",
+          "type": 9
         }
       ],
       "relations": []

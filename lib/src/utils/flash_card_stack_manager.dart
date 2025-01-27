@@ -43,7 +43,9 @@ class FlashCardStackManager {
       _stack.add(_flashCards[index]);
     }
   }
-
+  void AddCards(List<FlashCard> cards){
+    _stack.addAll(cards);
+  }
   void play() {
     if (_stack.isEmpty) {
       navigator.pop();
@@ -51,26 +53,27 @@ class FlashCardStackManager {
     }
 
     final flashCard = _stack.removeLast();
-
+    
     navigator.push(
       MaterialPageRoute(
         builder: (context) => FlashCardWidget(
           flashCard: flashCard,
           testMode: true,
+          manager: this,
           onAnswerSubmitted: (result) {
             _poppedCards.add(flashCard);
             navigator.pop();
             if (result == FlashCardResult.incorrect) {
               _stack.insert(0, flashCard); // Reinsert at the beginning
             }
-            if (!_stack.isEmpty) play(); // Continue to the next card
+            if (_stack.isNotEmpty) play(); // Continue to the next card
           },
           onBack: () {
             // all I need to do is modify the stacks and then play again
-            if (_poppedCards.length > 0) {
+            if (_poppedCards.isNotEmpty) {
               _stack.add(flashCard);
               _poppedCards.remove(flashCard);
-              if (_poppedCards.length > 0) {
+              if (_poppedCards.isNotEmpty) {
                 final card = _poppedCards.removeLast();
                 _stack.add(card);
               }

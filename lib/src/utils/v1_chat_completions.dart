@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:Structure/src/data_store.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:Structure/src/data_types/code_editor/language_option.dart';
-import 'response_schemas/schemas.dart';
+import 'assistant_actions/assistant_actions.dart';
 
 enum ChatCompletionAPI { OpenAI, DeepSeek }
 
@@ -23,31 +23,39 @@ class V1ChatCompletions {
     Future<String>? Function()? getContext,
     String? systemPrompt,
     required Future<void> Function(String) onChunkReceived,
-    required StructuredResponse<T> responseSchema,
+    AssistantAction<T>? assistantAction,
     String? subject,
     required Future<void> Function(String) onError,
-    ChatCompletionAPI api = ChatCompletionAPI.DeepSeek,
+    ChatCompletionAPI api = ChatCompletionAPI.OpenAI,
     Future<void> Function(String)? onThoughtChunkReceived,
     int maxTokens = 4096,
+    List<ChatMessage>? chatHistory,
   }) async {
     final context = getContext != null ? await getContext() : "";
-    systemPrompt = systemPrompt ?? "";
-    if (api == ChatCompletionAPI.DeepSeek) {
+    systemPrompt = context ?? "";
+    systemPrompt = systemPrompt ?? assistantAction?.systemPrompt() ?? "";
+    if (api == ChatCompletionAPI.DeepSeek && assistantAction != null) {
       systemPrompt = '''Please reply in json format.$systemPrompt\n$context\n
-      JSON SCHEMA TO FOLLOW: ${responseSchema.toJsonString()};
+      JSON SCHEMA TO FOLLOW: ${assistantAction.toJsonString()};
       NOTE: Output itself should not be a schema, but json object that follows the schema.''';
+    } else {
+      systemPrompt += " $context";
     }
-
     final messages = [
-      {"role": "system", "content": "$systemPrompt"},
-      {"role": "user", "content": "$userMessage"}
+      {"role": "system", "content": systemPrompt},
     ];
+    // theoretically, user message should already be added to the chat history
+      if (chatHistory != null) {
+        for (var message in chatHistory) {
+          messages.add({"role": message.role, "content": message.content});
+        }
+      }
 
-    final requestBody = api == ChatCompletionAPI.OpenAI
+      final requestBody = api == ChatCompletionAPI.OpenAI
         ? jsonEncode({
             "model": "gpt-4o-2024-08-06",
             "messages": messages,
-            "response_format": responseSchema.responseFormat,
+            "response_format": assistantAction?.responseFormat,
             "stream": true
           })
         : jsonEncode({
@@ -124,14 +132,17 @@ class V1ChatCompletions {
           }
         }
 
-        final result = responseSchema.decode(jsonString, onError);
-        return result;
+        final result = await assistantAction?.decode(jsonString, onError);
+        if (result != null) {
+          await assistantAction?.processResponseObject(result as T);
+          return result;
+        }
       } else {
         final responseBody = await response.stream.bytesToString();
         await onChunkReceived(
             'Error: ${response.statusCode} ${response.reasonPhrase} $responseBody');
-        return null;
       }
+      return null;
     } catch (e) {
       print(e);
       await onChunkReceived('Error: $e');

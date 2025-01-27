@@ -1,8 +1,7 @@
-import 'package:Structure/src/data_types/code_editor/language_option.dart';
-import 'dart:convert';
-import 'schemas.dart';
+import 'assistant_actions.dart';
+import 'package:Structure/src/data_store.dart';
 
-class GradedFlashcardResponse extends StructuredResponse<GradedFlashcard> {
+class GradedFlashcardResponse extends AssistantAction<GradedFlashcard> {
   @override
   final responseFormat = {
     "type": "json_schema",
@@ -52,6 +51,23 @@ class GradedFlashcardResponse extends StructuredResponse<GradedFlashcard> {
           'Error decoding graded flashcard in graded_flashcard.dart: $e, flashcard: $response');
     }
     return null;
+  }
+
+  @override
+  String systemPrompt() {
+    return '''You are a friendly, clever tutor. Grade the response from 0 to 100% with a brief reasoning. An answer under 50% is incorrect. Use emojis.''';
+  }
+
+  @override
+  Future<void> processResponseObject(GradedFlashcard response) async {
+    final flashcard = Data().store.box<FlashCard>().get(response.flashCardId);
+    flashcard?.grades.add(response.grade);
+    await flashcard?.save();
+  }
+
+  bool operator ==(Object other) {
+    // TODO: implement ==
+    return super == other;
   }
 }
 

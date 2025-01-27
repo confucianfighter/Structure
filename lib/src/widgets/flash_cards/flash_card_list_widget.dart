@@ -4,7 +4,7 @@ import '../../data_store.dart';
 import 'flash_card_preview.dart';
 import 'flash_card_editor.dart';
 import '../../utils/v1_chat_completions.dart';
-import '../../utils/response_schemas/schemas.dart';
+import '../../utils/assistant_actions/assistant_actions.dart';
 import 'package:Structure/src/data_types/code_editor/language_option.dart';
 import 'package:Structure/src/utils/flash_card_stack_manager.dart';
 import '../../data_types/object_box_types/subject.dart';
@@ -29,11 +29,17 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
   String _rawResponse = '';
   int _gradeThreshold = 80;
   bool _isMultiSelectMode = false;
-  Set<int> _selectedCardIds = {};
-
+  final Set<int> _selectedCardIds = {};
+  ChatCompletionAPI? _selectedGradingApi;
+  ChatCompletionAPI? _selectedFlashcardGenerationApi;
   @override
   void initState() {
     super.initState();
+    _selectedFlashcardGenerationApi =
+        Settings.getPreferredFlashcardGenerationAPI() ??
+            ChatCompletionAPI.OpenAI;
+    _selectedGradingApi =
+        Settings.getPreferredGradingAPI() ?? ChatCompletionAPI.OpenAI;
 
     _streamBuilder = (widget.subject.name == 'All')
         ? Data()
@@ -92,29 +98,10 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
     if (value.isNotEmpty) {
       // Fetch existing flashcards
       // Generate new flashcards
-      final newFlashcards =
-          await _flashcardAssistant.sendMessage<List<FlashCard>>(
+      final flashcards = await _flashcardAssistant.sendMessage<List<FlashCard>>(
         userMessage: value,
         getContext: () async {
-          final existingCards = _flashCards
-              .map((fc) =>
-                  "Question:${fc.question}, Times correct: ${fc.timesCorrect}, Times incorrect: ${fc.timesIncorrect}")
-              .toList()
-              .join(', ');
-          return """You are a clever and helpful tutor on all manner of subjects. 
-          Your relationship with the user is like Aristotle to Alexander the great. 
-          Create a list of flashcards based on what your beloved student has asked. 
-          Each flashcard should have a question, an answer, a clever hint, and an answer code language (that way we can do syntax highlighting for them when they answer the question). 
-          The question and answer will be displayed using html. 
-          Use <h2> for the question and <x> some code </x> when you want to include code. 
-          I'm processing <x> as a special tag for code and using auto syntax highlighting. 
-          The following languages are available for user response syntax highlighting: ${languageMap.keys.join(', ')}. 
-          Unless the user has said otherwise, return at most 7 flashcards. 
-          Avoid duplicating the following questions: 
-          ${existingCards}. 
-          And while the question is to be in html, the answer should be in either plain text or the code language, no markup. 
-          If there needs to be code and explanation, use code comments for explanation.
-          The current subject is ${widget.subject.name} having to do with ${widget.subject.description}""";
+          return "";
         },
         onChunkReceived: (content) async {
           setState(() {
@@ -131,21 +118,13 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
             ),
           );
         },
-        responseSchema: GeneratedFlashcardsSchema(),
+        assistantAction: FlashcardAssistant(subject: widget.subject),
+        api: _selectedFlashcardGenerationApi ?? ChatCompletionAPI.OpenAI,
       );
-      if (newFlashcards != null) {
-        // clear the raw response
-        setState(() {
-          //_rawResponse = '';
-        });
+      if (flashcards != null) {
         // Add new flashcards to the data store
         setState(() {
-          _rawResponse =
-              "Successfully decoded ${newFlashcards.length} flashcards.\n$_rawResponse";
-          for (var flashcard in newFlashcards) {
-            flashcard.subject.target = widget.subject;
-            Data().store.box<FlashCard>().put(flashcard);
-          }
+          _rawResponse = "Success!";
         });
       } else {
         setState(() {
@@ -212,6 +191,24 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                         onPressed: _submitAssistantRequest,
                       ),
                     ],
+                  ),
+                  DropdownButton<ChatCompletionAPI>(
+                    value: _selectedFlashcardGenerationApi,
+                    dropdownColor: Color(0xFF2C2C2C),
+                    items:
+                        ChatCompletionAPI.values.map((ChatCompletionAPI api) {
+                      return DropdownMenuItem<ChatCompletionAPI>(
+                        value: api,
+                        child: Text(api.toString().split('.').last,
+                            style: TextStyle(color: Colors.white)),
+                      );
+                    }).toList(),
+                    onChanged: (ChatCompletionAPI? newValue) {
+                      Settings.setPreferredFlashcardGenerationAPI(newValue!);
+                      setState(() {
+                        _selectedFlashcardGenerationApi = newValue;
+                      });
+                    },
                   ),
                   const SizedBox(height: 8.0),
                   if (_rawResponse.isNotEmpty)
@@ -284,6 +281,25 @@ class _FlashCardListWidget extends State<FlashCardListWidget> {
                     onChanged: (value) {
                       setState(() {
                         _randomCardCount = int.tryParse(value) ?? 5;
+                      });
+                    },
+                  ),
+                  DropdownButton<ChatCompletionAPI>(
+                    value: Settings.getPreferredGradingAPI() ??
+                        ChatCompletionAPI.OpenAI,
+                    dropdownColor: Color(0xFF2C2C2C),
+                    items:
+                        ChatCompletionAPI.values.map((ChatCompletionAPI api) {
+                      return DropdownMenuItem<ChatCompletionAPI>(
+                        value: api,
+                        child: Text(api.toString().split('.').last,
+                            style: TextStyle(color: Colors.white)),
+                      );
+                    }).toList(),
+                    onChanged: (ChatCompletionAPI? newValue) {
+                      Settings.setPreferredGradingAPI(newValue!);
+                      setState(() {
+                        _selectedGradingApi = newValue;
                       });
                     },
                   ),
