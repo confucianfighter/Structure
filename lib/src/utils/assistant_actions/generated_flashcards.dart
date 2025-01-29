@@ -1,8 +1,6 @@
 import 'package:Structure/src/data_store.dart';
 import 'package:Structure/src/utils/assistant_actions/assistant_actions.dart';
 import 'package:Structure/src/data_types/code_editor/language_option.dart';
-import 'dart:convert';
-import 'dart:async';
 import 'dart:core';
 
 class FlashcardAssistant extends AssistantAction<List<FlashCard>> {

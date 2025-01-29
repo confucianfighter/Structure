@@ -40,10 +40,11 @@ class ChatMessage {
 
   Widget? getChatBubbleWidget(Function() onDelete, Function(String)? onError) {
     if (!verifyWidgetType(chatBubbleType!)) {
-      if (onError != null)
-        onError("chatBubbleType not found \\${chatBubbleType}");
-      else
-        throw Exception("chatBubbleType not found \\${chatBubbleType}");
+      if (onError != null) {
+        onError("chatBubbleType not found \\$chatBubbleType");
+      } else {
+        throw Exception("chatBubbleType not found \\$chatBubbleType");
+      }
       return null;
     }
     switch (determineChatBubbleType(chatBubbleType!) ?? ChatBubbleType.text) {

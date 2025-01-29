@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../data_types/object_box_types/chat_message.dart';
-import '../../data_types/object_box_types/chat_history.dart';
 import 'package:flutter/services.dart';
 import '../../utils/v1_chat_completions.dart';
 // import datastore
@@ -153,10 +151,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                 // execute the query
                 final result = await DB().query(query: query);
                 // add the result to the chat history
+                final prettyJson = JsonEncoder.withIndent('  ').convert(result);
                 _chatHistory.addMessage(ChatMessage(
                     id: 0,
                     role: 'assistant',
-                    content: result.toString(),
+                    content: prettyJson,
                     chatBubbleType: 'query_result'));
                 setState(() {
                   _chatHistory.save();

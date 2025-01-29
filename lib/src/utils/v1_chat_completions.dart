@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:Structure/src/data_store.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:Structure/src/data_types/code_editor/language_option.dart';
 import 'assistant_actions/assistant_actions.dart';
 
 enum ChatCompletionAPI { OpenAI, DeepSeek }
@@ -45,13 +43,16 @@ class V1ChatCompletions {
       {"role": "system", "content": systemPrompt},
     ];
     // theoretically, user message should already be added to the chat history
-      if (chatHistory != null) {
-        for (var message in chatHistory) {
-          messages.add({"role": message.role, "content": message.content});
-        }
+    if (chatHistory != null) {
+      for (var message in chatHistory) {
+        messages.add({"role": message.role, "content": message.content});
       }
+    }
+    if (userMessage != null) {
+      messages.add({"role": "user", "content": userMessage});
+    }
 
-      final requestBody = api == ChatCompletionAPI.OpenAI
+    final requestBody = api == ChatCompletionAPI.OpenAI
         ? jsonEncode({
             "model": "gpt-4o-2024-08-06",
             "messages": messages,

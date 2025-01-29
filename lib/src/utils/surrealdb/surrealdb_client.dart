@@ -35,11 +35,11 @@ class DB {
           _namespace == null ||
           _database == null) {
         return "Missing one or more required environment variables:\n"
-               "SURREALDB_URL: $_dbUrl\n"
-               "SURREALDB_USERNAME: $_username\n"
-               "SURREALDB_PASSWORD: $_password\n"
-               "SURREALDB_NAMESPACE: $_namespace\n"
-               "SURREALDB_DATABASE: $_database";
+            "SURREALDB_URL: $_dbUrl\n"
+            "SURREALDB_USERNAME: $_username\n"
+            "SURREALDB_PASSWORD: $_password\n"
+            "SURREALDB_NAMESPACE: $_namespace\n"
+            "SURREALDB_DATABASE: $_database";
       }
 
       // Initialize the database connection only if it's null
@@ -55,13 +55,12 @@ class DB {
         );
         // Authenticate using the retrieved token
         await _db!.authenticate(token);
-        
+
         await _db!.query("USE NS $_namespace; USE DB $_database");
       }
       return "Database initialized successfully";
     } catch (e) {
       return e.toString(); // Rethrow the exception for higher-level handling
-    
     }
   }
 
@@ -76,23 +75,35 @@ class DB {
   }
 
   /// Execute a query on the database
-  Future<dynamic> query(
-      {required String query, Map<String, Object?>? vars}) async {
-    // prepend the query with "USE NS $_namespace; USE DB $_database;"
-    query = "USE NS $_namespace; USE DB $_database; $query";
-    try {
-      // Ensure the database is initialized
-      if (_db == null) {
-        await initialize(); // Initialize it if it's not already
+  Future<dynamic> query({
+    required String query,
+    Map<String, Object?>? vars,
+  }) async {
+    int tries = 0;
+    while (tries < 3) {
+      // prepend the query with "USE NS $_namespace; USE DB $_database;"
+      query = "USE NS $_namespace; USE DB $_database; $query";
+      try {
+        // Ensure the database is initialized
+        if (_db == null) {
+          await initialize(); // Initialize it if it's not already
+        }
+      } catch (e) {
+        return "Initializing database failed: ${e.toString()}";
       }
-    } catch (e) {
-      return "Initializing database failed: ${e.toString()}";
-    }
 
-    try {
-      return await _db!.query(query, vars);
-    } catch (e) {
-      return "Query failed: ${e.toString()}";
+      try {
+        return await _db!.query(query, vars);
+      } catch (e) {
+        if (tries < 3) {
+          _db!.close();
+          // wait tries * 500ms
+          await Future.delayed(Duration(milliseconds: 500 * tries));
+          _db = null;
+          await initialize();
+          tries++;
+        }
+      }
     }
   }
 }

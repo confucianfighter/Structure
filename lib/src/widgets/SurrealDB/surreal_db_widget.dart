@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 class SurrealDBWidget extends StatefulWidget {
   static const routeName = '/surrealdb';
+
+  const SurrealDBWidget({super.key});
   @override
   _SurrealDBWidgetState createState() => _SurrealDBWidgetState();
 }

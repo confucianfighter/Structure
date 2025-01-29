@@ -5,9 +5,7 @@ import 'flash_card_preview.dart';
 import 'flash_card_editor.dart';
 import '../../utils/v1_chat_completions.dart';
 import '../../utils/assistant_actions/assistant_actions.dart';
-import 'package:Structure/src/data_types/code_editor/language_option.dart';
 import 'package:Structure/src/utils/flash_card_stack_manager.dart';
-import '../../data_types/object_box_types/subject.dart';
 
 class FlashCardListWidget extends StatefulWidget {
   const FlashCardListWidget({super.key, required this.subject});

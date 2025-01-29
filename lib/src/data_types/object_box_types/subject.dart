@@ -9,6 +9,7 @@ class Subject extends ITable<Subject> {
   String name;
   String description;
   String color = '#FFFFFF';
+  String reference_material = "";
   ToOne<ChatHistory> chatHistory = ToOne<ChatHistory>();
   Subject({
     required this.id,

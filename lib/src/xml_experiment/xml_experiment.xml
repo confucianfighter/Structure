@@ -1,0 +1,44 @@
+<Column "fullscreen"="true">
+    <Title>Flashcard</Title>
+    <Query name="flashcard">
+        SELECT * FROM flashcard WHERE id = args["flashcard_id"]
+    </Query>
+        <Text>
+            ${flashcard.question}
+        </Text>
+        <Text>
+            ${flashcard.answer}
+        </Text>
+        <Button "text"="Submit">
+            """
+            ### Submit open ai request
+            import openai
+            answer = globals["flashcard"].answer
+            instructions = "You are a helpful assistant that can answer questions about the flashcard."
+            globals["openai_response"] = openai.Completion.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": instructions},
+                    {"role": "user", "content": answer},
+                ],
+            );     
+            """
+        </Button>
+        <If "globals['openai_response']">
+            <Text>
+                ${globals["openai_response"].choices[0].message.content}
+            </Text>
+            <Button "text"="Next">
+                <PushPage>
+                    <Query name="next_card">
+                        fn::next_card(); // This is a surrealdb function call, which user could define.
+                    </Query>
+                    <Flashcard
+                        "fullscreen"="true"
+                        "flashcard_id"=next_card.id
+                    />
+                </PushPage>
+            </Button>
+</Column>
+
+

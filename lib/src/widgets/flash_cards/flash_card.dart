@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../data_store.dart';
-import 'flash_card_result_screen.dart';
 import 'flash_card_result.dart';
 import '../code_editor/code_editor.dart';
 import '../html_viewer/html_viewer.dart';
 import '../chat/chat.dart';
 import 'package:Structure/gen/assets.gen.dart';
 import '../../utils/v1_chat_completions.dart';
-import '../../utils/assistant_actions/graded_flashcard.dart';
 import '../common/star_rating_widget.dart';
 import '../../utils/assistant_actions/assistant_actions.dart';
 import 'package:Structure/src/utils/flash_card_stack_manager.dart';
@@ -320,6 +318,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> {
                           chatHistory?.messages.removeLast();
                           // add a separate bubble for explanation to keep it simple.
                           chatHistory?.messages.add(ChatMessage(id: 0, role: 'assistant', content: result.explanation, chatBubbleType: 'explanation'));
+                          // beautify the json from result.query
                           chatHistory?.messages.add(ChatMessage(id: 0, role: 'assistant', content: result.query, chatBubbleType: 'query'));
                           setState(() {
                             chatHistory?.save();

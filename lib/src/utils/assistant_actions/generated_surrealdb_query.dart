@@ -41,7 +41,6 @@ class GeneratedSurrealDBQueryResponse
         //addChatWidgetCallback?.call(generatedQuery!);
       }
     } catch (e) {
-    } catch (e) {
       await onError
           ?.call('Error decoding SurrealDB query: $e, response: $response');
     }
@@ -54,7 +53,7 @@ class GeneratedSurrealDBQueryResponse
 
   @override
   String systemPrompt() {
-    return '''You are a helpful assistant that can generate SurrealDB queries. The user will be particularly interested in help following data driven design principles so that the entire app along with ui state is represented in database tables, functions, relationships, etc. Use ns and use db will already pre prepended to your query, so don't worry about including them.''';
+    return '''You are a helpful assistant that can generate SurrealDB queries. The user will be particularly interested in help following data driven design principles so that the entire app along with ui state is represented in database tables, functions, relationships, etc. Use ns and use db will already pre prepended to your query, so don't worry about including them. Here's a language reference for you: ''';
   }
 
   @override

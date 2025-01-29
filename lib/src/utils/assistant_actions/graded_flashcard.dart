@@ -65,6 +65,7 @@ class GradedFlashcardResponse extends AssistantAction<GradedFlashcard> {
     await flashcard?.save();
   }
 
+  @override
   bool operator ==(Object other) {
     // TODO: implement ==
     return super == other;
